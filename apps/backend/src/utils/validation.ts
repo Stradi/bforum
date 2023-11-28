@@ -14,8 +14,11 @@ export function validate<T>(obj: unknown, schema: zod.Schema<T>): T {
   }
 }
 
-export function validateBody<T>(ctx: Context, schema: zod.Schema<T>): T {
-  const body = ctx.req.body;
+export async function validateBody<T>(
+  ctx: Context,
+  schema: zod.Schema<T>
+): Promise<T> {
+  const body = await ctx.req.json();
   return validate(body, schema);
 }
 
