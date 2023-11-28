@@ -15,10 +15,12 @@
   },
   "devDependencies": {
     "@bforum/tsconfig": "workspace:^",
+    "drizzle-kit": "^0.20.6",
     "eslint": "^8.54.0",
     "eslint-config-bforum": "workspace:^"
   },
   "dependencies": {
+    "drizzle-orm": "^0.29.0",
     "hono": "^3.10.3",
     "zod": "^3.22.4"
   }
