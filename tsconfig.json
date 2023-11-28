@@ -1,0 +1,3 @@
+{
+  "extends": "@bforum/tsconfig/base.json"
+}

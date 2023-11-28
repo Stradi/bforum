@@ -1,0 +1,21 @@
+{
+  "name": "@bforum/backend",
+  "description": "Backend API for bForum",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Batin Evirgen <hi@batin.sh> (https://www.batin.sh)",
+  "homepage": "https://www.github.com/Stradi/bforum",
+  "scripts": {
+    "dev": "bun --hot ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/Stradi/bforum.git",
+    "directory": "apps/backend"
+  },
+  "devDependencies": {
+    "@bforum/tsconfig": "workspace:^",
+    "eslint": "^8.54.0",
+    "eslint-config-bforum": "workspace:^"
+  }
+}

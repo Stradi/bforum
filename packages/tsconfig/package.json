@@ -1,0 +1,16 @@
+{
+  "name": "@bforum/tsconfig",
+  "description": "TypeScript configuration files for bForum monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Batin Evirgen <hi@batin.sh> (https://www.batin.sh)",
+  "homepage": "https://www.github.com/Stradi/bforum",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/Stradi/bforum.git",
+    "directory": "packages/tsconfig"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.14"
+  }
+}

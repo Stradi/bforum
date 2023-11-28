@@ -1,0 +1,17 @@
+{
+  "name": "eslint-config-bforum",
+  "description": "ESLint configuration files for bForum monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Batin Evirgen <hi@batin.sh> (https://www.batin.sh)",
+  "homepage": "https://www.github.com/Stradi/bforum",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/Stradi/bforum.git",
+    "directory": "packages/eslint-config-bforum"
+  },
+  "devDependencies": {
+    "@vercel/style-guide": "^5.1.0",
+    "typescript": "^5.3.2"
+  }
+}
