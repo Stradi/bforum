@@ -49,6 +49,17 @@ export class InternalServerError extends BaseError {
   }
 }
 
+export class NotFoundError extends BaseError {
+  constructor() {
+    super({
+      message: "This endpoint does not exist.",
+      code: "NOT_FOUND",
+      statusCode: 404,
+      action: "Try again in a different space-time continuum.",
+    });
+  }
+}
+
 export class ValidationError extends BaseError {
   constructor(errors: zod.ZodError) {
     super({
