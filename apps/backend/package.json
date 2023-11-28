@@ -17,5 +17,8 @@
     "@bforum/tsconfig": "workspace:^",
     "eslint": "^8.54.0",
     "eslint-config-bforum": "workspace:^"
+  },
+  "dependencies": {
+    "hono": "^3.10.3"
   }
 }
