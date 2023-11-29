@@ -20,6 +20,7 @@
     "eslint-config-bforum": "workspace:^"
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^2.2.1",
     "drizzle-orm": "^0.29.0",
     "hono": "^3.10.3",
     "zod": "^3.22.4"
