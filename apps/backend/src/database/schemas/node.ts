@@ -33,7 +33,7 @@ export const node = sqliteTable("node", {
   ),
 
   name: text("name", { mode: "text" }).notNull(),
-  slug: text("slug", { mode: "text" }).notNull(),
+  slug: text("slug", { mode: "text" }).notNull().unique(),
   description: text("description", { mode: "text" }).notNull(),
 });
 

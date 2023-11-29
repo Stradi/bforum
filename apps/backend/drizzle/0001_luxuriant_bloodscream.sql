@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `node_slug_unique` ON `node` (`slug`);
