@@ -1,5 +1,6 @@
 import type { ErrorHandler } from "hono";
 import { BaseError } from "../utils/errors";
+import { log } from "../utils/logger";
 import { resp } from "../utils/response";
 
 export default function errorMiddleware(): ErrorHandler {
@@ -12,6 +13,8 @@ export default function errorMiddleware(): ErrorHandler {
         additionalData: error.additionalData,
       });
 
+      log.error(error);
+
       ctx.status(error.statusCode);
       return ctx.json(obj);
     }
@@ -22,8 +25,7 @@ export default function errorMiddleware(): ErrorHandler {
       action: "Please wait for the me to fix it lol.",
     });
 
-    // eslint-disable-next-line no-console -- This should stay here until we have a proper error tracking service set up
-    console.error(error);
+    log.fatal(error);
 
     ctx.status(500);
     return ctx.json(obj);
