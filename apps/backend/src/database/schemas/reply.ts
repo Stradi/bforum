@@ -3,6 +3,22 @@ import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { threadsTable } from "./thread"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 
+/**
+ * ### `Reply` Schema
+ *
+ * `Reply` refers to a reply to a `Thread`. It can also be a reply to another `Reply`.
+ *
+ * When a thread is created, it should have a `Reply` as its first reply. This first reply
+ * is also called the Thread's body (or content).
+ *
+ * Apart from default columns, `Reply` has the following columns:
+ *
+ * | Column Name | Type | Description |
+ * | ----------- | ---- | ----------- |
+ * | `thread_id` | `integer` | The ID of the `Thread` that this `Reply` belongs to. |
+ * | `body` | `text` | The body (or content) of the `Reply`. |
+ * | `reply_to_id` | `integer` | The ID of the `Reply` that this `Reply` is replying to. If `null`, then it is a reply to a `Thread`. |
+ */
 export const repliesTable = sqliteTable("replies", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   created_at: integer("created_at", { mode: "timestamp" }),
