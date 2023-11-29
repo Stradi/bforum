@@ -1,8 +1,8 @@
 import Database from "bun:sqlite";
 import { drizzle } from "drizzle-orm/bun-sqlite";
 import { migrate } from "drizzle-orm/bun-sqlite/migrator";
-import * as node from "./schemas/node";
-import * as thread from "./schemas/thread";
+import * as nodesSchema from "./schemas/node";
+import * as threadsSchema from "./schemas/thread";
 
 export function getDatabase() {
   const file = new Database("main.db", {
@@ -11,8 +11,10 @@ export function getDatabase() {
 
   return drizzle(file, {
     schema: {
-      ...node,
-      ...thread,
+      nodes: nodesSchema.nodesTable,
+      threads: threadsSchema.threadsTable,
+      nodesRelations: nodesSchema.nodesRelations,
+      threadsRelations: threadsSchema.threadRelations,
     },
   });
 }

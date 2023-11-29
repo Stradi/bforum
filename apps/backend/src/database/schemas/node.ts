@@ -5,8 +5,7 @@ import {
   text,
   type AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
-// eslint-disable-next-line import/no-cycle -- there's nothing we can do
-import { thread } from "./thread";
+import { threadsTable } from "./thread"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 
 /**
  * ### `Node` Schema
@@ -25,13 +24,13 @@ import { thread } from "./thread";
  * | `slug` | `text` | The slug of the `Node`. |
  * | `description` | `text` | The description of the `Node`. |
  */
-export const node = sqliteTable("node", {
+export const nodesTable = sqliteTable("nodes", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   created_at: integer("created_at", { mode: "timestamp" }),
   updated_at: integer("updated_at", { mode: "timestamp" }),
 
   parent_id: integer("parent_id", { mode: "number" }).references(
-    (): AnySQLiteColumn => node.id
+    (): AnySQLiteColumn => nodesTable.id
   ),
 
   name: text("name", { mode: "text" }).notNull(),
@@ -39,10 +38,10 @@ export const node = sqliteTable("node", {
   description: text("description", { mode: "text" }).notNull(),
 });
 
-export const nodeRelations = relations(node, ({ one, many }) => ({
-  parent: one(node, {
-    fields: [node.parent_id],
-    references: [node.id],
+export const nodesRelations = relations(nodesTable, ({ one, many }) => ({
+  parent: one(nodesTable, {
+    fields: [nodesTable.parent_id],
+    references: [nodesTable.id],
   }),
-  threads: many(thread),
+  threads: many(threadsTable),
 }));

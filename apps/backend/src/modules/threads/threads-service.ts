@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
-import { thread as ThreadTable } from "../../database/schemas/thread";
+import { threadsTable } from "../../database/schemas/thread";
 import { slugify } from "../../utils/text";
 import NodesService from "../nodes/nodes-service";
 import type {
@@ -23,13 +23,13 @@ export default class ThreadsService {
     if (!node) throw new Error("This should never happen. :fingers_crossed:");
 
     const db = getDatabase();
-    const threads = await db.query.thread.findMany({
+    const threads = await db.query.threads.findMany({
       with: {
         node: dto.with_node || undefined,
       },
       limit: dto.limit || 25,
       offset: dto.offset || 0,
-      where: eq(ThreadTable.node_id, node.id),
+      where: eq(threadsTable.node_id, node.id),
     });
 
     return threads;
@@ -47,8 +47,8 @@ export default class ThreadsService {
     if (!node) throw new Error("This should never happen. :fingers_crossed:");
 
     const db = getDatabase();
-    const thread = await db.query.thread.findMany({
-      where: eq(ThreadTable.slug, threadSlug),
+    const thread = await db.query.threads.findMany({
+      where: eq(threadsTable.slug, threadSlug),
       with: {
         node: dto.with_node || undefined,
       },
@@ -70,7 +70,7 @@ export default class ThreadsService {
 
     const db = getDatabase();
     const thread = await db
-      .insert(ThreadTable)
+      .insert(threadsTable)
       .values({
         name: dto.name,
         node_id: node.id,
@@ -96,14 +96,17 @@ export default class ThreadsService {
 
     const db = getDatabase();
     const thread = await db
-      .update(ThreadTable)
+      .update(threadsTable)
       .set({
         name: dto.name || undefined,
         slug: dto.name ? slugify(dto.name) : undefined,
         updated_at: new Date(),
       })
       .where(
-        and(eq(ThreadTable.node_id, node.id), eq(ThreadTable.slug, threadSlug))
+        and(
+          eq(threadsTable.node_id, node.id),
+          eq(threadsTable.slug, threadSlug)
+        )
       )
       .returning();
 
@@ -123,9 +126,12 @@ export default class ThreadsService {
 
     const db = getDatabase();
     const thread = await db
-      .delete(ThreadTable)
+      .delete(threadsTable)
       .where(
-        and(eq(ThreadTable.node_id, node.id), eq(ThreadTable.slug, threadSlug))
+        and(
+          eq(threadsTable.node_id, node.id),
+          eq(threadsTable.slug, threadSlug)
+        )
       )
       .returning();
 

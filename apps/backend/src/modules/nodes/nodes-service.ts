@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
-import { node as NodeTable } from "../../database/schemas/node";
+import { nodesTable } from "../../database/schemas/node";
 import { slugify } from "../../utils/text";
 import type {
   TCreateNodeBodySchema,
@@ -12,7 +12,7 @@ import type {
 export default class NodesService {
   getAllNodes = async (dto: TGetAllNodesQuerySchema) => {
     const db = getDatabase();
-    const nodes = await db.query.node.findMany({
+    const nodes = await db.query.nodes.findMany({
       with: {
         parent: dto.with_parent || undefined,
       },
@@ -25,8 +25,8 @@ export default class NodesService {
 
   getSingleNode = async (slug: string, dto: TGetSingleNodeQuerySchema) => {
     const db = getDatabase();
-    const node = await db.query.node.findMany({
-      where: eq(NodeTable.slug, slug),
+    const node = await db.query.nodes.findMany({
+      where: eq(nodesTable.slug, slug),
       with: {
         parent: dto.with_parent || undefined,
       },
@@ -42,7 +42,7 @@ export default class NodesService {
   createNode = async (dto: TCreateNodeBodySchema) => {
     const db = getDatabase();
     const node = await db
-      .insert(NodeTable)
+      .insert(nodesTable)
       .values({
         name: dto.name,
         description: dto.description,
@@ -60,7 +60,7 @@ export default class NodesService {
     const db = getDatabase();
 
     const node = await db
-      .update(NodeTable)
+      .update(nodesTable)
       .set({
         name: dto.name || undefined,
         description: dto.description || undefined,
@@ -68,7 +68,7 @@ export default class NodesService {
         slug: dto.name ? slugify(dto.name) : undefined,
         updated_at: new Date(),
       })
-      .where(eq(NodeTable.slug, slug))
+      .where(eq(nodesTable.slug, slug))
       .returning();
 
     if (node.length === 0) {
@@ -81,8 +81,8 @@ export default class NodesService {
   deleteNode = async (slug: string) => {
     const db = getDatabase();
     const node = await db
-      .delete(NodeTable)
-      .where(eq(NodeTable.slug, slug))
+      .delete(nodesTable)
+      .where(eq(nodesTable.slug, slug))
       .returning();
 
     if (node.length === 0) {
