@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import ensureNodeMiddleware from "../../middlewares/ensure-node-middleware";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import type {
@@ -13,7 +14,6 @@ import {
   GetSingleThreadQuerySchema,
   UpdateThreadBodySchema,
 } from "./dto";
-import ensureNodeMiddleware from "./ensure-node-middleware";
 import ThreadsService from "./threads-service";
 
 export class ThreadsController extends BaseController {

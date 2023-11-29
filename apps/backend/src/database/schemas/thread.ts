@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { nodesTable } from "./node"; // eslint-disable-line import/no-cycle -- there's nothing we can do
+import { repliesTable } from "./reply"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 
 /**
  * ### `Thread` Schema
@@ -38,9 +39,10 @@ export const threadsTable = sqliteTable("threads", {
   // TODO: Add type, and author_id
 });
 
-export const threadRelations = relations(threadsTable, ({ one }) => ({
+export const threadRelations = relations(threadsTable, ({ one, many }) => ({
   node: one(nodesTable, {
     fields: [threadsTable.node_id],
     references: [nodesTable.id],
   }),
+  replies: many(repliesTable),
 }));

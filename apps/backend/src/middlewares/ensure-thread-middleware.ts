@@ -1,10 +1,10 @@
 import { eq, sql } from "drizzle-orm";
 import { type MiddlewareHandler } from "hono";
-import { getDatabase } from "../../database";
-import { nodesTable } from "../../database/schemas/node";
-import { resp } from "../../utils/response";
+import { getDatabase } from "../database";
+import { threadsTable } from "../database/schemas/thread";
+import { resp } from "../utils/response";
 
-export default function ensureNodeMiddleware(
+export default function ensureThreadMiddleware(
   paramKey: string
 ): MiddlewareHandler {
   return async (ctx, next) => {
@@ -15,15 +15,15 @@ export default function ensureNodeMiddleware(
       .select({
         count: sql<number>`COUNT(*)`.mapWith(Number),
       })
-      .from(nodesTable)
-      .where(eq(nodesTable.slug, nodeSlug));
+      .from(threadsTable)
+      .where(eq(threadsTable.slug, nodeSlug));
 
     if (exists[0].count === 0) {
       ctx.status(404);
       return ctx.json(
         resp({
           code: "NODE_NOT_FOUND",
-          message: `Node with slug '${nodeSlug}' does not exist.`,
+          message: `Thread with slug '${nodeSlug}' does not exist.`,
           action: "Try again with a different slug.",
         })
       );
