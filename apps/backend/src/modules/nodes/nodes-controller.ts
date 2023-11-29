@@ -1,8 +1,4 @@
-import { eq } from "drizzle-orm";
 import type { Hono } from "hono";
-import { getDatabase } from "../../database";
-import { node as NodeTable } from "../../database/schemas/node";
-import { slugify } from "../../utils/text";
 import BaseController, { type Handler } from "../base-controller";
 import type {
   TCreateNodeBodySchema,
@@ -16,8 +12,11 @@ import {
   GetSingleNodeQuerySchema,
   UpdateNodeBodySchema,
 } from "./dto";
+import NodesService from "./nodes-service";
 
 export class NodesController extends BaseController {
+  private nodesService = new NodesService();
+
   /**
    * Initializes the controller.
    *
@@ -59,14 +58,7 @@ export class NodesController extends BaseController {
       GetAllNodesQuerySchema
     );
 
-    const db = getDatabase();
-    const nodes = await db.query.node.findMany({
-      with: {
-        parent: query.with_parent || undefined,
-      },
-      limit: query.limit || 25,
-      offset: query.offset || 0,
-    });
+    const nodes = await this.nodesService.getAllNodes(query);
 
     return this.ok(ctx, {
       message: `Successfully retrieved ${nodes.length} nodes`,
@@ -95,15 +87,12 @@ export class NodesController extends BaseController {
       GetSingleNodeQuerySchema
     );
 
-    const db = getDatabase();
-    const node = await db.query.node.findMany({
-      where: eq(NodeTable.slug, ctx.req.param("slug")),
-      with: {
-        parent: query.with_parent || undefined,
-      },
-    });
+    const node = await this.nodesService.getSingleNode(
+      ctx.req.param("slug"),
+      query
+    );
 
-    if (node.length === 0) {
+    if (!node) {
       return this.notFound(ctx, {
         code: "NODE_NOT_FOUND",
         message: `Node with slug '${ctx.req.param("slug")}' does not exist.`,
@@ -115,7 +104,7 @@ export class NodesController extends BaseController {
       message: `Node with slug '${ctx.req.param(
         "slug"
       )}' successfully retrieved.`,
-      payload: node[0],
+      payload: node,
     });
   };
 
@@ -141,22 +130,11 @@ export class NodesController extends BaseController {
       CreateNodeBodySchema
     );
 
-    const db = getDatabase();
-    const insertedNode = await db
-      .insert(NodeTable)
-      .values({
-        name: body.name,
-        description: body.description,
-        parent_id: body.parent_id,
-        slug: slugify(body.name),
-        created_at: new Date(),
-        updated_at: new Date(),
-      })
-      .returning();
+    const node = await this.nodesService.createNode(body);
 
     return this.created(ctx, {
       message: "Node successfully created.",
-      payload: insertedNode,
+      payload: node,
     });
   };
 
@@ -183,20 +161,12 @@ export class NodesController extends BaseController {
       UpdateNodeBodySchema
     );
 
-    const db = getDatabase();
-    const updatedNode = await db
-      .update(NodeTable)
-      .set({
-        name: body.name || undefined,
-        description: body.description || undefined,
-        parent_id: body.parent_id || undefined,
-        slug: body.name ? slugify(body.name) : undefined,
-        updated_at: new Date(),
-      })
-      .where(eq(NodeTable.slug, ctx.req.param("slug")))
-      .returning();
+    const node = await this.nodesService.updateNode(
+      ctx.req.param("slug"),
+      body
+    );
 
-    if (updatedNode.length === 0) {
+    if (!node) {
       return this.notFound(ctx, {
         code: "NODE_NOT_FOUND",
         message: `Node with slug '${ctx.req.param("slug")}' does not exist.`,
@@ -208,7 +178,7 @@ export class NodesController extends BaseController {
       message: `Node with slug '${ctx.req.param(
         "slug"
       )}' successfully updated.`,
-      payload: updatedNode,
+      payload: node,
     });
   };
 
@@ -223,13 +193,9 @@ export class NodesController extends BaseController {
    *
    */
   deleteNode: Handler<"nodes/:slug"> = async (ctx) => {
-    const db = getDatabase();
-    const deletedNode = await db
-      .delete(NodeTable)
-      .where(eq(NodeTable.slug, ctx.req.param("slug")))
-      .returning();
+    const node = await this.nodesService.deleteNode(ctx.req.param("slug"));
 
-    if (deletedNode.length === 0) {
+    if (!node) {
       return this.notFound(ctx, {
         code: "NODE_NOT_FOUND",
         message: `Node with slug '${ctx.req.param("slug")}' does not exist.`,
@@ -241,7 +207,7 @@ export class NodesController extends BaseController {
       message: `Node with slug '${ctx.req.param(
         "slug"
       )}' successfully deleted.`,
-      payload: deletedNode,
+      payload: node,
     });
   };
 }
