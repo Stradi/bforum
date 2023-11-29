@@ -5,6 +5,8 @@ import {
   text,
   type AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
+// eslint-disable-next-line import/no-cycle -- there's nothing we can do
+import { thread } from "./thread";
 
 /**
  * ### `Node` Schema
@@ -37,9 +39,10 @@ export const node = sqliteTable("node", {
   description: text("description", { mode: "text" }).notNull(),
 });
 
-export const nodeRelations = relations(node, ({ one }) => ({
+export const nodeRelations = relations(node, ({ one, many }) => ({
   parent: one(node, {
     fields: [node.parent_id],
     references: [node.id],
   }),
+  threads: many(thread),
 }));
