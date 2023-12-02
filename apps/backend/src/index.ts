@@ -1,16 +1,18 @@
-import { getServer } from "./bootstrap";
+import { checkEnv, getServer } from "./bootstrap";
 import { runMigrations } from "./database";
 import { log } from "./utils/logger";
+import { env } from "./utils/text";
 
 log.info("Starting bForum server");
 
+checkEnv();
 runMigrations();
 
-log.info(`Starting server on port ${process.env.PORT || 3000}`);
+log.info(`Starting server on port ${env("PORT", 3000)}`);
 
 Bun.serve({
   development: process.env.NODE_ENV === "development",
-  port: process.env.PORT || 3000,
+  port: env("PORT", 3000),
   fetch(request, server) {
     const app = getServer();
 

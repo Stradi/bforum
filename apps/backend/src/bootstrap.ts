@@ -8,6 +8,7 @@ import { GroupsController } from "./modules/groups/groups-controller";
 import { NodesController } from "./modules/nodes/nodes-controller";
 import { RepliesController } from "./modules/replies/replies-controller";
 import { ThreadsController } from "./modules/threads/threads-controller";
+import { env } from "./utils/text";
 
 export function getServer() {
   const app = new Hono();
@@ -25,4 +26,10 @@ export function getServer() {
     .route("/", new GroupsController().router());
 
   return app;
+}
+
+export function checkEnv() {
+  env("PORT", 3000);
+  env("JWT_SECRET");
+  env("JWT_EXPIRES_IN", 1 * 60 * 60);
 }

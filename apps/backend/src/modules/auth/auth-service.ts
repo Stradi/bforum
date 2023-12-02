@@ -3,6 +3,7 @@ import { sign, verify } from "hono/jwt";
 import { getDatabase } from "../../database";
 import { accountsTable } from "../../database/schemas/account";
 import type { JwtPayload } from "../../types/jwt";
+import { env } from "../../utils/text";
 import type { TLoginBodySchema, TRegisterBodySchema } from "./dto";
 
 export default class AuthService {
@@ -60,17 +61,17 @@ export default class AuthService {
         username: account.username,
         displayName: account.display_name,
         email: account.email,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 1, // 1 hour
+        exp: Math.floor(Date.now() / 1000) + env("JWT_EXPIRES_IN", 3600), // 1 hour
         nbf: Math.floor(Date.now() / 1000) - 1, // 1 second
         iat: Math.floor(Date.now() / 1000) - 1, // 1 second
       },
-      "secret",
+      env("JWT_SECRET"),
       "HS256"
     );
   };
 
   verifyJwtToken = async (token: string) => {
-    return verify(token, "secret", "HS256") as Promise<JwtPayload>;
+    return verify(token, env("JWT_SECRET"), "HS256") as Promise<JwtPayload>;
   };
 
   private _doesEmailExists = async (email: string) => {
