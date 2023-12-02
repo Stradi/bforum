@@ -4,7 +4,9 @@ import { migrate } from "drizzle-orm/bun-sqlite/migrator";
 import * as accountsSchema from "./schemas/account";
 import * as accountGroupSchema from "./schemas/account-group";
 import * as groupsSchema from "./schemas/group";
+import * as groupPermissionSchema from "./schemas/group-permission";
 import * as nodesSchema from "./schemas/node";
+import * as permissionsSchema from "./schemas/permission";
 import * as repliesSchema from "./schemas/reply";
 import * as threadsSchema from "./schemas/thread";
 
@@ -21,6 +23,8 @@ export function getDatabase() {
       accounts: accountsSchema.accountsTable,
       groups: groupsSchema.groupsTable,
       accountGroup: accountGroupSchema.accountGroupTable,
+      permissions: permissionsSchema.permissionsTable,
+      groupPermission: groupPermissionSchema.groupPermissionTable,
 
       nodesRelations: nodesSchema.nodesRelations,
       threadsRelations: threadsSchema.threadRelations,
@@ -28,6 +32,8 @@ export function getDatabase() {
       accountsRelations: accountsSchema.accountsRelations,
       groupsRelations: groupsSchema.groupsRelations,
       accountToGroupsRelations: accountGroupSchema.accountGroupRelations,
+      permissionsRelations: permissionsSchema.permissionsRelations,
+      groupPermissionsRelations: groupPermissionSchema.groupPermissionRelations,
     },
   });
 }
