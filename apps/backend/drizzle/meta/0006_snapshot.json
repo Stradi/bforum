@@ -1,33 +1,12 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "e5edc4a9-401e-438b-a99c-4286ad6ad388",
+  "id": "cf87a214-d6aa-4a93-8662-97312111c2b5",
   "prevId": "65468453-2388-4354-85e4-c0e9dd83e0ca",
   "tables": {
     "account_group": {
       "name": "account_group",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "account_id": {
           "name": "account_id",
           "type": "integer",
@@ -72,7 +51,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "account_group_account_id_group_id_pk": {
+          "columns": [
+            "account_id",
+            "group_id"
+          ],
+          "name": "account_group_account_id_group_id_pk"
+        }
+      },
       "uniqueConstraints": {}
     },
     "accounts": {
