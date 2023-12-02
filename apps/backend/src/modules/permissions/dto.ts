@@ -1,9 +1,17 @@
 import * as zod from "zod";
 
+export type TGetSinglePermissionQuerySchema = zod.infer<
+  typeof GetSinglePermissionQuerySchema
+>;
+export const GetSinglePermissionQuerySchema = zod.object({
+  with_groups: zod.coerce.boolean().optional(),
+});
+
 export type TGetAllPermissionsQuerySchema = zod.infer<
   typeof GetAllPermissionsQuerySchema
 >;
 export const GetAllPermissionsQuerySchema = zod.object({
+  with_groups: zod.coerce.boolean().optional(),
   limit: zod.coerce.number().optional(),
   offset: zod.coerce.number().optional(),
 });

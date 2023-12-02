@@ -4,6 +4,7 @@ import { permissionsTable } from "../../database/schemas/permission";
 import type {
   TCreatePermissionBodySchema,
   TGetAllPermissionsQuerySchema,
+  TGetSinglePermissionQuerySchema,
   TUpdatePermissionBodySchema,
 } from "./dto";
 
@@ -11,6 +12,13 @@ export default class PermissionsService {
   getAllPermissions = async (dto: TGetAllPermissionsQuerySchema) => {
     const db = getDatabase();
     const permissions = await db.query.permissions.findMany({
+      with: {
+        groupPermission: {
+          with: {
+            group: dto.with_groups || undefined,
+          },
+        },
+      },
       limit: dto.limit || 25,
       offset: dto.offset || 0,
     });
@@ -18,10 +26,20 @@ export default class PermissionsService {
     return permissions;
   };
 
-  getSinglePermission = async (id: number) => {
+  getSinglePermission = async (
+    id: number,
+    dto: TGetSinglePermissionQuerySchema
+  ) => {
     const db = getDatabase();
     const permission = await db.query.permissions.findMany({
       where: eq(permissionsTable, id),
+      with: {
+        groupPermission: {
+          with: {
+            group: dto.with_groups || undefined,
+          },
+        },
+      },
     });
 
     if (permission.length === 0) {

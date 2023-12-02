@@ -5,6 +5,7 @@ import BaseController from "../base-controller";
 import type {
   TCreatePermissionBodySchema,
   TGetAllPermissionsQuerySchema,
+  TGetSinglePermissionQuerySchema,
   TUpdatePermissionBodySchema,
 } from "./dto";
 import {
@@ -50,8 +51,14 @@ export class PermissionsController extends BaseController {
       });
     }
 
+    const query = this.validateQuery<TGetSinglePermissionQuerySchema>(
+      ctx,
+      GetAllPermissionsQuerySchema
+    );
+
     const permission = await this.permissionsService.getSinglePermission(
-      permissionId
+      permissionId,
+      query
     );
 
     if (!permission) {
