@@ -1,6 +1,7 @@
 import type { Hono } from "hono";
 import ensureNodeMiddleware from "../../middlewares/ensure-node-middleware";
 import ensureThreadMiddleware from "../../middlewares/ensure-thread-middleware";
+import { tryParseInt } from "../../utils/text";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import type {
@@ -73,7 +74,7 @@ export class RepliesController extends BaseController {
 
   getSingleReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId"> =
     async (ctx) => {
-      const replyId = this.tryParseInt(ctx.req.param("replyId"));
+      const replyId = tryParseInt(ctx.req.param("replyId"));
       if (!replyId) {
         return this.badRequest(ctx, {
           code: "INVALID_REPLY_ID",
@@ -125,7 +126,7 @@ export class RepliesController extends BaseController {
 
   updateReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId"> =
     async (ctx) => {
-      const replyId = this.tryParseInt(ctx.req.param("replyId"));
+      const replyId = tryParseInt(ctx.req.param("replyId"));
       if (!replyId) {
         return this.badRequest(ctx, {
           code: "INVALID_REPLY_ID",
@@ -157,7 +158,7 @@ export class RepliesController extends BaseController {
 
   deleteReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId"> =
     async (ctx) => {
-      const replyId = this.tryParseInt(ctx.req.param("replyId"));
+      const replyId = tryParseInt(ctx.req.param("replyId"));
       if (!replyId) {
         return this.badRequest(ctx, {
           code: "INVALID_REPLY_ID",
@@ -181,13 +182,4 @@ export class RepliesController extends BaseController {
         payload: reply,
       });
     };
-
-  // TODO: Put this in a utils file.
-  private tryParseInt = (value: string) => {
-    const parsed = parseInt(value, 10);
-    if (isNaN(parsed)) {
-      return null;
-    }
-    return parsed;
-  };
 }
