@@ -5,6 +5,7 @@ import BaseController from "../base-controller";
 import type {
   TCreateGroupBodySchema,
   TGetAllGroupsQuerySchema,
+  TGetSingleGroupQuerySchema,
   TUpdateGroupBodySchema,
 } from "./dto";
 import {
@@ -50,7 +51,12 @@ export class GroupsController extends BaseController {
       });
     }
 
-    const group = await this.groupsService.getSingleGroup(groupId);
+    const query = this.validateQuery<TGetSingleGroupQuerySchema>(
+      ctx,
+      GetAllGroupsQuerySchema
+    );
+
+    const group = await this.groupsService.getSingleGroup(groupId, query);
 
     if (!group) {
       return this.notFound(ctx, {

@@ -4,6 +4,7 @@ import { groupsTable } from "../../database/schemas/group";
 import type {
   TCreateGroupBodySchema,
   TGetAllGroupsQuerySchema,
+  TGetSingleGroupQuerySchema,
   TUpdateGroupBodySchema,
 } from "./dto";
 
@@ -11,6 +12,18 @@ export default class GroupsService {
   getAllGroups = async (dto: TGetAllGroupsQuerySchema) => {
     const db = getDatabase();
     const groups = await db.query.groups.findMany({
+      with: {
+        groupPermission: {
+          with: {
+            permission: dto.with_permissions || undefined,
+          },
+        },
+        accountGroup: {
+          with: {
+            account: dto.with_accounts || undefined,
+          },
+        },
+      },
       limit: dto.limit || 25,
       offset: dto.offset || 0,
     });
@@ -18,10 +31,22 @@ export default class GroupsService {
     return groups;
   };
 
-  getSingleGroup = async (id: number) => {
+  getSingleGroup = async (id: number, dto: TGetSingleGroupQuerySchema) => {
     const db = getDatabase();
     const group = await db.query.groups.findMany({
       where: eq(groupsTable.id, id),
+      with: {
+        groupPermission: {
+          with: {
+            permission: dto.with_permissions || undefined,
+          },
+        },
+        accountGroup: {
+          with: {
+            account: dto.with_accounts || undefined,
+          },
+        },
+      },
     });
 
     if (group.length === 0) {
