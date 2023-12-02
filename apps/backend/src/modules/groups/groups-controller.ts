@@ -50,7 +50,7 @@ export class GroupsController extends BaseController {
       });
     }
 
-    const group = await this.groupsService.getSingleGrouop(groupId);
+    const group = await this.groupsService.getSingleGroup(groupId);
 
     if (!group) {
       return this.notFound(ctx, {

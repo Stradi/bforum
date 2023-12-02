@@ -18,17 +18,10 @@ export default class GroupsService {
     return groups;
   };
 
-  getSingleGrouop = async (id: number) => {
+  getSingleGroup = async (id: number) => {
     const db = getDatabase();
     const group = await db.query.groups.findMany({
       where: eq(groupsTable.id, id),
-      with: {
-        accountGroup: {
-          with: {
-            account: true,
-          },
-        },
-      },
     });
 
     if (group.length === 0) {
