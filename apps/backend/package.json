@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@bforum/tsconfig": "workspace:^",
+    "better-sqlite3": "^9.2.0",
     "drizzle-kit": "^0.20.6",
     "eslint": "^8.54.0",
     "eslint-config-bforum": "workspace:^",
