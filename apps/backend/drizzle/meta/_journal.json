@@ -36,6 +36,13 @@
       "when": 1701270804180,
       "tag": "0004_low_mesmero",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1701277832929,
+      "tag": "0005_right_the_anarchist",
+      "breakpoints": true
     }
   ]
 }
