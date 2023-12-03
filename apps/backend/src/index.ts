@@ -1,12 +1,17 @@
 import { checkEnv, getServer } from "./bootstrap";
-import { runMigrations } from "./database";
+import { runMigrations, seedDatabase } from "./database";
 import { log } from "./utils/logger";
 import { env } from "./utils/text";
 
 log.info("Starting bForum server");
 
 checkEnv();
+
 runMigrations();
+log.info("Migrations done");
+
+await seedDatabase();
+log.info("Database seeded with system data");
 
 log.info(`Starting server on port ${env("PORT", 3000)}`);
 
