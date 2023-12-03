@@ -6,6 +6,7 @@ import notFoundMiddleware from "./middlewares/not-found-middleware";
 import AuthController from "./modules/auth/auth-controller";
 import { GroupsController } from "./modules/groups/groups-controller";
 import { NodesController } from "./modules/nodes/nodes-controller";
+import { PermissionsController } from "./modules/permissions/permissions-controller";
 import { RepliesController } from "./modules/replies/replies-controller";
 import { ThreadsController } from "./modules/threads/threads-controller";
 import { env } from "./utils/text";
@@ -23,7 +24,8 @@ export function getServer() {
     .route("/", new ThreadsController().router())
     .route("/", new RepliesController().router())
     .route("/", new AuthController().router())
-    .route("/", new GroupsController().router());
+    .route("/", new GroupsController().router())
+    .route("/", new PermissionsController().router());
 
   return app;
 }
