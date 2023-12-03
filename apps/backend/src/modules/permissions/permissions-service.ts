@@ -94,4 +94,28 @@ export default class PermissionsService {
 
     return permission[0];
   };
+
+  getPermissionByName = async (name: string) => {
+    const db = getDatabase();
+    const permission = await db.query.permissions.findMany({
+      where: eq(permissionsTable.name, name),
+      with: {
+        groupPermission: {
+          columns: {
+            permission_id: false,
+            group_id: false,
+          },
+          with: {
+            group: true,
+          },
+        },
+      },
+    });
+
+    if (permission.length === 0) {
+      return null;
+    }
+
+    return permission[0];
+  };
 }
