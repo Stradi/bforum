@@ -1,11 +1,5 @@
 import type { MiddlewareHandler } from "hono";
 import { getCookie } from "hono/cookie";
-import {
-  JwtTokenExpired,
-  JwtTokenInvalid,
-  JwtTokenIssuedAt,
-  JwtTokenSignatureMismatched,
-} from "hono/utils/jwt/types";
 import AuthService from "../modules/auth/auth-service";
 import { BaseError } from "../utils/errors";
 
@@ -23,32 +17,7 @@ export default function authMiddleware(): MiddlewareHandler {
       });
     }
 
-    const jwtPayload = await authService
-      .verifyJwtToken(authCookie)
-      .catch((e) => {
-        if (
-          e instanceof JwtTokenInvalid ||
-          e instanceof JwtTokenIssuedAt ||
-          e instanceof JwtTokenSignatureMismatched
-        ) {
-          throw new BaseError({
-            statusCode: 401,
-            code: "INVALID_AUTH_TOKEN",
-            message: "Auth token is invalid",
-            action: "Provide a valid auth token in the 'auth-token' cookie",
-          });
-        } else if (e instanceof JwtTokenExpired) {
-          throw new BaseError({
-            statusCode: 401,
-            code: "EXPIRED_AUTH_TOKEN",
-            message: "Auth token has expired",
-            action: "Provide a valid auth token in the 'auth-token' cookie",
-          });
-        }
-
-        throw e;
-      });
-
+    const jwtPayload = await authService.extractJwtPayload(authCookie);
     ctx.set("jwtPayload", jwtPayload);
 
     await next();

@@ -74,6 +74,32 @@ export default class AuthService {
     return verify(token, env("JWT_SECRET"), "HS256") as Promise<JwtPayload>;
   };
 
+  extractJwtPayload = async (token: string) => {
+    return this.verifyJwtToken(token).catch((e) => {
+      if (
+        e instanceof JwtTokenInvalid ||
+        e instanceof JwtTokenIssuedAt ||
+        e instanceof JwtTokenSignatureMismatched
+      ) {
+        throw new BaseError({
+          statusCode: 401,
+          code: "INVALID_AUTH_TOKEN",
+          message: "Auth token is invalid",
+          action: "Provide a valid auth token in the 'auth-token' cookie",
+        });
+      } else if (e instanceof JwtTokenExpired) {
+        throw new BaseError({
+          statusCode: 401,
+          code: "EXPIRED_AUTH_TOKEN",
+          message: "Auth token has expired",
+          action: "Provide a valid auth token in the 'auth-token' cookie",
+        });
+      }
+
+      throw e;
+    });
+  };
+
   private _doesEmailExists = async (email: string) => {
     const db = getDatabase();
     const exists = await db
