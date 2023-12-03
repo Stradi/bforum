@@ -30,7 +30,16 @@ export default class AuthController extends BaseController {
       });
     }
 
-    const token = await this.authService.generateJwtToken(account);
+    const token = await this.authService.generateJwtToken({
+      id: account.id,
+      username: account.username,
+      display_name: account.display_name,
+      email: account.email,
+      groups: account.accountGroup.map((g) => ({
+        id: g.group.id,
+        name: g.group.name,
+      })),
+    });
 
     setCookie(ctx, "auth-token", token, {
       httpOnly: true,
@@ -51,8 +60,8 @@ export default class AuthController extends BaseController {
       RegisterBodySchema
     );
 
-    const account = await this.authService.register(body);
-    if (!account) {
+    const registered = await this.authService.register(body);
+    if (!registered) {
       return this.badRequest(ctx, {
         code: "CREDENTIALS_ALREADY_EXISTS",
         message: "Username or email already exists",
@@ -60,7 +69,13 @@ export default class AuthController extends BaseController {
       });
     }
 
-    const token = await this.authService.generateJwtToken(account);
+    const token = await this.authService.generateJwtToken({
+      id: registered.account.id,
+      username: registered.account.username,
+      display_name: registered.account.display_name,
+      email: registered.account.email,
+      groups: registered.groups,
+    });
 
     setCookie(ctx, "auth-token", token, {
       httpOnly: true,

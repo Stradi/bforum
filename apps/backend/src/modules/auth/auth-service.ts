@@ -1,8 +1,16 @@
 import { eq, sql } from "drizzle-orm";
 import { sign, verify } from "hono/jwt";
+import {
+  JwtTokenExpired,
+  JwtTokenInvalid,
+  JwtTokenIssuedAt,
+  JwtTokenSignatureMismatched,
+} from "hono/utils/jwt/types";
 import { getDatabase } from "../../database";
 import { accountsTable } from "../../database/schemas/account";
-import type { JwtPayload } from "../../types/jwt";
+import { accountGroupTable } from "../../database/schemas/account-group";
+import type { CustomJwtClaims, JwtPayload } from "../../types/jwt";
+import { BaseError } from "../../utils/errors";
 import { env } from "../../utils/text";
 import type { TLoginBodySchema, TRegisterBodySchema } from "./dto";
 
@@ -15,6 +23,13 @@ export default class AuthService {
     const db = getDatabase();
     const account = await db.query.accounts.findMany({
       where: eq(accountsTable.username, dto.username),
+      with: {
+        accountGroup: {
+          with: {
+            group: true,
+          },
+        },
+      },
     });
 
     const passwordsMatch = await Bun.password.verify(
@@ -51,16 +66,33 @@ export default class AuthService {
       })
       .returning();
 
-    return account[0];
+    await db
+      .insert(accountGroupTable)
+      .values({
+        account_id: account[0].id,
+        group_id: 3, // 3 is `Anonymous`
+      })
+      .returning();
+
+    return {
+      account: account[0],
+      groups: [
+        {
+          id: 3,
+          name: "Anonymous",
+        },
+      ],
+    };
   };
 
-  generateJwtToken = async (account: typeof accountsTable.$inferSelect) => {
+  generateJwtToken = async (args: CustomJwtClaims) => {
     return sign(
       {
-        id: account.id,
-        username: account.username,
-        displayName: account.display_name,
-        email: account.email,
+        id: args.id,
+        username: args.username,
+        display_name: args.display_name,
+        email: args.email,
+        groups: args.groups,
         exp: Math.floor(Date.now() / 1000) + env("JWT_EXPIRES_IN", 3600), // 1 hour
         nbf: Math.floor(Date.now() / 1000) - 1, // 1 second
         iat: Math.floor(Date.now() / 1000) - 1, // 1 second
