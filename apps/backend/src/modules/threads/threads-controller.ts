@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import authMiddleware from "../../middlewares/auth-middleware";
 import ensureNodeMiddleware from "../../middlewares/ensure-node-middleware";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
@@ -14,10 +15,12 @@ import {
   GetSingleThreadQuerySchema,
   UpdateThreadBodySchema,
 } from "./dto";
+import ThreadsPolicy from "./threads-policy";
 import ThreadsService from "./threads-service";
 
 export class ThreadsController extends BaseController {
   private threadsService = new ThreadsService();
+  private threadsPolicy = new ThreadsPolicy();
 
   /**
    * Initializes the controller. Ensures that a Node with the given `nodeSlug` exists.
@@ -34,26 +37,31 @@ export class ThreadsController extends BaseController {
       .get(
         "/nodes/:nodeSlug/threads",
         ensureNodeMiddleware("nodeSlug"),
+        authMiddleware(),
         this.getAllThreads
       )
       .get(
         "/nodes/:nodeSlug/threads/:slug",
         ensureNodeMiddleware("nodeSlug"),
+        authMiddleware(),
         this.getThread
       )
       .post(
         "/nodes/:nodeSlug/threads",
         ensureNodeMiddleware("nodeSlug"),
+        authMiddleware(),
         this.createThread
       )
       .patch(
         "/nodes/:nodeSlug/threads/:slug",
         ensureNodeMiddleware("nodeSlug"),
+        authMiddleware(),
         this.updateThread
       )
       .delete(
         "/nodes/:nodeSlug/threads/:slug",
         ensureNodeMiddleware("nodeSlug"),
+        authMiddleware(),
         this.deleteThread
       );
   }
@@ -75,6 +83,17 @@ export class ThreadsController extends BaseController {
    * @see {@link GetAllThreadsQuerySchema}
    */
   getAllThreads: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
+    const allowed = await this.threadsPolicy.canListThreads(
+      ctx.get("jwtPayload")
+    );
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to list threads.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     const query = this.validateQuery<TGetAllThreadsQuerySchema>(
       ctx,
       GetAllThreadsQuerySchema
@@ -126,6 +145,19 @@ export class ThreadsController extends BaseController {
       });
     }
 
+    const allowed = await this.threadsPolicy.canReadThread(
+      ctx.get("jwtPayload"),
+      thread
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to read this thread.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     return this.ok(ctx, {
       message: `Thread with slug '${ctx.req.param(
         "slug"
@@ -149,6 +181,18 @@ export class ThreadsController extends BaseController {
    * @see {@link CreateThreadBodySchema}
    */
   createThread: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
+    const allowed = await this.threadsPolicy.canCreateThread(
+      ctx.get("jwtPayload")
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to create threads.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     const body = await this.validateBody<TCreateThreadBodySchema>(
       ctx,
       CreateThreadBodySchema
@@ -200,6 +244,19 @@ export class ThreadsController extends BaseController {
       });
     }
 
+    const allowed = await this.threadsPolicy.canUpdateThread(
+      ctx.get("jwtPayload"),
+      thread
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to update this thread.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     return this.ok(ctx, {
       message: `Thread with slug '${ctx.req.param(
         "slug"
@@ -229,6 +286,19 @@ export class ThreadsController extends BaseController {
         code: "THREAD_NOT_FOUND",
         message: `Thread with '${ctx.req.param("slug")} does not exist.'`,
         action: "Try again with a different slug.",
+      });
+    }
+
+    const allowed = await this.threadsPolicy.canDeleteThread(
+      ctx.get("jwtPayload"),
+      thread
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to delete this thread.",
+        action: "Log in with an account that has the required permissions.",
       });
     }
 

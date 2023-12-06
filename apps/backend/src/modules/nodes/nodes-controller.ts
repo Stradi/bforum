@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import authMiddleware from "../../middlewares/auth-middleware";
 import BaseController, { type Handler } from "../base-controller";
 import type {
   TCreateNodeBodySchema,
@@ -12,10 +13,12 @@ import {
   GetSingleNodeQuerySchema,
   UpdateNodeBodySchema,
 } from "./dto";
+import NodesPolicy from "./nodes-policy";
 import NodesService from "./nodes-service";
 
 export class NodesController extends BaseController {
   private nodesService = new NodesService();
+  private nodesPolicy = new NodesPolicy();
 
   /**
    * Initializes the controller.
@@ -29,11 +32,11 @@ export class NodesController extends BaseController {
    */
   public router(): Hono {
     return this._app
-      .get("/nodes", this.getAllNodes)
-      .get("/nodes/:slug", this.getSingleNode)
-      .post("/nodes", this.createNode)
-      .patch("/nodes/:slug", this.updateNode)
-      .delete("/nodes/:slug", this.deleteNode);
+      .get("/nodes", authMiddleware(), this.getAllNodes)
+      .get("/nodes/:slug", authMiddleware(), this.getSingleNode)
+      .post("/nodes", authMiddleware(), this.createNode)
+      .patch("/nodes/:slug", authMiddleware(), this.updateNode)
+      .delete("/nodes/:slug", authMiddleware(), this.deleteNode);
   }
 
   /**
@@ -53,6 +56,15 @@ export class NodesController extends BaseController {
    * @see {@link GetAllNodesQuerySchema}
    */
   getAllNodes: Handler<"/nodes"> = async (ctx) => {
+    const allowed = await this.nodesPolicy.canListNodes(ctx.get("jwtPayload"));
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to list nodes.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     const query = this.validateQuery<TGetAllNodesQuerySchema>(
       ctx,
       GetAllNodesQuerySchema
@@ -100,6 +112,19 @@ export class NodesController extends BaseController {
       });
     }
 
+    const allowed = await this.nodesPolicy.canReadNode(
+      ctx.get("jwtPayload"),
+      node
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to read this node.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     return this.ok(ctx, {
       message: `Node with slug '${ctx.req.param(
         "slug"
@@ -125,6 +150,16 @@ export class NodesController extends BaseController {
    * @see {@link CreateNodeBodySchema}
    */
   createNode: Handler<"/nodes"> = async (ctx) => {
+    const allowed = await this.nodesPolicy.canCreateNode(ctx.get("jwtPayload"));
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to create nodes.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     const body = await this.validateBody<TCreateNodeBodySchema>(
       ctx,
       CreateNodeBodySchema
@@ -174,6 +209,19 @@ export class NodesController extends BaseController {
       });
     }
 
+    const allowed = await this.nodesPolicy.canUpdateNode(
+      ctx.get("jwtPayload"),
+      node
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to update this node.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     return this.ok(ctx, {
       message: `Node with slug '${ctx.req.param(
         "slug"
@@ -200,6 +248,19 @@ export class NodesController extends BaseController {
         code: "NODE_NOT_FOUND",
         message: `Node with slug '${ctx.req.param("slug")}' does not exist.`,
         action: "Try again with a different slug.",
+      });
+    }
+
+    const allowed = await this.nodesPolicy.canDeleteNode(
+      ctx.get("jwtPayload"),
+      node
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to delete this node.",
+        action: "Log in with an account that has the required permissions.",
       });
     }
 

@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import authMiddleware from "../../middlewares/auth-middleware";
 import ensureNodeMiddleware from "../../middlewares/ensure-node-middleware";
 import ensureThreadMiddleware from "../../middlewares/ensure-thread-middleware";
 import { tryParseInt } from "../../utils/text";
@@ -14,10 +15,12 @@ import {
   GetAllRepliesQuerySchema,
   UpdateReplyBodySchema,
 } from "./dto";
+import RepliesPolicy from "./replies-policy";
 import RepliesService from "./replies-service";
 
 export class RepliesController extends BaseController {
   private repliesService = new RepliesService();
+  private repliesPolicy = new RepliesPolicy();
 
   public router(): Hono {
     return this._app
@@ -25,36 +28,52 @@ export class RepliesController extends BaseController {
         "/nodes/:nodeSlug/threads/:threadSlug/replies",
         ensureNodeMiddleware("nodeSlug"),
         ensureThreadMiddleware("threadSlug"),
+        authMiddleware(),
         this.getAllReplies
       )
       .get(
         "/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId",
         ensureNodeMiddleware("nodeSlug"),
         ensureThreadMiddleware("threadSlug"),
+        authMiddleware(),
         this.getSingleReply
       )
       .post(
         "/nodes/:nodeSlug/threads/:threadSlug/replies",
         ensureNodeMiddleware("nodeSlug"),
         ensureThreadMiddleware("threadSlug"),
+        authMiddleware(),
         this.createReply
       )
       .patch(
         "/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId",
         ensureNodeMiddleware("nodeSlug"),
         ensureThreadMiddleware("threadSlug"),
+        authMiddleware(),
         this.updateReply
       )
       .delete(
         "/nodes/:nodeSlug/threads/:threadSlug/replies/:replyId",
         ensureNodeMiddleware("nodeSlug"),
         ensureThreadMiddleware("threadSlug"),
+        authMiddleware(),
         this.deleteReply
       );
   }
 
   getAllReplies: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> =
     async (ctx) => {
+      const allowed = await this.repliesPolicy.canListReplies(
+        ctx.get("jwtPayload")
+      );
+      if (!allowed) {
+        return this.notAllowed(ctx, {
+          code: "FORBIDDEN",
+          message: "You are not allowed to list replies.",
+          action: "Log in with an account that has the required permissions.",
+        });
+      }
+
       const query = this.validateQuery<TGetAllRepliesQuerySchema>(
         ctx,
         GetAllRepliesQuerySchema
@@ -98,6 +117,19 @@ export class RepliesController extends BaseController {
         });
       }
 
+      const allowed = await this.repliesPolicy.canReadReply(
+        ctx.get("jwtPayload"),
+        reply
+      );
+
+      if (!allowed) {
+        return this.notAllowed(ctx, {
+          code: "FORBIDDEN",
+          message: "You are not allowed to read this reply.",
+          action: "Log in with an account that has the required permissions.",
+        });
+      }
+
       return this.ok(ctx, {
         message: `Reply with id '${replyId}' successfully retrieved.`,
         payload: reply,
@@ -107,6 +139,18 @@ export class RepliesController extends BaseController {
   createReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> = async (
     ctx
   ) => {
+    const allowed = await this.repliesPolicy.canCreateReply(
+      ctx.get("jwtPayload")
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to create replies.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
     const body = await this.validateBody<TCreateReplyBodySchema>(
       ctx,
       CreateReplyBodySchema
@@ -150,6 +194,19 @@ export class RepliesController extends BaseController {
         });
       }
 
+      const allowed = await this.repliesPolicy.canUpdateReply(
+        ctx.get("jwtPayload"),
+        reply
+      );
+
+      if (!allowed) {
+        return this.notAllowed(ctx, {
+          code: "FORBIDDEN",
+          message: "You are not allowed to update this reply.",
+          action: "Log in with an account that has the required permissions.",
+        });
+      }
+
       return this.ok(ctx, {
         message: `Reply with id '${replyId}' successfully updated.`,
         payload: reply,
@@ -174,6 +231,19 @@ export class RepliesController extends BaseController {
           code: "REPLY_NOT_FOUND",
           message: `Reply with id '${replyId}' does not exist.`,
           action: "Try again with a different reply id.",
+        });
+      }
+
+      const allowed = await this.repliesPolicy.canDeleteReply(
+        ctx.get("jwtPayload"),
+        reply
+      );
+
+      if (!allowed) {
+        return this.notAllowed(ctx, {
+          code: "FORBIDDEN",
+          message: "You are not allowed to delete this reply.",
+          action: "Log in with an account that has the required permissions.",
         });
       }
 
