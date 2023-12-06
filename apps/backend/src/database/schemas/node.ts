@@ -5,6 +5,7 @@ import {
   text,
   type AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
+import { accountsTable } from "./account";
 import { threadsTable } from "./thread"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 
 /**
@@ -23,6 +24,7 @@ import { threadsTable } from "./thread"; // eslint-disable-line import/no-cycle 
  * | `name` | `text` | The name of the `Node`. |
  * | `slug` | `text` | The slug of the `Node`. |
  * | `description` | `text` | The description of the `Node`. |
+ * | `created_by` | `integer` | The ID of the `Account` that created the `Node`. |
  */
 export const nodesTable = sqliteTable("nodes", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -36,6 +38,7 @@ export const nodesTable = sqliteTable("nodes", {
   name: text("name", { mode: "text" }).notNull(),
   slug: text("slug", { mode: "text" }).notNull().unique(),
   description: text("description", { mode: "text" }).notNull(),
+  created_by: integer("created_by", { mode: "number" }).notNull(),
 });
 
 export const nodesRelations = relations(nodesTable, ({ one, many }) => ({
@@ -44,4 +47,8 @@ export const nodesRelations = relations(nodesTable, ({ one, many }) => ({
     references: [nodesTable.id],
   }),
   threads: many(threadsTable),
+  creator: one(accountsTable, {
+    fields: [nodesTable.created_by],
+    references: [accountsTable.id],
+  }),
 }));

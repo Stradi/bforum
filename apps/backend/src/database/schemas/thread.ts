@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { accountsTable } from "./account";
 import { nodesTable } from "./node"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 import { repliesTable } from "./reply"; // eslint-disable-line import/no-cycle -- there's nothing we can do
 
@@ -23,6 +24,7 @@ import { repliesTable } from "./reply"; // eslint-disable-line import/no-cycle -
  * | `node_id` | `integer` | The ID of the `Node` that this `Thread` belongs to. |
  * | `name` | `text` | The name of the `Thread`. |
  * | `slug` | `text` | The slug of the `Thread`. |
+ * | `created_by` | `integer` | The ID of the `Account` that created the `Thread`. |
  */
 export const threadsTable = sqliteTable("threads", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -35,8 +37,9 @@ export const threadsTable = sqliteTable("threads", {
 
   name: text("name", { mode: "text" }).notNull(),
   slug: text("slug", { mode: "text" }).notNull().unique(),
+  created_by: integer("created_by", { mode: "number" }).notNull(),
 
-  // TODO: Add type, and author_id
+  // TODO: Add type
 });
 
 export const threadRelations = relations(threadsTable, ({ one, many }) => ({
@@ -45,4 +48,8 @@ export const threadRelations = relations(threadsTable, ({ one, many }) => ({
     references: [nodesTable.id],
   }),
   replies: many(repliesTable),
+  creator: one(accountsTable, {
+    fields: [threadsTable.created_by],
+    references: [accountsTable.id],
+  }),
 }));

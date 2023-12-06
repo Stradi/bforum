@@ -57,6 +57,13 @@
       "when": 1701534039902,
       "tag": "0007_aberrant_polaris",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1701890692877,
+      "tag": "0008_equal_bloodstorm",
+      "breakpoints": true
     }
   ]
 }
