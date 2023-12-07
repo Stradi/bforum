@@ -181,7 +181,7 @@ export class RepliesController extends BaseController {
         UpdateReplyBodySchema
       );
 
-      const reply = await this.repliesService.updateReply(replyId, body);
+      const reply = await this.repliesService.getSingleReply(replyId, {});
 
       if (!reply) {
         return this.notFound(ctx, {
@@ -204,9 +204,11 @@ export class RepliesController extends BaseController {
         });
       }
 
+      const updatedReply = await this.repliesService.updateReply(replyId, body);
+
       return this.ok(ctx, {
         message: `Reply with id '${replyId}' successfully updated.`,
-        payload: reply,
+        payload: updatedReply,
       });
     };
 
@@ -221,7 +223,7 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const reply = await this.repliesService.deleteReply(replyId);
+      const reply = await this.repliesService.getSingleReply(replyId, {});
 
       if (!reply) {
         return this.notFound(ctx, {
@@ -244,9 +246,11 @@ export class RepliesController extends BaseController {
         });
       }
 
+      const deletedReply = await this.repliesService.deleteReply(replyId);
+
       return this.ok(ctx, {
         message: `Reply with id '${replyId}' successfully deleted.`,
-        payload: reply,
+        payload: deletedReply,
       });
     };
 }

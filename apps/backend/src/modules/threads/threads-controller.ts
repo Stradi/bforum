@@ -227,10 +227,10 @@ export class ThreadsController extends BaseController {
       UpdateThreadBodySchema
     );
 
-    const thread = await this.threadsService.updateThread(
+    const thread = await this.threadsService.getSingleThread(
       ctx.req.param("nodeSlug"),
       ctx.req.param("slug"),
-      body
+      {}
     );
 
     if (!thread) {
@@ -254,11 +254,17 @@ export class ThreadsController extends BaseController {
       });
     }
 
+    const updatedThread = await this.threadsService.updateThread(
+      ctx.req.param("nodeSlug"),
+      ctx.req.param("slug"),
+      body
+    );
+
     return this.ok(ctx, {
       message: `Thread with slug '${ctx.req.param(
         "slug"
       )}' successfully updated.`,
-      payload: thread,
+      payload: updatedThread,
     });
   };
 
@@ -273,9 +279,10 @@ export class ThreadsController extends BaseController {
    *
    */
   deleteThread: Handler<"/nodes/:nodeSlug/threads/:slug"> = async (ctx) => {
-    const thread = await this.threadsService.deleteThread(
+    const thread = await this.threadsService.getSingleThread(
       ctx.req.param("nodeSlug"),
-      ctx.req.param("slug")
+      ctx.req.param("slug"),
+      {}
     );
 
     if (!thread) {
@@ -299,11 +306,16 @@ export class ThreadsController extends BaseController {
       });
     }
 
+    const deletedThread = await this.threadsService.deleteThread(
+      ctx.req.param("nodeSlug"),
+      ctx.req.param("slug")
+    );
+
     return this.ok(ctx, {
       message: `Thread with slug '${ctx.req.param(
         "slug"
       )}' successfully deleted.`,
-      payload: thread,
+      payload: deletedThread,
     });
   };
 }

@@ -196,9 +196,9 @@ export class NodesController extends BaseController {
       UpdateNodeBodySchema
     );
 
-    const node = await this.nodesService.updateNode(
+    const node = await this.nodesService.getSingleNode(
       ctx.req.param("slug"),
-      body
+      {}
     );
 
     if (!node) {
@@ -222,11 +222,16 @@ export class NodesController extends BaseController {
       });
     }
 
+    const updatedNode = await this.nodesService.updateNode(
+      ctx.req.param("slug"),
+      body
+    );
+
     return this.ok(ctx, {
       message: `Node with slug '${ctx.req.param(
         "slug"
       )}' successfully updated.`,
-      payload: node,
+      payload: updatedNode,
     });
   };
 
@@ -241,7 +246,10 @@ export class NodesController extends BaseController {
    *
    */
   deleteNode: Handler<"nodes/:slug"> = async (ctx) => {
-    const node = await this.nodesService.deleteNode(ctx.req.param("slug"));
+    const node = await this.nodesService.getSingleNode(
+      ctx.req.param("slug"),
+      {}
+    );
 
     if (!node) {
       return this.notFound(ctx, {
@@ -264,11 +272,15 @@ export class NodesController extends BaseController {
       });
     }
 
+    const deletedNode = await this.nodesService.deleteNode(
+      ctx.req.param("slug")
+    );
+
     return this.ok(ctx, {
       message: `Node with slug '${ctx.req.param(
         "slug"
       )}' successfully deleted.`,
-      payload: node,
+      payload: deletedNode,
     });
   };
 }
