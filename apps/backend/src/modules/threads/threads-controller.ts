@@ -196,7 +196,8 @@ export class ThreadsController extends BaseController {
 
     const thread = await this.threadsService.createThread(
       ctx.req.param("nodeSlug"),
-      body
+      body,
+      ctx.get("jwtPayload")
     );
 
     return this.created(ctx, {

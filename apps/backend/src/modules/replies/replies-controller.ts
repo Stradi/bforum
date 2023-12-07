@@ -155,7 +155,8 @@ export class RepliesController extends BaseController {
     const reply = await this.repliesService.createReply(
       ctx.req.param("nodeSlug"),
       ctx.req.param("threadSlug"),
-      body
+      body,
+      ctx.get("jwtPayload")
     );
 
     return this.created(ctx, {

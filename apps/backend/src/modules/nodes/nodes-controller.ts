@@ -162,7 +162,10 @@ export class NodesController extends BaseController {
       CreateNodeBodySchema
     );
 
-    const node = await this.nodesService.createNode(body);
+    const node = await this.nodesService.createNode(
+      body,
+      ctx.get("jwtPayload")
+    );
 
     return this.created(ctx, {
       message: "Node successfully created.",

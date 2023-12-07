@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { repliesTable } from "../../database/schemas/reply";
+import type { JwtPayload } from "../../types/jwt";
 import ThreadsService from "../threads/threads-service";
 import type {
   TCreateReplyBodySchema,
@@ -64,7 +65,8 @@ export default class RepliesService {
   createReply = async (
     nodeSlug: string,
     threadSlug: string,
-    dto: TCreateReplyBodySchema
+    dto: TCreateReplyBodySchema,
+    account: JwtPayload
   ) => {
     const thread = await this.threadsService.getSingleThread(
       nodeSlug,
@@ -83,6 +85,7 @@ export default class RepliesService {
         body: dto.body,
         thread_id: thread.id,
         reply_to_id: dto.reply_to_id || null,
+        created_by: account.id,
         created_at: new Date(),
         updated_at: new Date(),
       })

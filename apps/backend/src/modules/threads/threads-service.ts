@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { threadsTable } from "../../database/schemas/thread";
+import type { JwtPayload } from "../../types/jwt";
 import { slugify } from "../../utils/text";
 import NodesService from "../nodes/nodes-service";
 import type {
@@ -61,7 +62,11 @@ export default class ThreadsService {
     return thread[0];
   };
 
-  createThread = async (nodeSlug: string, dto: TCreateThreadBodySchema) => {
+  createThread = async (
+    nodeSlug: string,
+    dto: TCreateThreadBodySchema,
+    account: JwtPayload
+  ) => {
     const node = await this.nodesService.getSingleNode(nodeSlug, {
       with_parent: false,
     });
@@ -75,6 +80,7 @@ export default class ThreadsService {
         name: dto.name,
         node_id: node.id,
         slug: slugify(dto.name),
+        created_by: account.id,
         created_at: new Date(),
         updated_at: new Date(),
       })

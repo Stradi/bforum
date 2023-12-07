@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { nodesTable } from "../../database/schemas/node";
+import type { JwtPayload } from "../../types/jwt";
 import { slugify } from "../../utils/text";
 import type {
   TCreateNodeBodySchema,
@@ -39,7 +40,7 @@ export default class NodesService {
     return node[0];
   };
 
-  createNode = async (dto: TCreateNodeBodySchema) => {
+  createNode = async (dto: TCreateNodeBodySchema, account: JwtPayload) => {
     const db = getDatabase();
     const node = await db
       .insert(nodesTable)
@@ -48,6 +49,7 @@ export default class NodesService {
         description: dto.description,
         parent_id: dto.parent_id,
         slug: slugify(dto.name),
+        created_by: account.id,
         created_at: new Date(),
         updated_at: new Date(),
       })
