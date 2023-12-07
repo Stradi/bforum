@@ -33,13 +33,6 @@ export default class BasePolicy {
   ) {
     const { scope } = this.parsePermissionName(permissionName);
 
-    // If scope is `&` and the creator of the resource is the same as the account
-    // then allow the action.
-    if (scope && scope === "&" && resourceObj && resourceField) {
-      if (!accountData) return false;
-      return resourceObj[resourceField] === accountData.id;
-    }
-
     // If scope is ID and if id of the resource is not the same as the scope,
     // there is no need to check the permission. Just return false.
     if (scope && scope !== "&" && scope !== "*") {
@@ -53,6 +46,20 @@ export default class BasePolicy {
 
     const groups = accountData ? accountData.groups : [{ id: 3 }];
     const groupIds = groups.map((g) => g.id);
+
+    // If scope is `&` and the creator of the resource is the same as the account
+    // then allow the action.
+    if (scope && scope === "&" && resourceObj && resourceField) {
+      if (!accountData) return false;
+      if (resourceObj[resourceField] !== accountData.id) return false;
+
+      for (const id of groupIds) {
+        const allowed = this.isGroupAllowedTo(id, permission);
+        if (allowed) return true;
+      }
+
+      return false;
+    }
 
     for (const id of groupIds) {
       if (this.isGroupAllowedTo(id, permission)) return true;
