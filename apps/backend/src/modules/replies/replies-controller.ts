@@ -63,9 +63,7 @@ export class RepliesController extends BaseController {
 
   getAllReplies: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> =
     async (ctx) => {
-      const allowed = await this.repliesPolicy.canListReplies(
-        ctx.get("jwtPayload")
-      );
+      const allowed = await this.repliesPolicy.canList(ctx.get("jwtPayload"));
       if (!allowed) {
         return this.notAllowed(ctx, {
           code: "FORBIDDEN",
@@ -117,9 +115,9 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canReadReply(
-        ctx.get("jwtPayload"),
-        reply
+      const allowed = await this.repliesPolicy.canRead(
+        reply,
+        ctx.get("jwtPayload")
       );
 
       if (!allowed) {
@@ -139,9 +137,7 @@ export class RepliesController extends BaseController {
   createReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> = async (
     ctx
   ) => {
-    const allowed = await this.repliesPolicy.canCreateReply(
-      ctx.get("jwtPayload")
-    );
+    const allowed = await this.repliesPolicy.canCreate(ctx.get("jwtPayload"));
 
     if (!allowed) {
       return this.notAllowed(ctx, {
@@ -194,9 +190,9 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canUpdateReply(
-        ctx.get("jwtPayload"),
-        reply
+      const allowed = await this.repliesPolicy.canUpdate(
+        reply,
+        ctx.get("jwtPayload")
       );
 
       if (!allowed) {
@@ -234,9 +230,9 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canDeleteReply(
-        ctx.get("jwtPayload"),
-        reply
+      const allowed = await this.repliesPolicy.canDelete(
+        reply,
+        ctx.get("jwtPayload")
       );
 
       if (!allowed) {

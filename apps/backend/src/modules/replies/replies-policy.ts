@@ -3,41 +3,47 @@ import type { JwtPayload } from "../../types/jwt";
 import BasePolicy from "../base-policy";
 
 export default class RepliesPolicy extends BasePolicy {
-  canListReplies(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Reply.List", accountData);
+  canList(accountData?: JwtPayload) {
+    return this.can("Reply.List", accountData);
   }
 
-  async canReadReply(
-    accountData: JwtPayload | null,
-    reply: typeof repliesTable.$inferSelect
+  async canRead(
+    reply: typeof repliesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Reply.*.Read", accountData)) ||
-      reply.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Reply.${reply.id}.Read`, accountData)) ||
+      (await this.can("Reply.&.Read", accountData, reply, "created_by")) ||
+      (await this.can("Reply.*.Read", accountData));
+
+    return allowed;
   }
 
-  canCreateReply(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Reply.Create", accountData);
+  canCreate(accountData?: JwtPayload) {
+    return this.can("Reply.Create", accountData);
   }
 
-  async canUpdateReply(
-    accountData: JwtPayload | null,
-    reply: typeof repliesTable.$inferSelect
+  async canUpdate(
+    reply: typeof repliesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Reply.*.Update", accountData)) ||
-      reply.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Reply.${reply.id}.Update`, accountData)) ||
+      (await this.can("Reply.&.Update", accountData, reply, "created_by")) ||
+      (await this.can("Reply.*.Update", accountData));
+
+    return allowed;
   }
 
-  async canDeleteReply(
-    accountData: JwtPayload | null,
-    reply: typeof repliesTable.$inferSelect
+  async canDelete(
+    reply: typeof repliesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Reply.*.Delete", accountData)) ||
-      reply.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Reply.${reply.id}.Delete`, accountData)) ||
+      (await this.can("Reply.&.Delete", accountData, reply, "created_by")) ||
+      (await this.can("Reply.*.Delete", accountData));
+
+    return allowed;
   }
 }

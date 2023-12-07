@@ -3,41 +3,47 @@ import type { JwtPayload } from "../../types/jwt";
 import BasePolicy from "../base-policy";
 
 export default class ThreadsPolicy extends BasePolicy {
-  canListThreads(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Thread.List", accountData);
+  async canList(accountData?: JwtPayload) {
+    return this.can("Thread.List", accountData);
   }
 
-  async canReadThread(
-    accountData: JwtPayload | null,
-    thread: typeof threadsTable.$inferSelect
+  async canRead(
+    thread: typeof threadsTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Thread.*.Read", accountData)) ||
-      thread.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Thread.${thread.id}.Read`, accountData)) ||
+      (await this.can("Thread.&.Read", accountData, thread, "created_by")) ||
+      (await this.can("Thread.*.Read", accountData));
+
+    return allowed;
   }
 
-  canCreateThread(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Thread.Create", accountData);
+  canCreate(accountData?: JwtPayload) {
+    return this.can("Thread.Create", accountData);
   }
 
-  async canUpdateThread(
-    accountData: JwtPayload | null,
-    thread: typeof threadsTable.$inferSelect
+  async canUpdate(
+    thread: typeof threadsTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Thread.*.Update", accountData)) ||
-      thread.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Thread.${thread.id}.Update`, accountData)) ||
+      (await this.can("Thread.&.Update", accountData, thread, "created_by")) ||
+      (await this.can("Thread.*.Update", accountData));
+
+    return allowed;
   }
 
-  async canDeleteThread(
-    accountData: JwtPayload | null,
-    thread: typeof threadsTable.$inferSelect
+  async canDelete(
+    thread: typeof threadsTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Thread.*.Delete", accountData)) ||
-      thread.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Thread.${thread.id}.Delete`, accountData)) ||
+      (await this.can("Thread.&.Delete", accountData, thread, "created_by")) ||
+      (await this.can("Thread.*.Delete", accountData));
+
+    return allowed;
   }
 }

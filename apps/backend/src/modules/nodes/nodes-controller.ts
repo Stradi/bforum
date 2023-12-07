@@ -56,7 +56,7 @@ export class NodesController extends BaseController {
    * @see {@link GetAllNodesQuerySchema}
    */
   getAllNodes: Handler<"/nodes"> = async (ctx) => {
-    const allowed = await this.nodesPolicy.canListNodes(ctx.get("jwtPayload"));
+    const allowed = await this.nodesPolicy.canList(ctx.get("jwtPayload"));
     if (!allowed) {
       return this.notAllowed(ctx, {
         code: "FORBIDDEN",
@@ -112,10 +112,7 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canReadNode(
-      ctx.get("jwtPayload"),
-      node
-    );
+    const allowed = await this.nodesPolicy.canRead(node, ctx.get("jwtPayload"));
 
     if (!allowed) {
       return this.notAllowed(ctx, {
@@ -150,7 +147,7 @@ export class NodesController extends BaseController {
    * @see {@link CreateNodeBodySchema}
    */
   createNode: Handler<"/nodes"> = async (ctx) => {
-    const allowed = await this.nodesPolicy.canCreateNode(ctx.get("jwtPayload"));
+    const allowed = await this.nodesPolicy.canCreate(ctx.get("jwtPayload"));
 
     if (!allowed) {
       return this.notAllowed(ctx, {
@@ -209,9 +206,9 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canUpdateNode(
-      ctx.get("jwtPayload"),
-      node
+    const allowed = await this.nodesPolicy.canUpdate(
+      node,
+      ctx.get("jwtPayload")
     );
 
     if (!allowed) {
@@ -251,9 +248,9 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canDeleteNode(
-      ctx.get("jwtPayload"),
-      node
+    const allowed = await this.nodesPolicy.canDelete(
+      node,
+      ctx.get("jwtPayload")
     );
 
     if (!allowed) {

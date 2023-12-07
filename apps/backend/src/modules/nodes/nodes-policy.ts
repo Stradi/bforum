@@ -10,8 +10,8 @@ export default class NodesPolicy extends BasePolicy {
    * Checks the following permissions:
    * - Node.List - Can list all the nodes available
    */
-  async canListNodes(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Node.List", accountData);
+  async canList(accountData?: JwtPayload) {
+    return this.can("Node.List", accountData);
   }
 
   /**
@@ -19,20 +19,20 @@ export default class NodesPolicy extends BasePolicy {
    * if anonymous users can read the specified node.
    *
    * Checks the following permissions:
-   * - Node.*.Read - Can read all the nodes available
-   * - Node.&.Read - Can read only nodes that user has created
-   *
-   * \@todo: Implement `Node.${nodeSlug}.Read` permission after implementing
-   * account level permissions.
+   * - Node.*.Read  - Can read all the nodes available
+   * - Node.&.Read  - Can read only nodes that user has created
+   * - Node.ID.Read - Can read the specified node
    */
-  async canReadNode(
-    accountData: JwtPayload | null,
-    node: typeof nodesTable.$inferSelect
+  async canRead(
+    node: typeof nodesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Node.*.Read", accountData)) ||
-      node.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Node.${node.id}.Read`, accountData)) ||
+      (await this.can("Node.&.Read", accountData, node, "created_by")) ||
+      (await this.can("Node.*.Read", accountData));
+
+    return allowed;
   }
 
   /**
@@ -42,8 +42,8 @@ export default class NodesPolicy extends BasePolicy {
    * Checks the following permissions:
    * - Node.Create - Can create a node
    */
-  async canCreateNode(accountData: JwtPayload | null) {
-    return this.isGroupAllowed("Node.Create", accountData);
+  async canCreate(accountData?: JwtPayload) {
+    return this.can("Node.Create", accountData);
   }
 
   /**
@@ -51,20 +51,20 @@ export default class NodesPolicy extends BasePolicy {
    * if anonymous users can update the specified node.
    *
    * Checks the following permissions:
-   * - Node.*.Update - Can update all the nodes available
-   * - Node.&.Update - Can update only nodes that user has created
-   *
-   * \@todo: Implement `Node.${nodeSlug}.Update` permission after implementing
-   * account level permissions.
+   * - Node.*.Update  - Can update all the nodes available
+   * - Node.&.Update  - Can update only nodes that user has created
+   * - Node.ID.Update - Can update the specified node
    */
-  async canUpdateNode(
-    accountData: JwtPayload | null,
-    node: typeof nodesTable.$inferSelect
+  async canUpdate(
+    node: typeof nodesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Node.*.Update", accountData)) ||
-      node.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Node.${node.id}.Update`, accountData)) ||
+      (await this.can("Node.&.Update", accountData, node, "created_by")) ||
+      (await this.can("Node.*.Update", accountData));
+
+    return allowed;
   }
 
   /**
@@ -72,19 +72,19 @@ export default class NodesPolicy extends BasePolicy {
    * if anonymous users can delete the specified node.
    *
    * Checks the following permissions:
-   * - Node.*.Delete - Can delete all the nodes available
-   * - Node.&.Delete - Can delete only nodes that user has created
-   *
-   * \@todo: Implement `Node.${nodeSlug}.Delete` permission after implementing
-   * account level permissions.
+   * - Node.*.Delete  - Can delete all the nodes available
+   * - Node.&.Delete  - Can delete only nodes that user has created
+   * - Node.ID.Delete - Can delete the specified node
    */
-  async canDeleteNode(
-    accountData: JwtPayload | null,
-    node: typeof nodesTable.$inferSelect
+  async canDelete(
+    node: typeof nodesTable.$inferSelect,
+    accountData?: JwtPayload
   ) {
-    return (
-      (await this.isGroupAllowed("Node.*.Delete", accountData)) ||
-      node.created_by === accountData?.id
-    );
+    const allowed =
+      (await this.can(`Node.${node.id}.Delete`, accountData)) ||
+      (await this.can("Node.&.Delete", accountData, node, "created_by")) ||
+      (await this.can("Node.*.Delete", accountData));
+
+    return allowed;
   }
 }

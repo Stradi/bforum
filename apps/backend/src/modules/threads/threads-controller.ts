@@ -83,9 +83,7 @@ export class ThreadsController extends BaseController {
    * @see {@link GetAllThreadsQuerySchema}
    */
   getAllThreads: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
-    const allowed = await this.threadsPolicy.canListThreads(
-      ctx.get("jwtPayload")
-    );
+    const allowed = await this.threadsPolicy.canList(ctx.get("jwtPayload"));
     if (!allowed) {
       return this.notAllowed(ctx, {
         code: "FORBIDDEN",
@@ -145,9 +143,9 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canReadThread(
-      ctx.get("jwtPayload"),
-      thread
+    const allowed = await this.threadsPolicy.canRead(
+      thread,
+      ctx.get("jwtPayload")
     );
 
     if (!allowed) {
@@ -181,9 +179,7 @@ export class ThreadsController extends BaseController {
    * @see {@link CreateThreadBodySchema}
    */
   createThread: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
-    const allowed = await this.threadsPolicy.canCreateThread(
-      ctx.get("jwtPayload")
-    );
+    const allowed = await this.threadsPolicy.canCreate(ctx.get("jwtPayload"));
 
     if (!allowed) {
       return this.notAllowed(ctx, {
@@ -244,9 +240,9 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canUpdateThread(
-      ctx.get("jwtPayload"),
-      thread
+    const allowed = await this.threadsPolicy.canUpdate(
+      thread,
+      ctx.get("jwtPayload")
     );
 
     if (!allowed) {
@@ -289,9 +285,9 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canDeleteThread(
-      ctx.get("jwtPayload"),
-      thread
+    const allowed = await this.threadsPolicy.canDelete(
+      thread,
+      ctx.get("jwtPayload")
     );
 
     if (!allowed) {
