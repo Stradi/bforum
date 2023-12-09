@@ -3,7 +3,7 @@
 import { Button, Dialog } from "@radix-ui/themes";
 import { XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { PropsWithChildren } from "react";
+import { useEffect, useState, type PropsWithChildren } from "react";
 
 // This duration is the same as the CSS transition duration
 // See https://github.com/radix-ui/themes/blob/main/packages/radix-ui-themes/src/components/dialog.css
@@ -15,6 +15,7 @@ type Props = PropsWithChildren & {
 };
 
 export default function InterceptorModal({ children, title, depth }: Props) {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   // This is a hack I'm proud of, lol. It basically allows us to go back
@@ -22,17 +23,27 @@ export default function InterceptorModal({ children, title, depth }: Props) {
   // page that opened the modal that opened the modal, etc.
   const backSteps = new Array(depth ? depth - 1 : 1).fill(null);
 
+  // This is another hack I'm proud of, lol. It basically allows us to
+  // delay the opening of the modal until the next tick, so when depth is
+  // too high, we don't see the modal open and close immediately (flicker).
+  useEffect(() => {
+    setTimeout(() => {
+      setOpen(true);
+    }, 0);
+  }, []);
+
   return (
     <Dialog.Root
-      defaultOpen
-      onOpenChange={(open) => {
-        if (open) return;
+      onOpenChange={(value) => {
+        setOpen(value);
+        if (value) return;
 
         setTimeout(() => {
           // eslint-disable-next-line @typescript-eslint/unbound-method -- this is way more elegant looking code, cmon.
           backSteps.forEach(router.back);
         }, ExitAnimationDuration);
       }}
+      open={open}
     >
       <Dialog.Content className="!max-w-[450px]">
         <div className="flex justify-between items-center w-full mb-4">
