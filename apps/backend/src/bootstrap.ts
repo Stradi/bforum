@@ -15,7 +15,15 @@ import { env } from "./utils/text";
 export function getServer() {
   const app = new Hono();
 
-  app.use("*", logMiddleware(), beNiceMiddleware(), cors());
+  app.use(
+    "*",
+    logMiddleware(),
+    beNiceMiddleware(),
+    cors({
+      credentials: true,
+      origin: [env("FRONTEND_URL", "http://localhost:3000")],
+    })
+  );
   app.onError(errorMiddleware());
   app.notFound(notFoundMiddleware());
 
