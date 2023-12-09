@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { MouseEvent, RefObject } from "react";
 import { createRef, useEffect, useState } from "react";
+import Container from "../../../../components/container";
 import NavigationItem from "./navigation-item";
 
 const Items: {
@@ -65,35 +66,37 @@ export default function BottomNavigation() {
 
   return (
     <nav className="relative border-b border-neutral-300">
-      <div
-        className="pointer-events-none absolute h-full w-full -z-10 bg-neutral-200/50 rounded-md transition-[left,width,opacity] duration-150"
-        style={{
-          left: indicatorLeft - indicatorWidth / 2,
-          width: indicatorWidth,
-          opacity: indicatorOpacity,
-        }}
-      />
-
-      <div className="flex justify-between items-center">
-        <ul
-          className="flex [&>*]:px-4 [&>*]:py-1.5"
-          onMouseLeave={() => {
-            setIndicatorOpacity(0);
+      <Container>
+        <div
+          className="pointer-events-none absolute h-full w-full -z-10 bg-neutral-200/50 rounded-md transition-[left,width,opacity] duration-150"
+          style={{
+            left: indicatorLeft - indicatorWidth / 2,
+            width: indicatorWidth,
+            opacity: indicatorOpacity,
           }}
-        >
-          {Items.map((item) => (
-            <NavigationItem
-              href={item.href}
-              isActive={item.href === activeItem?.href}
-              key={item.href}
-              onMouseEnter={onMouseEnter}
-              ref={item.ref}
-            >
-              {item.label}
-            </NavigationItem>
-          ))}
-        </ul>
-      </div>
+        />
+
+        <div className="flex justify-between items-center">
+          <ul
+            className="flex [&>*]:px-4 [&>*]:py-1.5"
+            onMouseLeave={() => {
+              setIndicatorOpacity(0);
+            }}
+          >
+            {Items.map((item) => (
+              <NavigationItem
+                href={item.href}
+                isActive={item.href === activeItem?.href}
+                key={item.href}
+                onMouseEnter={onMouseEnter}
+                ref={item.ref}
+              >
+                {item.label}
+              </NavigationItem>
+            ))}
+          </ul>
+        </div>
+      </Container>
     </nav>
   );
 }
