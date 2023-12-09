@@ -1,5 +1,3 @@
-"use client";
-
 import InterceptorModal from "../../../components/interceptor-modal";
 import RegisterForm from "../../../components/register-form";
 

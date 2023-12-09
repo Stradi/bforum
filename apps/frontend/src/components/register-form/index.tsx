@@ -9,7 +9,7 @@ import { z } from "zod";
 import useClient from "../../hooks/use-client";
 import { register as doRegister } from "../../lib/api/auth";
 import { cn } from "../../utils/tw";
-import FormInput from "./form-input";
+import FormInput from "../form-input";
 
 const RegisterFormSchema = z
   .object({
