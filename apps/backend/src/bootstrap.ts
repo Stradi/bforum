@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import beNiceMiddleware from "./middlewares/be-nice-middleware";
 import errorMiddleware from "./middlewares/error-middleware";
 import logMiddleware from "./middlewares/log-middleware";
@@ -14,7 +15,7 @@ import { env } from "./utils/text";
 export function getServer() {
   const app = new Hono();
 
-  app.use("*", logMiddleware(), beNiceMiddleware());
+  app.use("*", logMiddleware(), beNiceMiddleware(), cors());
   app.onError(errorMiddleware());
   app.notFound(notFoundMiddleware());
 
