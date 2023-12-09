@@ -10,16 +10,26 @@ const ExitAnimationDuration = 150;
 
 type Props = PropsWithChildren & {
   title?: string;
+  depth?: number;
 };
-export default function InterceptorModal({ children, title }: Props) {
+
+export default function InterceptorModal({ children, title, depth }: Props) {
   const router = useRouter();
+
+  // This is a hack I'm proud of, lol. It basically allows us to go back
+  // to the first page that opened the modal, instead of going back to the
+  // page that opened the modal that opened the modal, etc.
+  const backSteps = new Array(depth ? depth - 1 : 1).fill(null);
 
   return (
     <Dialog.Root
       defaultOpen
       onOpenChange={(open) => {
+        if (open) return;
+
         setTimeout(() => {
-          !open && router.back();
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- this is way more elegant looking code, cmon.
+          backSteps.forEach(router.back);
         }, ExitAnimationDuration);
       }}
     >
