@@ -46,3 +46,14 @@ export async function login(
     },
   });
 }
+
+export function logout(client: Client | null) {
+  if (!client) throw new Error("Client is not initialized");
+
+  return client.sendRequest<{ message: string }>("/api/v1/auth/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

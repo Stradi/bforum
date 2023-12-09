@@ -21,7 +21,12 @@ export default async function Page() {
           </Button>
         </>
       ) : (
-        <p>Already authenticated bruv</p>
+        <>
+          <p>Already authenticated bruv</p>
+          <Button asChild>
+            <Link href="/logout">Logout</Link>
+          </Button>
+        </>
       )}
     </div>
   );
