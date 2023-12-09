@@ -1,6 +1,5 @@
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import createMiddlewareClient from "../lib/api/client/create-middleware-client";
 
 export type MiddlewareFunction = (
   request: NextRequest,
@@ -25,9 +24,3 @@ export async function chain(
 
   return response;
 }
-
-export const clientMiddleware: ChainableMiddleware = () => {
-  return async (request, response) => {
-    await createMiddlewareClient(request, response);
-  };
-};

@@ -1,11 +1,25 @@
 import type { NextFetchEvent, NextRequest } from "next/server";
-import { chain, clientMiddleware } from "./utils/middleware";
+import apiClientMiddleware from "./lib/middlewares/api-client-middleware";
+import protectMiddleware from "./lib/middlewares/protect-middleware";
+import { chain } from "./utils/middleware";
 
 export default async function middleware(
   req: NextRequest,
   event: NextFetchEvent
 ) {
-  return chain(req, event, [clientMiddleware()]);
+  return chain(req, event, [
+    apiClientMiddleware(),
+    protectMiddleware({
+      whenVisited: ["/register", "/login"],
+      redirectTo: "/",
+      redirectIfAuthenticated: true,
+    }),
+    protectMiddleware({
+      whenVisited: ["/admin"],
+      redirectTo: "/login",
+      redirectIfAuthenticated: false,
+    }),
+  ]);
 }
 
 /*
