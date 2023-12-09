@@ -23,7 +23,7 @@ export default function InterceptorModal({ children, title }: Props) {
         }, ExitAnimationDuration);
       }}
     >
-      <Dialog.Content>
+      <Dialog.Content className="!max-w-[450px]">
         {title ? <Dialog.Title>{title}</Dialog.Title> : null}
         {children}
       </Dialog.Content>
