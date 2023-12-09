@@ -8,7 +8,7 @@ export default function Layout({ children }: Props) {
   return (
     <Container>
       <AdminNavigation />
-      {children}
+      <div className="px-4">{children}</div>
     </Container>
   );
 }

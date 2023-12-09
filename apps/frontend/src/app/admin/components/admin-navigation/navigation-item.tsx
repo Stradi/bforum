@@ -12,10 +12,9 @@ const NavigationItem = forwardRef<ElementRef<typeof Link>, Props>(
     return (
       <Link
         className={cn(
-          "text-sm font-medium text-neutral-400",
-          "group/item group-hover/all:hover:text-neutral-950 group-hover/all:text-neutral-400",
-          "transition-[color] duration-200",
-          isActive && "text-neutral-950"
+          "text-sm font-medium text-neutral-400 box-content",
+          "hover:text-neutral-950 transition-[color] duration-200",
+          isActive && "text-neutral-950 border-b-2 border-neutral-950"
         )}
         ref={ref}
         {...props}

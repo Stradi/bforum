@@ -16,8 +16,8 @@ const Items: {
     ref: createRef<HTMLAnchorElement>(),
   },
   {
-    label: "Nodes",
-    href: "/admin/nodes",
+    label: "Forums",
+    href: "/admin/forums",
     ref: createRef<HTMLAnchorElement>(),
   },
   {
@@ -30,6 +30,7 @@ const Items: {
 export default function BottomNavigation() {
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const [indicatorOpacity, setIndicatorOpacity] = useState(0);
 
   const pathname = usePathname();
   const activeItem = Items.toReversed().find((item) =>
@@ -42,6 +43,7 @@ export default function BottomNavigation() {
 
     setIndicatorLeft(offsetLeft + offsetWidth / 2);
     setIndicatorWidth(offsetWidth);
+    setIndicatorOpacity(1);
   }
 
   function moveIndicatorToActiveItem() {
@@ -52,7 +54,7 @@ export default function BottomNavigation() {
       );
       setIndicatorWidth(activeItem.ref.current.offsetWidth);
     } else {
-      setIndicatorWidth(0);
+      setIndicatorOpacity(0);
     }
   }
 
@@ -64,17 +66,20 @@ export default function BottomNavigation() {
   return (
     <nav className="relative border-b border-neutral-300">
       <div
-        className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-full h-5/6 -z-10 bg-neutral-200/50 rounded-md transition-[left,width] duration-200"
+        className="pointer-events-none absolute h-full w-full -z-10 bg-neutral-200/50 rounded-md transition-[left,width,opacity] duration-150"
         style={{
           left: indicatorLeft - indicatorWidth / 2,
           width: indicatorWidth,
+          opacity: indicatorOpacity,
         }}
       />
 
       <div className="flex justify-between items-center">
         <ul
-          className="flex group/all [&>*]:px-4 [&>*]:py-2"
-          onMouseLeave={moveIndicatorToActiveItem}
+          className="flex [&>*]:px-4 [&>*]:py-1.5"
+          onMouseLeave={() => {
+            setIndicatorOpacity(0);
+          }}
         >
           {Items.map((item) => (
             <NavigationItem
