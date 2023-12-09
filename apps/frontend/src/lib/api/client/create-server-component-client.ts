@@ -6,7 +6,7 @@ export default async function createServerComponentClient() {
   const cookieStr = cookies().toString() ?? "";
 
   const client = new Client();
-  client.loadFromCookies(cookieStr);
+  client.loadFromCookies(cookieStr, "__bforum");
 
   if (!client.isTokenValid()) {
     client.clearToken();

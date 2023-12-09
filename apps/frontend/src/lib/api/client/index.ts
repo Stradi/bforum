@@ -1,3 +1,4 @@
+import { cookieParse, cookieSerialize } from "../../../utils/cookie";
 import { parseJwt } from "../../../utils/jwt";
 
 type SuccessResponse<Data = unknown> = {
@@ -29,24 +30,25 @@ export default class Client {
     return Boolean(this.authToken) && this.isTokenValid();
   }
 
-  loadFromCookies(cookieStr: string) {
-    const cookies = cookieStr.split(";");
-    const cookie = cookies.find((c) => c.startsWith("auth-token="));
-    if (!cookie) {
-      this.authToken = null;
-      return;
-    }
-    const token = cookie.split("=")[1];
-    this.authToken = token;
+  loadFromCookies(cookieStr: string, key: string) {
+    const raw = cookieParse(cookieStr)[key];
+    const data = raw ? JSON.parse(raw as string) : null;
+
+    if (!data) return;
+
+    this.authToken = data.token;
   }
 
-  exportToCookie() {
-    if (!this.authToken) {
-      return "";
-    }
+  exportToCookie(key: string) {
+    // We are serializing a JSON object because we may want to add more data to the cookie in the future.
+    const data = {
+      token: this.authToken,
+    };
 
-    // TODO: Use a library to properly encode the cookie value
-    return `auth-token=${this.authToken};`;
+    return cookieSerialize(key, JSON.stringify(data), {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1, // 1 hour
+    });
   }
 
   isTokenValid() {

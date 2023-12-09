@@ -1,5 +1,5 @@
-import type { Hono } from "hono";
-import { setCookie } from "hono/cookie";
+import type { Context, Hono } from "hono";
+import { setCookie as _setCookie } from "hono/cookie";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import AuthService from "./auth-service";
@@ -51,10 +51,7 @@ export default class AuthController extends BaseController {
       })),
     });
 
-    setCookie(ctx, "auth-token", token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1, // 1 hour
-    });
+    this.setCookie(ctx, token);
 
     return this.ok(ctx, {
       message: "Successfully logged in",
@@ -87,10 +84,7 @@ export default class AuthController extends BaseController {
       groups: registered.groups,
     });
 
-    setCookie(ctx, "auth-token", token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1, // 1 hour
-    });
+    this.setCookie(ctx, token);
 
     return this.ok(ctx, {
       message: "Successfully registered",
@@ -109,10 +103,7 @@ export default class AuthController extends BaseController {
     const account = await this.authService.extractJwtPayload(body.token);
     const newToken = await this.authService.generateJwtToken(account);
 
-    setCookie(ctx, "auth-token", newToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1, // 1 hour
-    });
+    this.setCookie(ctx, newToken);
 
     return this.ok(ctx, {
       message: "Successfully refreshed token",
@@ -123,14 +114,32 @@ export default class AuthController extends BaseController {
   };
 
   logout: Handler<"/auth/logout"> = async (ctx) => {
-    setCookie(ctx, "auth-token", "", {
-      httpOnly: true,
-      maxAge: 0,
-    });
+    this.removeCookie(ctx);
 
     return this.ok(ctx, {
       message: "Successfully logged out",
       payload: {},
     });
   };
+
+  private setCookie(ctx: Context, token: string) {
+    _setCookie(
+      ctx,
+      "__bforum",
+      JSON.stringify({
+        token,
+      }),
+      {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1, // 1 hour
+      }
+    );
+  }
+
+  private removeCookie(ctx: Context) {
+    _setCookie(ctx, "__bforum", "", {
+      httpOnly: true,
+      maxAge: 0,
+    });
+  }
 }
