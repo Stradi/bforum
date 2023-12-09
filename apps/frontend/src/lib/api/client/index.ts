@@ -92,10 +92,8 @@ export default class Client {
   ): Promise<ApiResponse<Data, AdditionalData>> {
     const response = await fetch(`${this.baseUrl}${path}`, {
       ...options,
-      headers: {
-        ...options?.headers,
-        credentials: "include",
-      },
+      headers: options?.headers,
+      credentials: "include",
     });
     return response.json() as Promise<ApiResponse<Data, AdditionalData>>;
   }
