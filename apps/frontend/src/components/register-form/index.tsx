@@ -1,11 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@radix-ui/themes";
+import { Button, Text } from "@radix-ui/themes";
 import { KeyRoundIcon, MailIcon, UserIcon } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import useClient from "../../hooks/use-client";
+import { register as doRegister } from "../../lib/api/auth";
 import { cn } from "../../utils/tw";
 import FormInput from "./form-input";
 
@@ -29,13 +31,32 @@ export default function RegisterForm({ className, ...props }: Props) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError,
   } = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterFormSchema),
     mode: "onSubmit",
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function -- well
-  function onSubmit(_data: RegisterFormType) {}
+  const client = useClient();
+
+  async function onSubmit(data: RegisterFormType) {
+    const obj = await doRegister(client, {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (!obj.success) {
+      setError("root", {
+        message: obj.error.message,
+      });
+
+      return;
+    }
+
+    // This is the way to perform a full page reload (with SSR).
+    window.location.href = "/";
+  }
 
   return (
     <form
@@ -86,6 +107,11 @@ export default function RegisterForm({ className, ...props }: Props) {
           type="password"
         />
       </div>
+      {errors.root ? (
+        <Text as="p" className="text-red-500" size="1">
+          {errors.root.message}
+        </Text>
+      ) : null}
       <Button type="submit">Register</Button>
     </form>
   );
