@@ -28,7 +28,7 @@ export default function RegisterForm({ className, ...props }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterFormSchema),
     mode: "onSubmit",
@@ -45,6 +45,7 @@ export default function RegisterForm({ className, ...props }: Props) {
       {...props}
     >
       <FormInput
+        disabled={isSubmitting}
         error={errors.username?.message}
         icon={UserIcon}
         id="username"
@@ -54,6 +55,7 @@ export default function RegisterForm({ className, ...props }: Props) {
         type="text"
       />
       <FormInput
+        disabled={isSubmitting}
         error={errors.email?.message}
         icon={MailIcon}
         id="email"
@@ -64,6 +66,7 @@ export default function RegisterForm({ className, ...props }: Props) {
       />
       <div className="flex gap-2">
         <FormInput
+          disabled={isSubmitting}
           error={errors.password?.message}
           icon={KeyRoundIcon}
           id="password"
@@ -73,6 +76,7 @@ export default function RegisterForm({ className, ...props }: Props) {
           type="password"
         />
         <FormInput
+          disabled={isSubmitting}
           error={errors.passwordConfirmation?.message}
           icon={KeyRoundIcon}
           id="passwordConfirmation"
