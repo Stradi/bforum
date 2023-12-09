@@ -12,3 +12,8 @@ export const RegisterBodySchema = zod.object({
   password: zod.string(),
   email: zod.string().email(),
 });
+
+export type TRefreshTokenBodySchema = zod.infer<typeof RefreshTokenBodySchema>;
+export const RefreshTokenBodySchema = zod.object({
+  token: zod.string(),
+});

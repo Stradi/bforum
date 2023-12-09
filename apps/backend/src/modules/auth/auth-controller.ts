@@ -3,8 +3,16 @@ import { setCookie } from "hono/cookie";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import AuthService from "./auth-service";
-import type { TLoginBodySchema, TRegisterBodySchema } from "./dto";
-import { LoginBodySchema, RegisterBodySchema } from "./dto";
+import type {
+  TLoginBodySchema,
+  TRefreshTokenBodySchema,
+  TRegisterBodySchema,
+} from "./dto";
+import {
+  LoginBodySchema,
+  RefreshTokenBodySchema,
+  RegisterBodySchema,
+} from "./dto";
 
 export default class AuthController extends BaseController {
   private authService = new AuthService();
@@ -12,7 +20,8 @@ export default class AuthController extends BaseController {
   public router(): Hono {
     return this._app
       .post("/auth/login", this.login)
-      .post("/auth/register", this.register);
+      .post("/auth/register", this.register)
+      .post("/auth/refresh-token", this.refreshToken);
   }
 
   login: Handler<"/auth/login"> = async (ctx) => {
@@ -86,6 +95,28 @@ export default class AuthController extends BaseController {
       message: "Successfully registered",
       payload: {
         token,
+      },
+    });
+  };
+
+  refreshToken: Handler<"/auth/refresh-token"> = async (ctx) => {
+    const body = await this.validateBody<TRefreshTokenBodySchema>(
+      ctx,
+      RefreshTokenBodySchema
+    );
+
+    const account = await this.authService.extractJwtPayload(body.token);
+    const newToken = await this.authService.generateJwtToken(account);
+
+    setCookie(ctx, "auth-token", newToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1, // 1 hour
+    });
+
+    return this.ok(ctx, {
+      message: "Successfully refreshed token",
+      payload: {
+        token: newToken,
       },
     });
   };
