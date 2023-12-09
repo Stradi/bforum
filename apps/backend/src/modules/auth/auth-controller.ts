@@ -21,7 +21,8 @@ export default class AuthController extends BaseController {
     return this._app
       .post("/auth/login", this.login)
       .post("/auth/register", this.register)
-      .post("/auth/refresh-token", this.refreshToken);
+      .post("/auth/refresh-token", this.refreshToken)
+      .post("/auth/logout", this.logout);
   }
 
   login: Handler<"/auth/login"> = async (ctx) => {
@@ -118,6 +119,18 @@ export default class AuthController extends BaseController {
       payload: {
         token: newToken,
       },
+    });
+  };
+
+  logout: Handler<"/auth/logout"> = async (ctx) => {
+    setCookie(ctx, "auth-token", "", {
+      httpOnly: true,
+      maxAge: 0,
+    });
+
+    return this.ok(ctx, {
+      message: "Successfully logged out",
+      payload: {},
     });
   };
 }
