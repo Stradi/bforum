@@ -25,8 +25,12 @@ export default class Client {
   baseUrl = "http://localhost:3001";
   authToken: string | null;
 
+  isAuthenticated() {
+    return Boolean(this.authToken) && this.isTokenValid();
+  }
+
   loadFromCookies(cookieStr: string) {
-    const cookies = cookieStr.split("; ");
+    const cookies = cookieStr.split(";");
     const cookie = cookies.find((c) => c.startsWith("auth-token="));
     if (!cookie) {
       this.authToken = null;
@@ -40,7 +44,9 @@ export default class Client {
     if (!this.authToken) {
       return "";
     }
-    return `auth-token=${this.authToken}; Path=/; HttpOnly; SameSite=Strict`;
+
+    // TODO: Use a library to properly encode the cookie value
+    return `auth-token=${this.authToken};`;
   }
 
   isTokenValid() {
@@ -49,7 +55,7 @@ export default class Client {
     }
 
     const payload = parseJwt(this.authToken);
-    if (!payload.exp || payload.exp > Date.now() / 1000) {
+    if (!payload.exp || payload.exp < Date.now() / 1000) {
       return false;
     }
 
@@ -62,7 +68,9 @@ export default class Client {
 
   async refreshToken() {
     const newToken = await this.sendRequest<{
-      token: string;
+      payload: {
+        token: string;
+      };
     }>("/api/v1/auth/refresh-token", {
       method: "POST",
       headers: {
@@ -74,7 +82,7 @@ export default class Client {
     });
 
     if (newToken.success) {
-      this.authToken = newToken.data.token;
+      this.authToken = newToken.data.payload.token;
     }
   }
 
@@ -82,7 +90,13 @@ export default class Client {
     path: string,
     options?: RequestInit
   ): Promise<ApiResponse<Data, AdditionalData>> {
-    const response = await fetch(`${this.baseUrl}${path}`, options);
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        credentials: "include",
+      },
+    });
     return response.json() as Promise<ApiResponse<Data, AdditionalData>>;
   }
 }
