@@ -1,6 +1,7 @@
 "use client";
 
-import { Dialog } from "@radix-ui/themes";
+import { Button, Dialog } from "@radix-ui/themes";
+import { XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 
@@ -34,7 +35,14 @@ export default function InterceptorModal({ children, title, depth }: Props) {
       }}
     >
       <Dialog.Content className="!max-w-[450px]">
-        {title ? <Dialog.Title>{title}</Dialog.Title> : null}
+        <div className="flex justify-between items-center w-full mb-4">
+          {title ? <Dialog.Title mb="0">{title}</Dialog.Title> : null}
+          <Dialog.Close>
+            <Button className="!py-1.5 !px-1.5" variant="ghost">
+              <XIcon height={22} strokeWidth={1.5} width={22} />
+            </Button>
+          </Dialog.Close>
+        </div>
         {children}
       </Dialog.Content>
     </Dialog.Root>
