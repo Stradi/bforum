@@ -1,16 +1,11 @@
-import { Text } from "@radix-ui/themes";
 import Container from "../../../components/container";
-import DndSortableTree from "../../../components/dnd-sortable-tree";
 import type { ApiNode } from "../../../lib/api/api.types";
 import createServerComponentClient from "../../../lib/api/client/create-server-component-client";
 import Header from "../components/header";
 import CreateNodeDialog from "./_components/create-node-dialog";
-import { createNode } from "./actions";
-
-type DndNode = ApiNode & {
-  dndId: number;
-  dndParentId: number;
-};
+import NodesEditor from "./_components/nodes-editor";
+import { createNode, updateNodeOrder } from "./actions";
+import type { DndNode } from "./types";
 
 export default async function Page() {
   const client = await createServerComponentClient();
@@ -38,11 +33,10 @@ export default async function Page() {
         />
       </Header>
       <Container className="p-4">
-        {nodes.data.payload.length > 0 ? (
-          <DndSortableTree<DndNode> items={dndNodes} titleSelector="name" />
-        ) : (
-          <Text my="6">You don&apos;t have any nodes yet. Create one!</Text>
-        )}
+        <NodesEditor
+          nodes={dndNodes}
+          updateNodeOrderApi={updateNodeOrder.bind(null, "/admin/forums")}
+        />
       </Container>
     </div>
   );

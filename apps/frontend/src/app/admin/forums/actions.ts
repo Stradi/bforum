@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import type { ApiNode } from "../../../lib/api/api.types";
 import createServerActionClient from "../../../lib/api/client/create-server-action-client";
 import type { CreateNodeFormData } from "./_components/create-node-dialog";
+import type { DndNode } from "./types";
 
 export async function createNode(
   pathToRevalidate: string,
@@ -24,4 +25,13 @@ export async function createNode(
   revalidatePath(pathToRevalidate);
 
   return obj;
+}
+
+// TODO: implement
+// eslint-disable-next-line @typescript-eslint/require-await -- not implemented
+export async function updateNodeOrder(
+  _pathToRevalidate: string,
+  _data: DndNode[]
+) {
+  throw new Error("Not implemented");
 }
