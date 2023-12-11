@@ -7,7 +7,7 @@ import {
   Tree,
   getBackendOptions,
 } from "@minoru/react-dnd-treeview";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomItem from "./custom-item";
 import DragPreview from "./drag-preview";
 import Placeholder from "./placeholder";
@@ -55,6 +55,10 @@ export default function DndSortableTree<T extends DndItem>({
   const [items, setItems] = useState<NodeModel<T>[]>(() => {
     return initialItems.map(itemToNodeModel);
   });
+
+  useEffect(() => {
+    setItems(initialItems.map(itemToNodeModel));
+  }, [initialItems]);
 
   function onDrop(tree: NodeModel<T>[]) {
     setItems(tree);
