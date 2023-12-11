@@ -7,8 +7,41 @@ const authService = new AuthService();
 
 export default function authMiddleware(require = false): MiddlewareHandler {
   return async (ctx, next) => {
-    const authCookie = getCookie(ctx, "auth-token");
-    if (!authCookie) {
+    const cookie = getCookie(ctx, "__bforum");
+    if (!cookie) {
+      if (require) {
+        throw new BaseError({
+          statusCode: 401,
+          code: "NO_COOKIE",
+          message: "Cookie does not exist",
+          action: "Please provide a cookie",
+        });
+      } else {
+        await next();
+        return;
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- need any
+    let cookiePayload: any;
+    try {
+      cookiePayload = JSON.parse(cookie);
+    } catch (e) {
+      if (require) {
+        throw new BaseError({
+          statusCode: 400,
+          code: "MALFORMED_COOKIE",
+          message: "Malformed cookie",
+          action: "Provide a valid cookie",
+        });
+      } else {
+        await next();
+        return;
+      }
+    }
+
+    const authToken = cookiePayload.token;
+    if (!authToken) {
       if (require) {
         throw new BaseError({
           statusCode: 401,
@@ -22,7 +55,7 @@ export default function authMiddleware(require = false): MiddlewareHandler {
       }
     }
 
-    const jwtPayload = await authService.extractJwtPayload(authCookie);
+    const jwtPayload = await authService.extractJwtPayload(authToken);
     ctx.set("jwtPayload", jwtPayload);
 
     await next();
