@@ -35,6 +35,7 @@ type Props<T extends DndItem> = {
   items: T[];
   indent?: number;
   titleSelector?: string;
+  onTreeUpdated?: (tree: T[]) => void;
 };
 
 function itemToNodeModel<T extends DndItem>(item: T): NodeModel<T> {
@@ -47,10 +48,19 @@ function itemToNodeModel<T extends DndItem>(item: T): NodeModel<T> {
   };
 }
 
+function nodeModelToItem<T extends DndItem>(node: NodeModel<T>): T {
+  return {
+    ...node.data,
+    dndId: Number(node.id),
+    dndParentId: Number(node.parent),
+  } as T;
+}
+
 export default function DndSortableTree<T extends DndItem>({
   items: initialItems,
   indent = 24,
   titleSelector = "name",
+  onTreeUpdated,
 }: Props<T>) {
   const [items, setItems] = useState<NodeModel<T>[]>(() => {
     return initialItems.map(itemToNodeModel);
@@ -62,6 +72,7 @@ export default function DndSortableTree<T extends DndItem>({
 
   function onDrop(tree: NodeModel<T>[]) {
     setItems(tree);
+    onTreeUpdated?.(tree.map(nodeModelToItem));
   }
 
   return (
