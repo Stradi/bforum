@@ -6,15 +6,18 @@ import {
   GripVerticalIcon,
 } from "lucide-react";
 import type { MouseEvent } from "react";
+import type { DndItem } from ".";
 import { cn } from "../../utils/tw";
-import type { Node } from ".";
 
-type Props = RenderParams & {
-  node: NodeModel<Partial<Node>>;
+type Props<T extends DndItem> = RenderParams & {
+  node: NodeModel<T>;
+  indent: number;
+  titleSelector: string;
 };
 
-export default function CustomItem({
+export default function CustomItem<T extends DndItem>({
   node,
+  indent,
   depth,
   hasChild,
   onToggle,
@@ -22,7 +25,8 @@ export default function CustomItem({
   isDropTarget,
   isDragging,
   isOpen,
-}: Props) {
+  titleSelector,
+}: Props<T>) {
   function onCollapse(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     onToggle();
@@ -37,7 +41,7 @@ export default function CustomItem({
       )}
       data-has-child={hasChild}
       style={{
-        marginLeft: depth * 24,
+        marginLeft: depth * indent,
       }}
     >
       <Button
@@ -62,8 +66,13 @@ export default function CustomItem({
           )}
         </Button>
       ) : null}
-      <p className={cn(!hasChild && "pl-6", isDragging && "opacity-0")}>
-        {node.text}
+      <p
+        className={cn(isDragging && "opacity-0")}
+        style={{
+          paddingLeft: hasChild ? 0 : 24,
+        }}
+      >
+        {node.data?.[titleSelector] ?? node.text ?? node.id ?? "Untitled"}
       </p>
     </div>
   );

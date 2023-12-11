@@ -1,10 +1,15 @@
 import type { DragLayerMonitorProps } from "@minoru/react-dnd-treeview";
 import { Button } from "@radix-ui/themes";
 import { ChevronsDownUpIcon, GripVerticalIcon } from "lucide-react";
-import { cn } from "../../utils/tw";
+import type { DndItem } from ".";
 
-type Props = DragLayerMonitorProps<unknown>;
-export default function DragPreview({ item }: Props) {
+type Props<T extends DndItem> = DragLayerMonitorProps<T> & {
+  indent: number;
+};
+export default function DragPreview<T extends DndItem>({
+  item,
+  indent,
+}: Props<T>) {
   const hasChild =
     item.ref.current?.querySelector("*>div[data-has-child='true']") !== null;
   return (
@@ -17,7 +22,13 @@ export default function DragPreview({ item }: Props) {
           <ChevronsDownUpIcon className="w-4 h-4" />
         </Button>
       ) : null}
-      <p className={cn(!hasChild && "pl-6")}>{item.text}</p>
+      <p
+        style={{
+          paddingLeft: hasChild ? 0 : indent,
+        }}
+      >
+        {item.text}
+      </p>
     </div>
   );
 }
