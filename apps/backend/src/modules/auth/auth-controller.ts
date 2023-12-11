@@ -132,6 +132,7 @@ export default class AuthController extends BaseController {
       {
         httpOnly: true,
         maxAge: 60 * 60 * 1, // 1 hour
+        path: "/",
       }
     );
   }

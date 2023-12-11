@@ -48,6 +48,7 @@ export default class Client {
     return cookieSerialize(key, JSON.stringify(data), {
       httpOnly: true,
       maxAge: 60 * 60 * 1, // 1 hour
+      path: "/",
     });
   }
 
@@ -94,9 +95,13 @@ export default class Client {
   ): Promise<ApiResponse<Data, AdditionalData>> {
     const response = await fetch(`${this.baseUrl}${path}`, {
       ...options,
-      headers: options?.headers,
+      headers: {
+        ...options?.headers,
+        cookie: this.exportToCookie("__bforum"),
+      },
       credentials: "include",
     });
+
     return response.json() as Promise<ApiResponse<Data, AdditionalData>>;
   }
 }
