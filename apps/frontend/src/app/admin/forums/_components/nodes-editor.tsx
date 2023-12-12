@@ -1,9 +1,14 @@
 "use client";
 
+import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
 import { Button, Text } from "@radix-ui/themes";
 import { SaveIcon, TrashIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DndSortableTree from "../../../../components/dnd-sortable-tree";
+import {
+  calculateLexoRanks,
+  itemToNodeModel,
+} from "../../../../components/dnd-sortable-tree/helpers";
 import type { updateNodeOrder } from "../actions";
 import type { DndNode } from "../types";
 
@@ -16,13 +21,25 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);
 
+  const rankedTree = useRef<NodeModel<DndNode & { dndLexoRank: string }>[]>(
+    calculateLexoRanks(nodes.map(itemToNodeModel))
+  );
+
   const hasChanges =
     JSON.stringify(savedNodesState) !== JSON.stringify(updatedNodes);
 
   useEffect(() => {
     setSavedNodesState(nodes);
-    setUpdatedNodes(nodes);
+    updateNodes(nodes);
   }, [nodes]);
+
+  function updateNodes(newNodes: DndNode[], options?: DropOptions<DndNode>) {
+    setUpdatedNodes(newNodes);
+    rankedTree.current = calculateLexoRanks(
+      newNodes.map(itemToNodeModel),
+      options
+    );
+  }
 
   return (
     <div>
@@ -32,7 +49,7 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
             color="red"
             disabled={!hasChanges}
             onClick={() => {
-              setUpdatedNodes(savedNodesState);
+              updateNodes(savedNodesState);
             }}
           >
             <TrashIcon className="w-3 h-3" />
@@ -42,8 +59,6 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
             disabled={!hasChanges}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
-              // I don't know if we should update the saved nodes state here
-              // needs testing
               await updateNodeOrderApi(updatedNodes);
             }}
           >
@@ -54,7 +69,7 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
       {nodes.length > 0 ? (
         <DndSortableTree<DndNode>
           items={updatedNodes}
-          onTreeUpdated={setUpdatedNodes}
+          onTreeUpdated={updateNodes}
           titleSelector="name"
         />
       ) : (

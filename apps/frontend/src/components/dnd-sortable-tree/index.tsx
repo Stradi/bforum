@@ -1,6 +1,6 @@
 "use client";
 
-import type { NodeModel } from "@minoru/react-dnd-treeview";
+import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
 import {
   DndProvider,
   MultiBackend,
@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import CustomItem from "./custom-item";
 import DragPreview from "./drag-preview";
+import { itemToNodeModel, nodeModelToItem } from "./helpers";
 import Placeholder from "./placeholder";
 
 export type Node = {
@@ -35,26 +36,8 @@ type Props<T extends DndItem> = {
   items: T[];
   indent?: number;
   titleSelector?: string;
-  onTreeUpdated?: (tree: T[]) => void;
+  onTreeUpdated?: (tree: T[], options: DropOptions<T>) => void;
 };
-
-function itemToNodeModel<T extends DndItem>(item: T): NodeModel<T> {
-  return {
-    id: item.dndId,
-    parent: item.dndParentId,
-    text: "",
-    droppable: true,
-    data: item,
-  };
-}
-
-function nodeModelToItem<T extends DndItem>(node: NodeModel<T>): T {
-  return {
-    ...node.data,
-    dndId: Number(node.id),
-    dndParentId: Number(node.parent),
-  } as T;
-}
 
 export default function DndSortableTree<T extends DndItem>({
   items: initialItems,
@@ -70,9 +53,9 @@ export default function DndSortableTree<T extends DndItem>({
     setItems(initialItems.map(itemToNodeModel));
   }, [initialItems]);
 
-  function onDrop(tree: NodeModel<T>[]) {
+  function onDrop(tree: NodeModel<T>[], options: DropOptions<T>) {
     setItems(tree);
-    onTreeUpdated?.(tree.map(nodeModelToItem));
+    onTreeUpdated?.(tree.map(nodeModelToItem), options);
   }
 
   return (
