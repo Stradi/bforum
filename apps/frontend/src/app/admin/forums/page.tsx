@@ -4,7 +4,7 @@ import createServerComponentClient from "../../../lib/api/client/create-server-c
 import Header from "../components/header";
 import CreateNodeDialog from "./_components/create-node-dialog";
 import NodesEditor from "./_components/nodes-editor";
-import { createNode, updateNodeOrder } from "./actions";
+import { createNode, updateNode, updateNodeOrder } from "./actions";
 import type { DndNode } from "./types";
 
 export default async function Page() {
@@ -36,6 +36,7 @@ export default async function Page() {
       <Container className="p-4">
         <NodesEditor
           nodes={dndNodes}
+          updateNodeApi={updateNode.bind(null, "/admin/forums")}
           updateNodeOrderApi={updateNodeOrder.bind(null, "/admin/forums")}
         />
       </Container>

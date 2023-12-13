@@ -13,6 +13,7 @@ type Props<T extends DndItem> = RenderParams & {
   node: NodeModel<T>;
   indent: number;
   titleSelector: string;
+  onClick?: () => void;
 };
 
 export default function CustomItem<T extends DndItem>({
@@ -26,6 +27,7 @@ export default function CustomItem<T extends DndItem>({
   isDragging,
   isOpen,
   titleSelector,
+  onClick,
 }: Props<T>) {
   function onCollapse(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
@@ -33,16 +35,25 @@ export default function CustomItem<T extends DndItem>({
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- no need for keyboard events
     <div
       className={cn(
         "flex gap-4 items-center border rounded-md px-3 py-1 bg-neutral-100",
+        "transition duration-100",
         isDropTarget && "border-neutral-300 bg-neutral-200",
-        isDragging && "opacity-50"
+        isDragging && "opacity-50",
+        onClick &&
+          "cursor-pointer hover:bg-neutral-200 hover:border-neutral-300"
       )}
       data-has-child={hasChild}
+      onClick={() => {
+        onClick?.();
+      }}
+      role="button"
       style={{
         marginLeft: depth * indent,
       }}
+      tabIndex={0}
     >
       <Button
         className={cn("!py-1 !px-1", isDragging && "opacity-0")}

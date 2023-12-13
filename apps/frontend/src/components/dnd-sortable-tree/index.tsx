@@ -40,6 +40,7 @@ type Props<T extends DndItem> = Partial<
   indent?: number;
   titleSelector?: string;
   onTreeUpdated?: (tree: T[], options: DropOptions<T>) => void;
+  onNodeClick?: (node: T) => void;
 };
 
 export default function DndSortableTree<T extends DndItem>({
@@ -47,6 +48,7 @@ export default function DndSortableTree<T extends DndItem>({
   indent = 24,
   titleSelector = "name",
   onTreeUpdated,
+  onNodeClick,
   ...props
 }: Props<T>) {
   const [items, setItems] = useState<NodeModel<T>[]>(() => {
@@ -93,6 +95,7 @@ export default function DndSortableTree<T extends DndItem>({
           <CustomItem
             indent={indent}
             node={node}
+            onClick={() => onNodeClick?.(nodeModelToItem(node))}
             titleSelector={titleSelector}
             {...options}
           />

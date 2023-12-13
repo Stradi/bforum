@@ -10,8 +10,10 @@ import {
   itemToNodeModelWithLexoRank,
   nodeModelToItem,
 } from "../../../../components/dnd-sortable-tree/helpers";
-import type { updateNodeOrder } from "../actions";
+import type { updateNode, updateNodeOrder } from "../actions";
 import type { DndNode } from "../types";
+import type { UpdateNodeFormData } from "./node-details-dialog";
+import NodeDetailsDialog from "./node-details-dialog";
 
 type UpdateNodeOrderApiPayload = Parameters<typeof updateNodeOrder>[1];
 
@@ -20,11 +22,22 @@ type Props = {
   updateNodeOrderApi: (
     params: UpdateNodeOrderApiPayload
   ) => ReturnType<typeof updateNodeOrder>;
+  updateNodeApi: (
+    slug: string,
+    params: UpdateNodeFormData
+  ) => ReturnType<typeof updateNode>;
 };
 
-export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
+export default function NodesEditor({
+  nodes,
+  updateNodeOrderApi,
+  updateNodeApi,
+}: Props) {
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);
+
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<DndNode | null>(null);
 
   const rankedTree = useRef<NodeModel<DndNode>[]>(
     nodes.map(itemToNodeModelWithLexoRank)
@@ -77,12 +90,27 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
         </div>
       </div>
       {nodes.length > 0 ? (
-        <DndSortableTree<DndNode>
-          initialOpen
-          items={updatedNodes}
-          onTreeUpdated={onTreeUpdated}
-          titleSelector="name"
-        />
+        <>
+          {selectedNode ? (
+            <NodeDetailsDialog
+              key={JSON.stringify(selectedNode)} // we need a better key
+              node={selectedNode}
+              open={isDetailsDialogOpen}
+              setOpen={setIsDetailsDialogOpen}
+              updateNodeApi={updateNodeApi}
+            />
+          ) : null}
+          <DndSortableTree<DndNode>
+            initialOpen
+            items={updatedNodes}
+            onNodeClick={(node) => {
+              setSelectedNode(node);
+              setIsDetailsDialogOpen(true);
+            }}
+            onTreeUpdated={onTreeUpdated}
+            titleSelector="name"
+          />
+        </>
       ) : (
         <Text my="6">You don&apos;t have any nodes yet. Create one!</Text>
       )}
