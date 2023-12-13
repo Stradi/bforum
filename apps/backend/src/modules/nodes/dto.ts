@@ -25,7 +25,7 @@ export type TUpdateNodeBodySchema = zod.infer<typeof UpdateNodeBodySchema>;
 export const UpdateNodeBodySchema = zod.object({
   name: zod.string().min(1).max(255).optional(),
   description: zod.string().min(1).max(255).optional(),
-  parent_id: zod.number().optional(),
+  slug: zod.string().min(1).max(255).optional(),
 });
 
 export type TUpdateNodeOrderBodySchema = zod.infer<

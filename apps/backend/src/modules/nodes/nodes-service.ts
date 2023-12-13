@@ -77,13 +77,17 @@ export default class NodesService {
   updateNode = async (slug: string, dto: TUpdateNodeBodySchema) => {
     const db = getDatabase();
 
+    let updatedSlug: string | undefined;
+
+    if (dto.slug) updatedSlug = slugify(dto.slug, false);
+    else if (dto.name) updatedSlug = slugify(dto.name);
+
     const node = await db
       .update(nodesTable)
       .set({
         name: dto.name || undefined,
         description: dto.description || undefined,
-        parent_id: dto.parent_id || undefined,
-        slug: dto.name ? slugify(dto.name) : undefined,
+        slug: updatedSlug,
         updated_at: new Date(),
       })
       .where(eq(nodesTable.slug, slug))

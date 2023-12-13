@@ -1,7 +1,8 @@
 import _slugify from "@sindresorhus/slugify";
 import { log } from "./logger";
 
-export function slugify(text: string) {
+export function slugify(text: string, addNumber = true) {
+  if (!addNumber) return _slugify(text);
   return `${_slugify(text)}-${generateRandomNumber(1000, 9999)}`;
 }
 
