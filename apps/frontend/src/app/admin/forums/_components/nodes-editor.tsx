@@ -7,22 +7,27 @@ import { useEffect, useRef, useState } from "react";
 import DndSortableTree from "../../../../components/dnd-sortable-tree";
 import {
   calculateLexoRanks,
-  itemToNodeModel,
+  itemToNodeModelWithLexoRank,
+  nodeModelToItem,
 } from "../../../../components/dnd-sortable-tree/helpers";
 import type { updateNodeOrder } from "../actions";
 import type { DndNode } from "../types";
 
+type UpdateNodeOrderApiPayload = Parameters<typeof updateNodeOrder>[1];
+
 type Props = {
   nodes: DndNode[];
-  updateNodeOrderApi: (nodes: DndNode[]) => ReturnType<typeof updateNodeOrder>;
+  updateNodeOrderApi: (
+    params: UpdateNodeOrderApiPayload
+  ) => ReturnType<typeof updateNodeOrder>;
 };
 
 export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);
 
-  const rankedTree = useRef<NodeModel<DndNode & { dndLexoRank: string }>[]>(
-    calculateLexoRanks(nodes.map(itemToNodeModel))
+  const rankedTree = useRef<NodeModel<DndNode>[]>(
+    nodes.map(itemToNodeModelWithLexoRank)
   );
 
   const hasChanges =
@@ -30,15 +35,16 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
 
   useEffect(() => {
     setSavedNodesState(nodes);
-    updateNodes(nodes);
+    setUpdatedNodes(nodes);
+    rankedTree.current = nodes.map(itemToNodeModelWithLexoRank);
   }, [nodes]);
 
-  function updateNodes(newNodes: DndNode[], options?: DropOptions<DndNode>) {
-    setUpdatedNodes(newNodes);
+  function onTreeUpdated(newNodes: DndNode[], options: DropOptions<DndNode>) {
     rankedTree.current = calculateLexoRanks(
-      newNodes.map(itemToNodeModel),
+      newNodes.map(itemToNodeModelWithLexoRank),
       options
     );
+    setUpdatedNodes(rankedTree.current.map(nodeModelToItem));
   }
 
   return (
@@ -49,7 +55,10 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
             color="red"
             disabled={!hasChanges}
             onClick={() => {
-              updateNodes(savedNodesState);
+              setUpdatedNodes(savedNodesState);
+              rankedTree.current = savedNodesState.map(
+                itemToNodeModelWithLexoRank
+              );
             }}
           >
             <TrashIcon className="w-3 h-3" />
@@ -59,7 +68,8 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
             disabled={!hasChanges}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
-              await updateNodeOrderApi(updatedNodes);
+              const payload = generateOrderUpdatePayload(rankedTree.current);
+              await updateNodeOrderApi(payload);
             }}
           >
             <SaveIcon className="w-3 h-3" /> Save
@@ -69,7 +79,7 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
       {nodes.length > 0 ? (
         <DndSortableTree<DndNode>
           items={updatedNodes}
-          onTreeUpdated={updateNodes}
+          onTreeUpdated={onTreeUpdated}
           titleSelector="name"
         />
       ) : (
@@ -77,4 +87,30 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
       )}
     </div>
   );
+}
+
+function generateOrderUpdatePayload(tree: NodeModel<DndNode>[]) {
+  const payload: UpdateNodeOrderApiPayload = [];
+  for (const _node of tree) {
+    const node = {
+      ..._node,
+      data: {
+        ..._node.data,
+        dndParentId:
+          _node.data?.dndParentId === -1 ? null : _node.data?.dndParentId,
+      },
+    };
+
+    if (
+      node.data.order !== node.data.dndLexoRank ||
+      node.data.dndParentId !== node.data.parent_id
+    ) {
+      payload.push({
+        id: node.id as number,
+        lexoRank: node.data.dndLexoRank ?? "",
+        parentId: node.data.dndParentId ?? null,
+      });
+    }
+  }
+  return payload;
 }

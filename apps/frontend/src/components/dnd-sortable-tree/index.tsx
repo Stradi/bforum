@@ -92,7 +92,7 @@ export default function DndSortableTree<T extends DndItem>({
             {...options}
           />
         )}
-        rootId={0}
+        rootId={-1}
         sort={false}
         tree={items}
       />

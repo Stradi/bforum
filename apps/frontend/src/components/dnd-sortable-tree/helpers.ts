@@ -4,6 +4,8 @@ import { LexoRank } from "lexorank";
 import LexoRankBucket from "lexorank/lib/lexoRank/lexoRankBucket";
 import type { DndItem } from ".";
 
+export type DndItemWithLexoRank = DndItem & { dndLexoRank: string };
+
 export function itemToNodeModel<T extends DndItem>(item: T): NodeModel<T> {
   return {
     id: item.dndId,
@@ -11,6 +13,18 @@ export function itemToNodeModel<T extends DndItem>(item: T): NodeModel<T> {
     text: "",
     droppable: true,
     data: item,
+  };
+}
+
+export function itemToNodeModelWithLexoRank<T extends DndItemWithLexoRank>(
+  item: T
+): NodeModel<T> {
+  return {
+    ...itemToNodeModel(item),
+    data: {
+      ...item,
+      dndLexoRank: item.dndLexoRank,
+    },
   };
 }
 
@@ -22,7 +36,16 @@ export function nodeModelToItem<T extends DndItem>(node: NodeModel<T>): T {
   } as T;
 }
 
-function flattenTree<T extends DndItem>(tree: NodeModel<T>[]) {
+export function nodeModelToItemWithLexoRank<T extends DndItemWithLexoRank>(
+  node: NodeModel<T>
+): T {
+  return {
+    ...nodeModelToItem(node),
+    dndLexoRank: node.data!.dndLexoRank,
+  } as T;
+}
+
+function flattenTree<T extends DndItemWithLexoRank>(tree: NodeModel<T>[]) {
   const result: NodeModel<T>[] = [];
 
   function traverse(node: NodeModel<T>) {
@@ -37,23 +60,12 @@ function flattenTree<T extends DndItem>(tree: NodeModel<T>[]) {
   return reversed.filter((n, i) => reversed.indexOf(n) === i).toReversed();
 }
 
-export function calculateLexoRanks<T extends DndItem & { dndLexoRank: string }>(
+export function calculateLexoRanks<T extends DndItemWithLexoRank>(
   tree: NodeModel<T>[],
-  options?: DropOptions<T>
+  options: DropOptions<T>
 ) {
   const flatTree = flattenTree(tree);
   const rankedTree = [...flatTree];
-
-  if (!options) {
-    let previousRank: LexoRank | null = null;
-    for (const node of rankedTree) {
-      const rank = previousRank ? previousRank.genNext() : LexoRank.middle();
-      node.data!.dndLexoRank = rank.toString();
-      previousRank = rank;
-    }
-
-    return flatTree;
-  }
 
   const movedNodeIdx = getIndex(flatTree, options.dragSourceId!);
   const previousNode = movedNodeIdx > 0 ? flatTree[movedNodeIdx - 1] : null;

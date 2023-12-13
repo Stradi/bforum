@@ -18,7 +18,8 @@ export default async function Page() {
 
   const dndNodes: DndNode[] = nodes.data.payload.map((node) => ({
     dndId: node.id,
-    dndParentId: node.parent_id ?? 0,
+    dndParentId: node.parent_id ?? -1,
+    dndLexoRank: node.order,
     ...node,
   }));
 
