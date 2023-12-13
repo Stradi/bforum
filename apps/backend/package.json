@@ -25,6 +25,7 @@
     "@sindresorhus/slugify": "^2.2.1",
     "drizzle-orm": "^0.29.0",
     "hono": "^3.10.3",
+    "lexorank": "^1.0.5",
     "pino": "^8.16.2",
     "zod": "^3.22.4"
   }

@@ -1,4 +1,5 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+import { LexoRank } from "lexorank";
 import { getDatabase } from "../../database";
 import { nodesTable } from "../../database/schemas/node";
 import type { JwtPayload } from "../../types/jwt";
@@ -42,6 +43,19 @@ export default class NodesService {
 
   createNode = async (dto: TCreateNodeBodySchema, account: JwtPayload) => {
     const db = getDatabase();
+
+    const latestNode = await db
+      .select()
+      .from(nodesTable)
+      .orderBy(desc(nodesTable.id))
+      .limit(1);
+    let rank: LexoRank | null;
+    if (latestNode.length) {
+      rank = LexoRank.parse(latestNode[0].order).genNext();
+    } else {
+      rank = LexoRank.middle();
+    }
+
     const node = await db
       .insert(nodesTable)
       .values({
@@ -49,6 +63,7 @@ export default class NodesService {
         description: dto.description,
         parent_id: dto.parent_id,
         slug: slugify(dto.name),
+        order: rank.toString(),
         created_by: account.id,
         created_at: new Date(),
         updated_at: new Date(),

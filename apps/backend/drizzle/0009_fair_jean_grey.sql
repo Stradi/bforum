@@ -1,0 +1,1 @@
+ALTER TABLE nodes ADD `order` text NOT NULL;

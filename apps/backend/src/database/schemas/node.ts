@@ -39,6 +39,8 @@ export const nodesTable = sqliteTable("nodes", {
   slug: text("slug", { mode: "text" }).notNull().unique(),
   description: text("description", { mode: "text" }).notNull(),
   created_by: integer("created_by", { mode: "number" }).notNull(),
+
+  order: text("order", { mode: "text" }).notNull(),
 });
 
 export const nodesRelations = relations(nodesTable, ({ one, many }) => ({
