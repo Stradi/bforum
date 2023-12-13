@@ -3,8 +3,11 @@
 import { revalidatePath } from "next/cache";
 import type { ApiNode } from "../../../lib/api/api.types";
 import createServerActionClient from "../../../lib/api/client/create-server-action-client";
-import type { CreateNodeFormData } from "./_components/create-node-dialog";
-import type { UpdateNodeFormData } from "./_components/node-details-dialog";
+import type {
+  CreateNodeFormData,
+  UpdateNodeFormData,
+  UpdateNodeOrderFormData,
+} from "./types";
 
 export async function createNode(
   pathToRevalidate: string,
@@ -29,11 +32,7 @@ export async function createNode(
 
 export async function updateNodeOrder(
   pathToRevalidate: string,
-  data: {
-    id: number;
-    lexoRank: string;
-    parentId: number | null;
-  }[]
+  data: UpdateNodeOrderFormData
 ) {
   const client = await createServerActionClient();
   const obj = await client.sendRequest<{

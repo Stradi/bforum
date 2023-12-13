@@ -5,38 +5,24 @@ import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import FormInput from "../../../../components/form-input";
-import type { deleteNode, updateNode } from "../actions";
-import type { DndNode } from "../types";
+import { useApiContext } from "../api-context";
+import {
+  UpdateNodeFormSchema,
+  type DndNode,
+  type UpdateNodeFormData,
+} from "../types";
 import DeleteNodeAlertDialog from "./delete-node-alert-dialog";
-
-export const UpdateNodeFormSchema = z.object({
-  name: z.string().min(3).max(63),
-  description: z.string().min(3).max(255),
-  slug: z.string().min(1).max(63),
-});
-
-export type UpdateNodeFormData = z.infer<typeof UpdateNodeFormSchema>;
 
 type Props = {
   node: DndNode;
   open: boolean;
   setOpen: (open: boolean) => void;
-  updateNodeApi: (
-    slug: string,
-    data: UpdateNodeFormData
-  ) => ReturnType<typeof updateNode>;
-  deleteNodeApi: (slug: string) => ReturnType<typeof deleteNode>;
 };
 
-export default function NodeDetailsDialog({
-  node,
-  open,
-  setOpen,
-  updateNodeApi,
-  deleteNodeApi,
-}: Props) {
+export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
+  const api = useApiContext();
+
   const {
     register,
     handleSubmit,
@@ -56,7 +42,7 @@ export default function NodeDetailsDialog({
   function onSubmit(data: UpdateNodeFormData) {
     // @ts-expect-error -- react@beta supports async functions in startTransition
     startTransition(async () => {
-      const obj = await updateNodeApi(node.slug, data);
+      const obj = await api.updateNode(node.slug, data);
       if (!obj.success) {
         setError("root", {
           type: "manual",
@@ -74,7 +60,7 @@ export default function NodeDetailsDialog({
   function onDelete() {
     // @ts-expect-error -- react@beta supports async functions in startTransition
     startTransition(async () => {
-      const obj = await deleteNodeApi(node.slug);
+      const obj = await api.deleteNode(node.slug);
       if (!obj.success) {
         setError("root", {
           type: "manual",

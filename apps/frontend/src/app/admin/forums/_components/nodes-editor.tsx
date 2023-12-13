@@ -10,31 +10,17 @@ import {
   itemToNodeModelWithLexoRank,
   nodeModelToItem,
 } from "../../../../components/dnd-sortable-tree/helpers";
-import type { deleteNode, updateNode, updateNodeOrder } from "../actions";
-import type { DndNode } from "../types";
-import type { UpdateNodeFormData } from "./node-details-dialog";
+import { useApiContext } from "../api-context";
+import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
-
-type UpdateNodeOrderApiPayload = Parameters<typeof updateNodeOrder>[1];
 
 type Props = {
   nodes: DndNode[];
-  updateNodeOrderApi: (
-    params: UpdateNodeOrderApiPayload
-  ) => ReturnType<typeof updateNodeOrder>;
-  updateNodeApi: (
-    slug: string,
-    params: UpdateNodeFormData
-  ) => ReturnType<typeof updateNode>;
-  deleteNodeApi: (slug: string) => ReturnType<typeof deleteNode>;
 };
 
-export default function NodesEditor({
-  nodes,
-  updateNodeOrderApi,
-  updateNodeApi,
-  deleteNodeApi,
-}: Props) {
+export default function NodesEditor({ nodes }: Props) {
+  const api = useApiContext();
+
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);
 
@@ -84,7 +70,7 @@ export default function NodesEditor({
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
               const payload = generateOrderUpdatePayload(rankedTree.current);
-              await updateNodeOrderApi(payload);
+              await api.updateNodeOrder(payload);
             }}
           >
             <SaveIcon className="w-3 h-3" /> Save
@@ -95,12 +81,10 @@ export default function NodesEditor({
         <>
           {selectedNode ? (
             <NodeDetailsDialog
-              deleteNodeApi={deleteNodeApi}
               key={JSON.stringify(selectedNode)} // we need a better key
               node={selectedNode}
               open={isDetailsDialogOpen}
               setOpen={setIsDetailsDialogOpen}
-              updateNodeApi={updateNodeApi}
             />
           ) : null}
           <DndSortableTree<DndNode>
@@ -122,7 +106,7 @@ export default function NodesEditor({
 }
 
 function generateOrderUpdatePayload(tree: NodeModel<DndNode>[]) {
-  const payload: UpdateNodeOrderApiPayload = [];
+  const payload: UpdateNodeOrderFormData = [];
   for (const _node of tree) {
     const node = {
       ..._node,

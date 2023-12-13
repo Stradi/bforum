@@ -5,6 +5,7 @@ import Header from "../components/header";
 import CreateNodeDialog from "./_components/create-node-dialog";
 import NodesEditor from "./_components/nodes-editor";
 import { createNode, deleteNode, updateNode, updateNodeOrder } from "./actions";
+import { ApiContextProvider } from "./api-context";
 import type { DndNode } from "./types";
 
 export default async function Page() {
@@ -24,23 +25,25 @@ export default async function Page() {
   }));
 
   return (
-    <div>
-      <Header
-        description="Organize, create, update and delete your nodes."
-        title="Forums"
-      >
-        <CreateNodeDialog
-          createNodeApi={createNode.bind(null, "/admin/forums")}
-        />
-      </Header>
-      <Container className="p-4">
-        <NodesEditor
-          deleteNodeApi={deleteNode.bind(null, "/admin/forums")}
-          nodes={dndNodes}
-          updateNodeApi={updateNode.bind(null, "/admin/forums")}
-          updateNodeOrderApi={updateNodeOrder.bind(null, "/admin/forums")}
-        />
-      </Container>
-    </div>
+    <ApiContextProvider
+      createNode={createNode.bind(null, "/admin/forums")}
+      deleteNode={deleteNode.bind(null, "/admin/forums")}
+      updateNode={updateNode.bind(null, "/admin/forums")}
+      updateNodeOrder={updateNodeOrder.bind(null, "/admin/forums")}
+    >
+      <div>
+        <Header
+          description="Organize, create, update and delete your nodes."
+          title="Forums"
+        >
+          <CreateNodeDialog
+            createNodeApi={createNode.bind(null, "/admin/forums")}
+          />
+        </Header>
+        <Container className="p-4">
+          <NodesEditor nodes={dndNodes} />
+        </Container>
+      </div>
+    </ApiContextProvider>
   );
 }

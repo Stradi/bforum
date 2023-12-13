@@ -5,17 +5,10 @@ import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import FormInput from "../../../../components/form-input";
 import type { createNode } from "../actions";
-
-export const CreateNodeFormSchema = z.object({
-  name: z.string().min(3).max(63),
-  description: z.string().min(3).max(255),
-  parent_id: z.number().optional(),
-});
-
-export type CreateNodeFormData = z.infer<typeof CreateNodeFormSchema>;
+import type { CreateNodeFormData } from "../types";
+import { CreateNodeFormSchema } from "../types";
 
 export type Props = {
   createNodeApi: (data: CreateNodeFormData) => ReturnType<typeof createNode>;
