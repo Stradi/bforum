@@ -72,9 +72,11 @@ export class NodesController extends BaseController {
 
     const nodes = await this.nodesService.getAllNodes(query);
 
+    const sortedByRank = nodes.sort((a, b) => (a.order < b.order ? -1 : 1));
+
     return this.ok(ctx, {
       message: `Successfully retrieved ${nodes.length} nodes`,
-      payload: nodes,
+      payload: sortedByRank,
     });
   };
 
