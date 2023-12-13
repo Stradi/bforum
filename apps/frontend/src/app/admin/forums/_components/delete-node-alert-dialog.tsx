@@ -12,8 +12,8 @@ export default function DeleteNodeAlertDialog({ onDeleteNode }: Props) {
         <Button color="red">Delete</Button>
       </AlertDialog.Trigger>
       <AlertDialog.Content className="!max-w-[500px]">
-        <AlertDialog.Title>Delete Node</AlertDialog.Title>
-        <AlertDialog.Description>
+        <AlertDialog.Title size="4">Delete Node</AlertDialog.Title>
+        <AlertDialog.Description mt="-2" size="2">
           Are you sure you want to delete this node?
         </AlertDialog.Description>
         <div className="flex justify-end mt-4 gap-1">

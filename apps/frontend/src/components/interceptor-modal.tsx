@@ -47,7 +47,11 @@ export default function InterceptorModal({ children, title, depth }: Props) {
     >
       <Dialog.Content className="!max-w-[450px]">
         <div className="flex justify-between items-center w-full mb-4">
-          {title ? <Dialog.Title mb="0">{title}</Dialog.Title> : null}
+          {title ? (
+            <Dialog.Title mb="0" size="4">
+              {title}
+            </Dialog.Title>
+          ) : null}
           <Dialog.Close>
             <Button className="!py-1.5 !px-1.5" variant="ghost">
               <XIcon height={22} strokeWidth={1.5} width={22} />

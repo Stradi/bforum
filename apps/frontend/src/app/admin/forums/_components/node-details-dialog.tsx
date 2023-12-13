@@ -78,8 +78,8 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
   return (
     <Dialog.Root onOpenChange={setOpen} open={open}>
       <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title>Forum Details</Dialog.Title>
-        <Dialog.Description>
+        <Dialog.Title size="4">Forum Details</Dialog.Title>
+        <Dialog.Description mt="-2" size="2">
           View, update or delete &apos;{node.name}&apos; forum.
         </Dialog.Description>
         <Inset my="5">

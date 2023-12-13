@@ -51,8 +51,8 @@ export default function CreateNodeDialog({ createNodeApi }: Props) {
         <Button>Create new Node</Button>
       </Dialog.Trigger>
       <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title>Create a new node</Dialog.Title>
-        <Dialog.Description>
+        <Dialog.Title size="4">Create a new node</Dialog.Title>
+        <Dialog.Description mt="-2" size="2">
           Create a new node to organize your forums.
         </Dialog.Description>
         <Inset my="5">
