@@ -27,3 +27,14 @@ export const UpdateNodeBodySchema = zod.object({
   description: zod.string().min(1).max(255).optional(),
   parent_id: zod.number().optional(),
 });
+
+export type TUpdateNodeOrderBodySchema = zod.infer<
+  typeof UpdateNodeOrderBodySchema
+>;
+export const UpdateNodeOrderBodySchema = zod.array(
+  zod.object({
+    id: zod.number(),
+    lexoRank: zod.string(),
+    parentId: zod.number().or(zod.null()),
+  })
+);

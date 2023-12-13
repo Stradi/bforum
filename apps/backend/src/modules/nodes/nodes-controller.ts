@@ -6,12 +6,14 @@ import type {
   TGetAllNodesQuerySchema,
   TGetSingleNodeQuerySchema,
   TUpdateNodeBodySchema,
+  TUpdateNodeOrderBodySchema,
 } from "./dto";
 import {
   CreateNodeBodySchema,
   GetAllNodesQuerySchema,
   GetSingleNodeQuerySchema,
   UpdateNodeBodySchema,
+  UpdateNodeOrderBodySchema,
 } from "./dto";
 import NodesPolicy from "./nodes-policy";
 import NodesService from "./nodes-service";
@@ -36,7 +38,9 @@ export class NodesController extends BaseController {
       .get("/nodes/:slug", authMiddleware(), this.getSingleNode)
       .post("/nodes", authMiddleware(), this.createNode)
       .patch("/nodes/:slug", authMiddleware(), this.updateNode)
-      .delete("/nodes/:slug", authMiddleware(), this.deleteNode);
+      .delete("/nodes/:slug", authMiddleware(), this.deleteNode)
+
+      .post("/nodes/order", authMiddleware(), this.updateNodeOrder);
   }
 
   /**
@@ -283,6 +287,32 @@ export class NodesController extends BaseController {
         "slug"
       )}' successfully deleted.`,
       payload: deletedNode,
+    });
+  };
+
+  updateNodeOrder: Handler<"/nodes/order"> = async (ctx) => {
+    const body = await this.validateBody<TUpdateNodeOrderBodySchema>(
+      ctx,
+      UpdateNodeOrderBodySchema
+    );
+
+    const allowed = await this.nodesPolicy.canUpdateOrder(
+      ctx.get("jwtPayload")
+    );
+
+    if (!allowed) {
+      return this.notAllowed(ctx, {
+        code: "FORBIDDEN",
+        message: "You are not allowed to update node order.",
+        action: "Log in with an account that has the required permissions.",
+      });
+    }
+
+    const updatedNodes = await this.nodesService.updateNodeOrder(body);
+
+    return this.ok(ctx, {
+      message: `Successfully updated ${updatedNodes.length} nodes.`,
+      payload: updatedNodes,
     });
   };
 }

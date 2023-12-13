@@ -9,6 +9,7 @@ import type {
   TGetAllNodesQuerySchema,
   TGetSingleNodeQuerySchema,
   TUpdateNodeBodySchema,
+  TUpdateNodeOrderBodySchema,
 } from "./dto";
 
 export default class NodesService {
@@ -107,5 +108,27 @@ export default class NodesService {
     }
 
     return node[0];
+  };
+
+  updateNodeOrder = async (dto: TUpdateNodeOrderBodySchema) => {
+    const db = getDatabase();
+
+    const nodes: (typeof nodesTable.$inferSelect)[] = [];
+
+    for await (const node of dto) {
+      const updatedNode = await db
+        .update(nodesTable)
+        .set({
+          order: node.lexoRank,
+          updated_at: new Date(),
+          parent_id: node.parentId,
+        })
+        .where(eq(nodesTable.id, node.id))
+        .returning();
+
+      nodes.push(updatedNode[0]);
+    }
+
+    return nodes;
   };
 }

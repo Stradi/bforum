@@ -61,6 +61,7 @@ async function seedPermissionsAndGroups() {
       "Node.Create",
       "Node.*.Update",
       "Node.*.Delete",
+      "Node.UpdateOrder",
       "Thread.List",
       "Thread.*.Read",
       "Thread.Create",

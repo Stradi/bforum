@@ -87,4 +87,8 @@ export default class NodesPolicy extends BasePolicy {
 
     return allowed;
   }
+
+  async canUpdateOrder(accountData?: JwtPayload) {
+    return this.can("Node.UpdateOrder", accountData);
+  }
 }
