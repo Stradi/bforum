@@ -4,5 +4,8 @@
   "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "typeRoots": ["./node_modules/@bforum/tsconfig/node_modules"]
+  },
+  "typeAcquisition": {
+    "enable": true
   }
 }
