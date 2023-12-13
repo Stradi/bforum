@@ -7,6 +7,7 @@ import {
   Tree,
   getBackendOptions,
 } from "@minoru/react-dnd-treeview";
+import type { ComponentPropsWithoutRef } from "react";
 import { useEffect, useState } from "react";
 import CustomItem from "./custom-item";
 import DragPreview from "./drag-preview";
@@ -32,7 +33,9 @@ export type DndItem = {
   dndParentId: number;
 };
 
-type Props<T extends DndItem> = {
+type Props<T extends DndItem> = Partial<
+  ComponentPropsWithoutRef<typeof Tree<T>>
+> & {
   items: T[];
   indent?: number;
   titleSelector?: string;
@@ -44,6 +47,7 @@ export default function DndSortableTree<T extends DndItem>({
   indent = 24,
   titleSelector = "name",
   onTreeUpdated,
+  ...props
 }: Props<T>) {
   const [items, setItems] = useState<NodeModel<T>[]>(() => {
     return initialItems.map(itemToNodeModel);
@@ -61,6 +65,7 @@ export default function DndSortableTree<T extends DndItem>({
   return (
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
       <Tree
+        {...props}
         canDrop={(tree, { dragSource, dropTargetId }) => {
           if (dragSource?.parent === dropTargetId) {
             return true;

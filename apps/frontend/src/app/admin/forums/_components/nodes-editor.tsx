@@ -78,6 +78,7 @@ export default function NodesEditor({ nodes, updateNodeOrderApi }: Props) {
       </div>
       {nodes.length > 0 ? (
         <DndSortableTree<DndNode>
+          initialOpen
           items={updatedNodes}
           onTreeUpdated={onTreeUpdated}
           titleSelector="name"
