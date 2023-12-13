@@ -111,6 +111,19 @@ export default class NodesService {
       return null;
     }
 
+    const childrenNodes = await db.query.nodes.findMany({
+      where: eq(nodesTable.parent_id, node[0].id),
+    });
+
+    for await (const child of childrenNodes) {
+      await db
+        .update(nodesTable)
+        .set({
+          parent_id: null,
+        })
+        .where(eq(nodesTable.id, child.id));
+    }
+
     return node[0];
   };
 
