@@ -10,7 +10,7 @@ import {
   itemToNodeModelWithLexoRank,
   nodeModelToItem,
 } from "../../../../components/dnd-sortable-tree/helpers";
-import type { updateNode, updateNodeOrder } from "../actions";
+import type { deleteNode, updateNode, updateNodeOrder } from "../actions";
 import type { DndNode } from "../types";
 import type { UpdateNodeFormData } from "./node-details-dialog";
 import NodeDetailsDialog from "./node-details-dialog";
@@ -26,12 +26,14 @@ type Props = {
     slug: string,
     params: UpdateNodeFormData
   ) => ReturnType<typeof updateNode>;
+  deleteNodeApi: (slug: string) => ReturnType<typeof deleteNode>;
 };
 
 export default function NodesEditor({
   nodes,
   updateNodeOrderApi,
   updateNodeApi,
+  deleteNodeApi,
 }: Props) {
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);
@@ -93,6 +95,7 @@ export default function NodesEditor({
         <>
           {selectedNode ? (
             <NodeDetailsDialog
+              deleteNodeApi={deleteNodeApi}
               key={JSON.stringify(selectedNode)} // we need a better key
               node={selectedNode}
               open={isDetailsDialogOpen}

@@ -73,3 +73,20 @@ export async function updateNode(
 
   return obj;
 }
+
+export async function deleteNode(pathToRevalidate: string, slug: string) {
+  const client = await createServerActionClient();
+  const obj = await client.sendRequest<{
+    message: string;
+    payload: ApiNode;
+  }>(`/api/v1/nodes/${slug}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  revalidatePath(pathToRevalidate);
+
+  return obj;
+}

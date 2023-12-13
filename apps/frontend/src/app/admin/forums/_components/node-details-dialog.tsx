@@ -7,8 +7,9 @@ import { startTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FormInput from "../../../../components/form-input";
-import type { updateNode } from "../actions";
+import type { deleteNode, updateNode } from "../actions";
 import type { DndNode } from "../types";
+import DeleteNodeAlertDialog from "./delete-node-alert-dialog";
 
 export const UpdateNodeFormSchema = z.object({
   name: z.string().min(3).max(63),
@@ -26,6 +27,7 @@ type Props = {
     slug: string,
     data: UpdateNodeFormData
   ) => ReturnType<typeof updateNode>;
+  deleteNodeApi: (slug: string) => ReturnType<typeof deleteNode>;
 };
 
 export default function NodeDetailsDialog({
@@ -33,6 +35,7 @@ export default function NodeDetailsDialog({
   open,
   setOpen,
   updateNodeApi,
+  deleteNodeApi,
 }: Props) {
   const {
     register,
@@ -54,6 +57,24 @@ export default function NodeDetailsDialog({
     // @ts-expect-error -- react@beta supports async functions in startTransition
     startTransition(async () => {
       const obj = await updateNodeApi(node.slug, data);
+      if (!obj.success) {
+        setError("root", {
+          type: "manual",
+          message: obj.error.message,
+        });
+
+        return;
+      }
+
+      setOpen(false);
+      reset();
+    });
+  }
+
+  function onDelete() {
+    // @ts-expect-error -- react@beta supports async functions in startTransition
+    startTransition(async () => {
+      const obj = await deleteNodeApi(node.slug);
       if (!obj.success) {
         setError("root", {
           type: "manual",
@@ -115,9 +136,12 @@ export default function NodeDetailsDialog({
               {errors.root.message}
             </Text>
           ) : null}
-          <Button disabled={isSubmitting || !isValid} type="submit">
-            Create
-          </Button>
+          <div className="flex justify-end gap-1">
+            <DeleteNodeAlertDialog onDeleteNode={onDelete} />
+            <Button disabled={isSubmitting || !isValid} type="submit">
+              Update
+            </Button>
+          </div>
         </form>
       </Dialog.Content>
     </Dialog.Root>
