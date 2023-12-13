@@ -40,6 +40,7 @@ export type ApiNode = BaseApiObject & {
   name: string;
   slug: string;
   description: string;
+  order: string;
 
   created_by: number;
   creator: ApiAccount;
