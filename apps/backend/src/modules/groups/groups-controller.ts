@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import authMiddleware from "../../middlewares/auth-middleware";
 import { tryParseInt } from "../../utils/text";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
@@ -11,23 +12,28 @@ import type {
 import {
   CreateGroupBodySchema,
   GetAllGroupsQuerySchema,
+  GetSingleGroupQuerySchema,
   UpdateGroupBodySchema,
 } from "./dto";
+import GroupsPolicy from "./groups-policy";
 import GroupsService from "./groups-service";
 
 export class GroupsController extends BaseController {
   private groupsService = new GroupsService();
+  private groupsPolicy = new GroupsPolicy();
 
   public router(): Hono {
     return this._app
-      .get("/groups", this.getAllGroups)
-      .get("/groups/:id", this.getSingleGroup)
-      .post("/groups", this.createGroup)
-      .patch("/groups/:id", this.updateGroup)
-      .delete("/groups/:id", this.deleteGroup);
+      .get("/groups", authMiddleware(), this.getAllGroups)
+      .get("/groups/:id", authMiddleware(), this.getSingleGroup)
+      .post("/groups", authMiddleware(), this.createGroup)
+      .patch("/groups/:id", authMiddleware(), this.updateGroup)
+      .delete("/groups/:id", authMiddleware(), this.deleteGroup);
   }
 
   getAllGroups: Handler<"/groups"> = async (ctx) => {
+    await this.checkPolicy(this.groupsPolicy, "canList", ctx.get("jwtPayload"));
+
     const query = this.validateQuery<TGetAllGroupsQuerySchema>(
       ctx,
       GetAllGroupsQuerySchema
@@ -53,7 +59,7 @@ export class GroupsController extends BaseController {
 
     const query = this.validateQuery<TGetSingleGroupQuerySchema>(
       ctx,
-      GetAllGroupsQuerySchema
+      GetSingleGroupQuerySchema
     );
 
     const group = await this.groupsService.getSingleGroup(groupId, query);
@@ -66,6 +72,13 @@ export class GroupsController extends BaseController {
       });
     }
 
+    await this.checkPolicy(
+      this.groupsPolicy,
+      "canRead",
+      group,
+      ctx.get("jwtPayload")
+    );
+
     return this.ok(ctx, {
       message: `Group with ID '${groupId}' successfully retrieved`,
       payload: group,
@@ -73,6 +86,12 @@ export class GroupsController extends BaseController {
   };
 
   createGroup: Handler<"/groups"> = async (ctx) => {
+    await this.checkPolicy(
+      this.groupsPolicy,
+      "canCreate",
+      ctx.get("jwtPayload")
+    );
+
     const body = await this.validateBody<TCreateGroupBodySchema>(
       ctx,
       CreateGroupBodySchema
@@ -111,6 +130,13 @@ export class GroupsController extends BaseController {
       });
     }
 
+    await this.checkPolicy(
+      this.groupsPolicy,
+      "canUpdate",
+      group,
+      ctx.get("jwtPayload")
+    );
+
     return this.ok(ctx, {
       message: `Group with id '${groupId}' successfully updated.`,
       payload: group,
@@ -136,6 +162,13 @@ export class GroupsController extends BaseController {
         action: "Try again with a different group id.",
       });
     }
+
+    await this.checkPolicy(
+      this.groupsPolicy,
+      "canDelete",
+      group,
+      ctx.get("jwtPayload")
+    );
 
     return this.ok(ctx, {
       message: `Group with id '${groupId}' successfully deleted.`,

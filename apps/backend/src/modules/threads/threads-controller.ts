@@ -83,14 +83,11 @@ export class ThreadsController extends BaseController {
    * @see {@link GetAllThreadsQuerySchema}
    */
   getAllThreads: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
-    const allowed = await this.threadsPolicy.canList(ctx.get("jwtPayload"));
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to list threads.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(
+      this.threadsPolicy,
+      "canList",
+      ctx.get("jwtPayload")
+    );
 
     const query = this.validateQuery<TGetAllThreadsQuerySchema>(
       ctx,
@@ -143,18 +140,12 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canRead(
+    await this.checkPolicy(
+      this.threadsPolicy,
+      "canRead",
       thread,
       ctx.get("jwtPayload")
     );
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to read this thread.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
 
     return this.ok(ctx, {
       message: `Thread with slug '${ctx.req.param(
@@ -179,15 +170,11 @@ export class ThreadsController extends BaseController {
    * @see {@link CreateThreadBodySchema}
    */
   createThread: Handler<"/nodes/:nodeSlug/threads"> = async (ctx) => {
-    const allowed = await this.threadsPolicy.canCreate(ctx.get("jwtPayload"));
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to create threads.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(
+      this.threadsPolicy,
+      "canCreate",
+      ctx.get("jwtPayload")
+    );
 
     const body = await this.validateBody<TCreateThreadBodySchema>(
       ctx,
@@ -241,18 +228,12 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canUpdate(
+    await this.checkPolicy(
+      this.threadsPolicy,
+      "canUpdate",
       thread,
       ctx.get("jwtPayload")
     );
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to update this thread.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
 
     const updatedThread = await this.threadsService.updateThread(
       ctx.req.param("nodeSlug"),
@@ -293,18 +274,12 @@ export class ThreadsController extends BaseController {
       });
     }
 
-    const allowed = await this.threadsPolicy.canDelete(
+    await this.checkPolicy(
+      this.threadsPolicy,
+      "canDelete",
       thread,
       ctx.get("jwtPayload")
     );
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to delete this thread.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
 
     const deletedThread = await this.threadsService.deleteThread(
       ctx.req.param("nodeSlug"),

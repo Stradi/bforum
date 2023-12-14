@@ -63,14 +63,11 @@ export class RepliesController extends BaseController {
 
   getAllReplies: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> =
     async (ctx) => {
-      const allowed = await this.repliesPolicy.canList(ctx.get("jwtPayload"));
-      if (!allowed) {
-        return this.notAllowed(ctx, {
-          code: "FORBIDDEN",
-          message: "You are not allowed to list replies.",
-          action: "Log in with an account that has the required permissions.",
-        });
-      }
+      await this.checkPolicy(
+        this.repliesPolicy,
+        "canList",
+        ctx.get("jwtPayload")
+      );
 
       const query = this.validateQuery<TGetAllRepliesQuerySchema>(
         ctx,
@@ -115,18 +112,12 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canRead(
+      await this.checkPolicy(
+        this.repliesPolicy,
+        "canRead",
         reply,
         ctx.get("jwtPayload")
       );
-
-      if (!allowed) {
-        return this.notAllowed(ctx, {
-          code: "FORBIDDEN",
-          message: "You are not allowed to read this reply.",
-          action: "Log in with an account that has the required permissions.",
-        });
-      }
 
       return this.ok(ctx, {
         message: `Reply with id '${replyId}' successfully retrieved.`,
@@ -137,15 +128,11 @@ export class RepliesController extends BaseController {
   createReply: Handler<"/nodes/:nodeSlug/threads/:threadSlug/replies"> = async (
     ctx
   ) => {
-    const allowed = await this.repliesPolicy.canCreate(ctx.get("jwtPayload"));
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to create replies.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(
+      this.repliesPolicy,
+      "canCreate",
+      ctx.get("jwtPayload")
+    );
 
     const body = await this.validateBody<TCreateReplyBodySchema>(
       ctx,
@@ -191,18 +178,12 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canUpdate(
+      await this.checkPolicy(
+        this.repliesPolicy,
+        "canUpdate",
         reply,
         ctx.get("jwtPayload")
       );
-
-      if (!allowed) {
-        return this.notAllowed(ctx, {
-          code: "FORBIDDEN",
-          message: "You are not allowed to update this reply.",
-          action: "Log in with an account that has the required permissions.",
-        });
-      }
 
       const updatedReply = await this.repliesService.updateReply(replyId, body);
 
@@ -233,18 +214,12 @@ export class RepliesController extends BaseController {
         });
       }
 
-      const allowed = await this.repliesPolicy.canDelete(
+      await this.checkPolicy(
+        this.repliesPolicy,
+        "canDelete",
         reply,
         ctx.get("jwtPayload")
       );
-
-      if (!allowed) {
-        return this.notAllowed(ctx, {
-          code: "FORBIDDEN",
-          message: "You are not allowed to delete this reply.",
-          action: "Log in with an account that has the required permissions.",
-        });
-      }
 
       const deletedReply = await this.repliesService.deleteReply(replyId);
 

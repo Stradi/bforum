@@ -1,4 +1,5 @@
 import type { Hono } from "hono";
+import authMiddleware from "../../middlewares/auth-middleware";
 import { tryParseInt } from "../../utils/text";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
@@ -13,21 +14,29 @@ import {
   GetAllPermissionsQuerySchema,
   UpdatePermissionBodySchema,
 } from "./dto";
+import PermissionsPolicy from "./permissions-policy";
 import PermissionsService from "./permissions-service";
 
 export class PermissionsController extends BaseController {
   private permissionsService = new PermissionsService();
+  private permissionsPolicy = new PermissionsPolicy();
 
   public router(): Hono {
     return this._app
-      .get("/permissions", this.getAllPermissions)
-      .get("/permissions/:id", this.getSinglePermission)
-      .post("/permissions", this.createPermission)
-      .patch("/permissions/:id", this.updatePermission)
-      .delete("/permissions/:id", this.deletePermission);
+      .get("/permissions", authMiddleware(), this.getAllPermissions)
+      .get("/permissions/:id", authMiddleware(), this.getSinglePermission)
+      .post("/permissions", authMiddleware(), this.createPermission)
+      .patch("/permissions/:id", authMiddleware(), this.updatePermission)
+      .delete("/permissions/:id", authMiddleware(), this.deletePermission);
   }
 
   getAllPermissions: Handler<"/permissions"> = async (ctx) => {
+    await this.checkPolicy(
+      this.permissionsPolicy,
+      "canList",
+      ctx.get("jwtPayload")
+    );
+
     const query = this.validateQuery<TGetAllPermissionsQuerySchema>(
       ctx,
       GetAllPermissionsQuerySchema
@@ -69,6 +78,13 @@ export class PermissionsController extends BaseController {
       });
     }
 
+    await this.checkPolicy(
+      this.permissionsPolicy,
+      "canRead",
+      permission,
+      ctx.get("jwtPayload")
+    );
+
     return this.ok(ctx, {
       message: `Permission with ID '${permissionId}' successfully retrieved`,
       payload: permission,
@@ -76,6 +92,12 @@ export class PermissionsController extends BaseController {
   };
 
   createPermission: Handler<"/permissions"> = async (ctx) => {
+    await this.checkPolicy(
+      this.permissionsPolicy,
+      "canCreate",
+      ctx.get("jwtPayload")
+    );
+
     const body = await this.validateBody<TCreatePermissionBodySchema>(
       ctx,
       CreatePermissionBodySchema
@@ -117,6 +139,13 @@ export class PermissionsController extends BaseController {
       });
     }
 
+    await this.checkPolicy(
+      this.permissionsPolicy,
+      "canUpdate",
+      permission,
+      ctx.get("jwtPayload")
+    );
+
     return this.ok(ctx, {
       message: `Permission with id '${permissionId}' successfully updated.`,
       payload: permission,
@@ -144,6 +173,13 @@ export class PermissionsController extends BaseController {
         action: "Try again with a different permission id.",
       });
     }
+
+    await this.checkPolicy(
+      this.permissionsPolicy,
+      "canDelete",
+      permission,
+      ctx.get("jwtPayload")
+    );
 
     return this.ok(ctx, {
       message: `Permission with id '${permissionId}' successfully deleted.`,

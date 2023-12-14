@@ -6,7 +6,7 @@ import * as groupPermissionSchema from "../schemas/group-permission";
 import * as permissionsSchema from "../schemas/permission";
 import { DefaultGroupIds, DefaultGroups } from "./groups";
 
-type Resource = "Node" | "Thread" | "Reply";
+type Resource = "Node" | "Thread" | "Reply" | "Group" | "Permission";
 type Scope = string;
 type BaseActions = "List" | "Read" | "Create" | "Update" | "Delete";
 type NodeActions = BaseActions | "UpdateOrder";
@@ -27,38 +27,62 @@ const DefaultPermissionMatrix: Record<
     "Node.*.Update",
     "Node.*.Delete",
     "Node.UpdateOrder",
+
     "Thread.List",
     "Thread.*.Read",
     "Thread.Create",
     "Thread.*.Update",
     "Thread.*.Delete",
+
     "Reply.List",
     "Reply.*.Read",
     "Reply.Create",
     "Reply.*.Update",
     "Reply.*.Delete",
+
+    "Group.List",
+    "Group.*.Read",
+    "Group.Create",
+    "Group.*.Update",
+    "Group.*.Delete",
+
+    "Permission.List",
+    "Permission.*.Read",
+    "Permission.Create",
+    "Permission.*.Update",
+    "Permission.*.Delete",
   ],
   User: [
     "Node.List",
     "Node.*.Read",
     "Node.&.Update",
     "Node.&.Delete",
+
     "Thread.List",
     "Thread.*.Read",
     "Thread.Create",
     "Thread.&.Update",
     "Thread.&.Delete",
+
     "Reply.List",
     "Reply.*.Read",
     "Reply.Create",
     "Reply.&.Update",
     "Reply.&.Delete",
+
+    "Group.List",
+    "Group.*.Read",
+
+    "Permission.List",
+    "Permission.*.Read",
   ],
   Anonymous: [
     "Node.List",
     "Node.Read",
+
     "Thread.List",
     "Thread.Read",
+
     "Reply.List",
     "Reply.Read",
   ],
