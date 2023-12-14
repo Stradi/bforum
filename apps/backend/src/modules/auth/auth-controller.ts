@@ -100,8 +100,27 @@ export default class AuthController extends BaseController {
       RefreshTokenBodySchema
     );
 
-    const account = await this.authService.extractJwtPayload(body.token);
-    const newToken = await this.authService.generateJwtToken(account);
+    const jwtPayload = await this.authService.extractJwtPayload(body.token);
+    const account = await this.authService.getAccountById(jwtPayload.id);
+    if (!account) {
+      return this.badRequest(ctx, {
+        code: "NO_ACCOUNT",
+        message: "Account does not exist",
+        action: "Please login again",
+      });
+    }
+
+    // Always use the latest account data when refreshing token
+    const newToken = await this.authService.generateJwtToken({
+      ...jwtPayload,
+      username: account.username,
+      display_name: account.display_name,
+      email: account.email,
+      groups: account.accountGroup.map((accountGroup) => ({
+        id: accountGroup.group.id,
+        name: accountGroup.group.name,
+      })),
+    });
 
     this.setCookie(ctx, newToken);
 

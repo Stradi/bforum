@@ -136,6 +136,26 @@ export default class AuthService {
     });
   };
 
+  getAccountById = async (id: number) => {
+    const db = getDatabase();
+    const account = await db.query.accounts.findMany({
+      where: eq(accountsTable.id, id),
+      with: {
+        accountGroup: {
+          with: {
+            group: true,
+          },
+        },
+      },
+    });
+
+    if (account.length === 0) {
+      return null;
+    }
+
+    return account[0];
+  };
+
   private _doesEmailExists = async (email: string) => {
     const db = getDatabase();
     const exists = await db
