@@ -78,13 +78,19 @@ const DefaultPermissionMatrix: Record<
   ],
   Anonymous: [
     "Node.List",
-    "Node.Read",
+    "Node.*.Read",
 
     "Thread.List",
-    "Thread.Read",
+    "Thread.*.Read",
 
     "Reply.List",
-    "Reply.Read",
+    "Reply.*.Read",
+
+    "Group.List",
+    "Group.*.Read",
+
+    "Permission.List",
+    "Permission.*.Read",
   ],
 };
 
