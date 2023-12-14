@@ -60,14 +60,7 @@ export class NodesController extends BaseController {
    * @see {@link GetAllNodesQuerySchema}
    */
   getAllNodes: Handler<"/nodes"> = async (ctx) => {
-    const allowed = await this.nodesPolicy.canList(ctx.get("jwtPayload"));
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to list nodes.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(this.nodesPolicy, "canList", ctx.get("jwtPayload"));
 
     const query = this.validateQuery<TGetAllNodesQuerySchema>(
       ctx,
@@ -118,15 +111,12 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canRead(node, ctx.get("jwtPayload"));
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to read this node.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(
+      this.nodesPolicy,
+      "canRead",
+      node,
+      ctx.get("jwtPayload")
+    );
 
     return this.ok(ctx, {
       message: `Node with slug '${ctx.req.param(
@@ -153,15 +143,11 @@ export class NodesController extends BaseController {
    * @see {@link CreateNodeBodySchema}
    */
   createNode: Handler<"/nodes"> = async (ctx) => {
-    const allowed = await this.nodesPolicy.canCreate(ctx.get("jwtPayload"));
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to create nodes.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
+    await this.checkPolicy(
+      this.nodesPolicy,
+      "canCreate",
+      ctx.get("jwtPayload")
+    );
 
     const body = await this.validateBody<TCreateNodeBodySchema>(
       ctx,
@@ -215,18 +201,12 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canUpdate(
+    await this.checkPolicy(
+      this.nodesPolicy,
+      "canUpdate",
       node,
       ctx.get("jwtPayload")
     );
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to update this node.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
 
     const updatedNode = await this.nodesService.updateNode(
       ctx.req.param("slug"),
@@ -265,18 +245,12 @@ export class NodesController extends BaseController {
       });
     }
 
-    const allowed = await this.nodesPolicy.canDelete(
+    await this.checkPolicy(
+      this.nodesPolicy,
+      "canDelete",
       node,
       ctx.get("jwtPayload")
     );
-
-    if (!allowed) {
-      return this.notAllowed(ctx, {
-        code: "FORBIDDEN",
-        message: "You are not allowed to delete this node.",
-        action: "Log in with an account that has the required permissions.",
-      });
-    }
 
     const deletedNode = await this.nodesService.deleteNode(
       ctx.req.param("slug")
