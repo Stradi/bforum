@@ -10,7 +10,8 @@ type Resource = "Node" | "Thread" | "Reply" | "Group" | "Permission";
 type Scope = string;
 type BaseActions = "List" | "Read" | "Create" | "Update" | "Delete";
 type NodeActions = BaseActions | "UpdateOrder";
-type Action = BaseActions | NodeActions;
+type GroupActions = BaseActions | "UpdatePermission";
+type Action = BaseActions | NodeActions | GroupActions;
 
 type PermissionString =
   | `${Resource}.${Scope}.${Action}`
@@ -45,6 +46,7 @@ const DefaultPermissionMatrix: Record<
     "Group.Create",
     "Group.*.Update",
     "Group.*.Delete",
+    "Group.UpdatePermission",
 
     "Permission.List",
     "Permission.*.Read",

@@ -1,11 +1,13 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { groupsTable } from "../../database/schemas/group";
+import { groupPermissionTable } from "../../database/schemas/group-permission";
 import type {
   TCreateGroupBodySchema,
   TGetAllGroupsQuerySchema,
   TGetSingleGroupQuerySchema,
   TUpdateGroupBodySchema,
+  TUpdateGroupPermissionsBodySchema,
 } from "./dto";
 
 export default class GroupsService {
@@ -100,5 +102,38 @@ export default class GroupsService {
     }
 
     return group[0];
+  };
+
+  updatePermissions = async (dto: TUpdateGroupPermissionsBodySchema) => {
+    const db = getDatabase();
+
+    const affectedGroups = [];
+
+    for await (const update of dto) {
+      if (update.allowed) {
+        const result = await db
+          .insert(groupPermissionTable)
+          .values({
+            group_id: update.groupId,
+            permission_id: update.permissionId,
+          })
+          .onConflictDoNothing()
+          .returning();
+        affectedGroups.push(result[0]);
+      } else {
+        const result = await db
+          .delete(groupPermissionTable)
+          .where(
+            and(
+              eq(groupPermissionTable.group_id, update.groupId),
+              eq(groupPermissionTable.permission_id, update.permissionId)
+            )
+          )
+          .returning();
+        affectedGroups.push(result[0]);
+      }
+    }
+
+    return affectedGroups;
   };
 }

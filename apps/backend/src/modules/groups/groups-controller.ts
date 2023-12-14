@@ -8,12 +8,14 @@ import type {
   TGetAllGroupsQuerySchema,
   TGetSingleGroupQuerySchema,
   TUpdateGroupBodySchema,
+  TUpdateGroupPermissionsBodySchema,
 } from "./dto";
 import {
   CreateGroupBodySchema,
   GetAllGroupsQuerySchema,
   GetSingleGroupQuerySchema,
   UpdateGroupBodySchema,
+  UpdateGroupPermissionsBodySchema,
 } from "./dto";
 import GroupsPolicy from "./groups-policy";
 import GroupsService from "./groups-service";
@@ -28,7 +30,8 @@ export class GroupsController extends BaseController {
       .get("/groups/:id", authMiddleware(), this.getSingleGroup)
       .post("/groups", authMiddleware(), this.createGroup)
       .patch("/groups/:id", authMiddleware(), this.updateGroup)
-      .delete("/groups/:id", authMiddleware(), this.deleteGroup);
+      .delete("/groups/:id", authMiddleware(), this.deleteGroup)
+      .post("/groups/permissions", authMiddleware(), this.updatePermissions);
   }
 
   getAllGroups: Handler<"/groups"> = async (ctx) => {
@@ -173,6 +176,31 @@ export class GroupsController extends BaseController {
     return this.ok(ctx, {
       message: `Group with id '${groupId}' successfully deleted.`,
       payload: group,
+    });
+  };
+
+  updatePermissions: Handler<"/groups/permissions"> = async (ctx) => {
+    await this.checkPolicy(
+      this.groupsPolicy,
+      "canUpdatePermissions",
+      ctx.get("jwtPayload")
+    );
+
+    const body = await this.validateBody<TUpdateGroupPermissionsBodySchema>(
+      ctx,
+      UpdateGroupPermissionsBodySchema
+    );
+
+    const updatedGroups = await this.groupsService.updatePermissions(body);
+    const affectedMultipleGroups = updatedGroups.length > 1;
+
+    const message = affectedMultipleGroups
+      ? `Permissions for ${updatedGroups.length} groups successfully updated.`
+      : `Permissions for group with id ${updatedGroups[0].group_id} successfully updated.`;
+
+    return this.ok(ctx, {
+      message,
+      payload: updatedGroups,
     });
   };
 }

@@ -43,4 +43,8 @@ export default class GroupsPolicy extends BasePolicy {
 
     return allowed;
   }
+
+  async canUpdatePermissions(accountData?: JwtPayload) {
+    return this.can("Group.UpdatePermission", accountData);
+  }
 }

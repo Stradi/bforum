@@ -27,3 +27,14 @@ export type TUpdateGroupBodySchema = zod.infer<typeof UpdateGroupBodySchema>;
 export const UpdateGroupBodySchema = zod.object({
   name: zod.string().min(1).max(255).optional(),
 });
+
+export type TUpdateGroupPermissionsBodySchema = zod.infer<
+  typeof UpdateGroupPermissionsBodySchema
+>;
+export const UpdateGroupPermissionsBodySchema = zod.array(
+  zod.object({
+    permissionId: zod.number(),
+    groupId: zod.number(),
+    allowed: zod.boolean(),
+  })
+);
