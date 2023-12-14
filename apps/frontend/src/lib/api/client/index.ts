@@ -86,6 +86,8 @@ export default class Client {
 
     if (newToken.success) {
       this.authToken = newToken.data.payload.token;
+    } else {
+      this.clearToken();
     }
   }
 
