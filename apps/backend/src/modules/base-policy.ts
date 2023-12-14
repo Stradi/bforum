@@ -2,6 +2,7 @@ import type { nodesTable } from "../database/schemas/node";
 import type { permissionsTable } from "../database/schemas/permission";
 import type { repliesTable } from "../database/schemas/reply";
 import type { threadsTable } from "../database/schemas/thread";
+import { DefaultGroupIds, type DefaultGroups } from "../database/seed/groups";
 import type { JwtPayload } from "../types/jwt";
 import { BaseError } from "../utils/errors";
 import PermissionsService from "./permissions/permissions-service";
@@ -21,6 +22,8 @@ type PermissionWithGroups = typeof permissionsTable.$inferSelect & {
     };
   }[];
 };
+
+const DefaultAccountGroups: (typeof DefaultGroups)[number][] = ["Anonymous"];
 
 export default class BasePolicy {
   private permissionsService = new PermissionsService();
@@ -44,7 +47,12 @@ export default class BasePolicy {
     const permission = await this.getPermission(permissionName);
     if (!permission) return false;
 
-    const groups = accountData ? accountData.groups : [{ id: 3 }];
+    const groups = accountData
+      ? accountData.groups
+      : DefaultAccountGroups.map((groupName) => ({
+          id: DefaultGroupIds[groupName],
+          name: groupName,
+        }));
     const groupIds = groups.map((g) => g.id);
 
     // If scope is `&` and the creator of the resource is the same as the account
