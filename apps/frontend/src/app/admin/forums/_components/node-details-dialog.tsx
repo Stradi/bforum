@@ -6,7 +6,7 @@ import { PencilIcon } from "lucide-react";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
 import FormInput from "../../../../components/form-input";
-import { useApiContext } from "../api-context";
+import useForumsApi from "../_helpers/use-forums-api";
 import {
   UpdateNodeFormSchema,
   type DndNode,
@@ -21,7 +21,7 @@ type Props = {
 };
 
 export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
-  const api = useApiContext();
+  const api = useForumsApi();
 
   const {
     register,

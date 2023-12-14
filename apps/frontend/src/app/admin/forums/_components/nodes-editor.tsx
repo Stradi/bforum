@@ -10,7 +10,7 @@ import {
   itemToNodeModelWithLexoRank,
   nodeModelToItem,
 } from "../../../../components/dnd-sortable-tree/helpers";
-import { useApiContext } from "../api-context";
+import useForumsApi from "../_helpers/use-forums-api";
 import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
 
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export default function NodesEditor({ nodes }: Props) {
-  const api = useApiContext();
+  const api = useForumsApi();
 
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);

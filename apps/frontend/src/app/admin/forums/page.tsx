@@ -4,8 +4,13 @@ import createServerComponentClient from "../../../lib/api/client/create-server-c
 import Header from "../components/header";
 import CreateNodeDialog from "./_components/create-node-dialog";
 import NodesEditor from "./_components/nodes-editor";
-import { createNode, deleteNode, updateNode, updateNodeOrder } from "./actions";
-import { ApiContextProvider } from "./api-context";
+import {
+  createNode,
+  deleteNode,
+  updateNode,
+  updateNodeOrder,
+} from "./_helpers/actions";
+import { ForumsApiProvider } from "./_helpers/forums-api-provider";
 import type { DndNode } from "./types";
 
 export default async function Page() {
@@ -25,7 +30,7 @@ export default async function Page() {
   }));
 
   return (
-    <ApiContextProvider
+    <ForumsApiProvider
       createNode={createNode.bind(null, "/admin/forums")}
       deleteNode={deleteNode.bind(null, "/admin/forums")}
       updateNode={updateNode.bind(null, "/admin/forums")}
@@ -36,14 +41,12 @@ export default async function Page() {
           description="Organize, create, update and delete your nodes."
           title="Forums"
         >
-          <CreateNodeDialog
-            createNodeApi={createNode.bind(null, "/admin/forums")}
-          />
+          <CreateNodeDialog />
         </Header>
         <Container className="p-4">
           <NodesEditor nodes={dndNodes} />
         </Container>
       </div>
-    </ApiContextProvider>
+    </ForumsApiProvider>
   );
 }

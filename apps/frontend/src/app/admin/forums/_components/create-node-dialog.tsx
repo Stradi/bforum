@@ -6,14 +6,12 @@ import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormInput from "../../../../components/form-input";
-import type { createNode } from "../actions";
+import useForumsApi from "../_helpers/use-forums-api";
 import type { CreateNodeFormData } from "../types";
 import { CreateNodeFormSchema } from "../types";
 
-export type Props = {
-  createNodeApi: (data: CreateNodeFormData) => ReturnType<typeof createNode>;
-};
-export default function CreateNodeDialog({ createNodeApi }: Props) {
+export default function CreateNodeDialog() {
+  const api = useForumsApi();
   const [open, setOpen] = useState(false);
 
   const {
@@ -30,7 +28,7 @@ export default function CreateNodeDialog({ createNodeApi }: Props) {
   function onSubmit(data: CreateNodeFormData) {
     // @ts-expect-error -- react@beta supports async functions in startTransition
     startTransition(async () => {
-      const obj = await createNodeApi(data);
+      const obj = await api.createNode(data);
       if (!obj.success) {
         setError("root", {
           type: "manual",
