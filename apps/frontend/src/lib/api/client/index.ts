@@ -1,5 +1,5 @@
-import { cookieParse, cookieSerialize } from "../../../utils/cookie";
-import { parseJwt } from "../../../utils/jwt";
+import { cookieParse, cookieSerialize } from "@utils/cookie";
+import { parseJwt } from "@utils/jwt";
 
 type SuccessResponse<Data = unknown> = {
   success: true;

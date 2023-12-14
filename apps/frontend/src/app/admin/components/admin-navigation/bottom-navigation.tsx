@@ -1,9 +1,9 @@
 "use client";
 
+import Container from "@components/container";
 import { usePathname } from "next/navigation";
 import type { MouseEvent, RefObject } from "react";
 import { createRef, useEffect, useState } from "react";
-import Container from "../../../../components/container";
 import NavigationItem from "./navigation-item";
 
 const Items: {
@@ -22,8 +22,8 @@ const Items: {
     ref: createRef<HTMLAnchorElement>(),
   },
   {
-    label: "Users",
-    href: "/admin/users",
+    label: "Groups",
+    href: "/admin/groups",
     ref: createRef<HTMLAnchorElement>(),
   },
 ];

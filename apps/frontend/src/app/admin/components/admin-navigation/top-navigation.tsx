@@ -1,5 +1,5 @@
+import Container from "@components/container";
 import { Text } from "@radix-ui/themes";
-import Container from "../../../../components/container";
 
 export default function TopNavigation() {
   return (

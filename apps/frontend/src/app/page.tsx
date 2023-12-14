@@ -1,6 +1,6 @@
+import createServerComponentClient from "@lib/api/client/create-server-component-client";
 import { Button } from "@radix-ui/themes";
 import Link from "next/link";
-import createServerComponentClient from "../lib/api/client/create-server-component-client";
 
 export default async function Page() {
   const client = await createServerComponentClient();

@@ -1,6 +1,6 @@
-import Container from "../../../components/container";
-import type { ApiNode } from "../../../lib/api/api.types";
-import createServerComponentClient from "../../../lib/api/client/create-server-component-client";
+import Container from "@components/container";
+import type { ApiNode } from "@lib/api/api.types";
+import createServerComponentClient from "@lib/api/client/create-server-component-client";
 import Header from "../components/header";
 import CreateNodeDialog from "./_components/create-node-dialog";
 import NodesEditor from "./_components/nodes-editor";

@@ -1,11 +1,11 @@
 "use client";
 
+import FormInput from "@components/form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
-import FormInput from "../../../../components/form-input";
 import useForumsApi from "../_helpers/use-forums-api";
 import {
   UpdateNodeFormSchema,

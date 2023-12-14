@@ -1,15 +1,15 @@
 "use client";
 
-import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
-import { Button, Text } from "@radix-ui/themes";
-import { SaveIcon, TrashIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import DndSortableTree from "../../../../components/dnd-sortable-tree";
+import DndSortableTree from "@components/dnd-sortable-tree";
 import {
   calculateLexoRanks,
   itemToNodeModelWithLexoRank,
   nodeModelToItem,
-} from "../../../../components/dnd-sortable-tree/helpers";
+} from "@components/dnd-sortable-tree/helpers";
+import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
+import { Button, Text } from "@radix-ui/themes";
+import { SaveIcon, TrashIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import useForumsApi from "../_helpers/use-forums-api";
 import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";

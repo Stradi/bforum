@@ -1,5 +1,6 @@
 import type { NodeModel, RenderParams } from "@minoru/react-dnd-treeview";
 import { Button } from "@radix-ui/themes";
+import { cn } from "@utils/tw";
 import {
   ChevronsDownUpIcon,
   ChevronsUpDownIcon,
@@ -7,7 +8,6 @@ import {
 } from "lucide-react";
 import type { MouseEvent } from "react";
 import type { DndItem } from ".";
-import { cn } from "../../utils/tw";
 
 type Props<T extends DndItem> = RenderParams & {
   node: NodeModel<T>;

@@ -1,7 +1,7 @@
+import InterceptorModal from "@components/interceptor-modal";
+import LoginForm from "@components/login-form/page";
 import { Link, Separator, Text } from "@radix-ui/themes";
 import { default as NextLink } from "next/link";
-import InterceptorModal from "../../../components/interceptor-modal";
-import LoginForm from "../../../components/login-form/page";
 
 type Props = {
   searchParams: {

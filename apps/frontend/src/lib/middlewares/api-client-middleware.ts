@@ -1,5 +1,5 @@
-import type { ChainableMiddleware } from "../../utils/middleware";
-import createMiddlewareClient from "../api/client/create-middleware-client";
+import createMiddlewareClient from "@lib/api/client/create-middleware-client";
+import type { ChainableMiddleware } from "@utils/middleware";
 
 const apiClientMiddleware: ChainableMiddleware = () => {
   return async (request, response) => {

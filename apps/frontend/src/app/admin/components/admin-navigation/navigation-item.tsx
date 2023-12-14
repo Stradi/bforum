@@ -1,7 +1,7 @@
+import { cn } from "@utils/tw";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ElementRef } from "react";
 import { forwardRef } from "react";
-import { cn } from "../../../../utils/tw";
 
 type Props = ComponentPropsWithoutRef<typeof Link> & {
   isActive?: boolean;

@@ -1,8 +1,8 @@
 "use client";
 
+import useClient from "@hooks/use-client";
+import { logout } from "@lib/api/auth";
 import { useEffect } from "react";
-import useClient from "../../../hooks/use-client";
-import { logout } from "../../../lib/api/auth";
 
 // Do we really need this page? I dunno, but it's fine, I guess.
 export default function Page() {
