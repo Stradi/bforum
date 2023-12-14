@@ -9,10 +9,17 @@ import {
 import { getDatabase } from "../../database";
 import { accountsTable } from "../../database/schemas/account";
 import { accountGroupTable } from "../../database/schemas/account-group";
+import type { DefaultGroups } from "../../database/seed/groups";
+import { DefaultGroupIds } from "../../database/seed/groups";
 import type { CustomJwtClaims, JwtPayload } from "../../types/jwt";
 import { BaseError } from "../../utils/errors";
 import { env } from "../../utils/text";
 import type { TLoginBodySchema, TRegisterBodySchema } from "./dto";
+
+const RegisteredUserGroups: (typeof DefaultGroups)[number][] = [
+  "User",
+  "Anonymous",
+];
 
 export default class AuthService {
   login = async (dto: TLoginBodySchema) => {
@@ -66,22 +73,19 @@ export default class AuthService {
       })
       .returning();
 
-    await db
-      .insert(accountGroupTable)
-      .values({
-        account_id: account[0].id,
-        group_id: 3, // 3 is `Anonymous`
-      })
-      .returning();
+    const accountGroupValues = RegisteredUserGroups.map((groupName) => ({
+      account_id: account[0].id,
+      group_id: DefaultGroupIds[groupName],
+    }));
+
+    await db.insert(accountGroupTable).values(accountGroupValues).returning();
 
     return {
       account: account[0],
-      groups: [
-        {
-          id: 3,
-          name: "Anonymous",
-        },
-      ],
+      groups: RegisteredUserGroups.map((groupName) => ({
+        id: DefaultGroupIds[groupName],
+        name: groupName,
+      })),
     };
   };
 
