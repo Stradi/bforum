@@ -4,6 +4,7 @@ import { cn } from "@utils/tw";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { PropsWithChildren, ReactNode } from "react";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 type Props = PropsWithChildren & {
@@ -18,6 +19,7 @@ export default function Layout({ children, modal }: Props) {
           {children}
           {modal}
           <ThemePanel defaultOpen={false} />
+          <Toaster closeButton />
         </Theme>
       </body>
     </html>

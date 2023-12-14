@@ -10,6 +10,7 @@ import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
 import { Button, Text } from "@radix-ui/themes";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import useForumsApi from "../_helpers/use-forums-api";
 import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
@@ -70,7 +71,12 @@ export default function NodesEditor({ nodes }: Props) {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
               const payload = generateOrderUpdatePayload(rankedTree.current);
-              await api.updateNodeOrder(payload);
+              const response = await api.updateNodeOrder(payload);
+              if (response.success) {
+                toast.success(response.data.message);
+              } else {
+                toast.error(response.error.message);
+              }
             }}
           >
             <SaveIcon className="w-3 h-3" /> Save

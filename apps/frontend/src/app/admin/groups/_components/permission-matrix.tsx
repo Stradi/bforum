@@ -5,6 +5,7 @@ import { Button, Checkbox, Table } from "@radix-ui/themes";
 import { cn } from "@utils/tw";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import useGroupsApi from "../_helpers/use-groups-api";
 import { sortPermissions } from "../_helpers/utils";
 
@@ -102,7 +103,7 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
   const sortedPermissions = permissions.sort(sortPermissions);
 
   return (
-    <div>
+    <div className="w-full">
       <div className="pb-1 flex justify-end items-center">
         <div className="space-x-1">
           <Button
@@ -119,14 +120,21 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
             disabled={!hasChanges}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
-              await api.updateGroupPermissions(updatedPermissions);
+              const response = await api.updateGroupPermissions(
+                updatedPermissions
+              );
+              if (response.success) {
+                toast.success(response.data.message);
+              } else {
+                toast.error(response.error.message);
+              }
             }}
           >
             <SaveIcon className="w-3 h-3" /> Save
           </Button>
         </div>
       </div>
-      <Table.Root className="border rounded-lg" size="2">
+      <Table.Root className="border rounded-lg w-fit" size="2">
         <Table.Header>
           <Table.Row className="divide-x font-semibold">
             <Table.RowHeaderCell className="text-right !font-semibold">

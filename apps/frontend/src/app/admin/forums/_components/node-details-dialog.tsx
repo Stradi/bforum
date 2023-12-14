@@ -6,6 +6,7 @@ import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import useForumsApi from "../_helpers/use-forums-api";
 import {
   UpdateNodeFormSchema,
@@ -52,6 +53,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
         return;
       }
 
+      toast.success(obj.data.message);
       setOpen(false);
       reset();
     });
@@ -67,9 +69,11 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
           message: obj.error.message,
         });
 
+        toast.error(obj.error.message);
         return;
       }
 
+      toast.success(obj.data.message);
       setOpen(false);
       reset();
     });
