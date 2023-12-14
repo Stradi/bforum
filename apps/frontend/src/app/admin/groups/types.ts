@@ -13,3 +13,23 @@ export type CreateGroupApiFn = (data: CreateGroupFormData) => Promise<
     payload: ApiGroup;
   }>
 >;
+
+export const UpdateGroupPermissionsForm = z.array(
+  z.object({
+    permissionId: z.number(),
+    groupId: z.number(),
+    allowed: z.boolean(),
+  })
+);
+
+export type UpdateGroupPermissionsFormData = z.infer<
+  typeof UpdateGroupPermissionsForm
+>;
+export type UpdateGroupPermissionsApiFn = (
+  data: UpdateGroupPermissionsFormData
+) => Promise<
+  ApiResponse<{
+    message: string;
+    payload: ApiGroup;
+  }>
+>;

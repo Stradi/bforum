@@ -2,10 +2,11 @@
 
 import type { PropsWithChildren } from "react";
 import { createContext } from "react";
-import type { CreateGroupApiFn } from "../types";
+import type { CreateGroupApiFn, UpdateGroupPermissionsApiFn } from "../types";
 
 type TGroupsApiContext = {
   createGroup: CreateGroupApiFn;
+  updateGroupPermissions: UpdateGroupPermissionsApiFn;
 };
 
 const GroupsApiContext = createContext<TGroupsApiContext>(
