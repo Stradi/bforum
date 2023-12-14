@@ -1,11 +1,17 @@
 import type { Context, Env, Next } from "hono";
 import { Hono } from "hono";
 import * as zod from "zod";
-import { InternalServerError, ValidationError } from "../utils/errors";
+import {
+  InternalServerError,
+  PermissionError,
+  ValidationError,
+} from "../utils/errors";
 import type { ErrorResponseData, SuccessResponseData } from "../utils/response";
 import { resp } from "../utils/response";
+import type BasePolicy from "./base-policy";
 
 type ResponseType = Promise<Response> | Response;
+type PolicyFunction<T extends BasePolicy> = keyof T;
 
 export type Handler<Path extends string = "/"> = (
   ctx: Context<Env, Path>,
@@ -38,6 +44,24 @@ export default class BaseController {
     }, {});
 
     return this._validate(normalizedQuery, schema);
+  }
+
+  public async checkPolicy<T extends BasePolicy, F extends PolicyFunction<T>>(
+    policy: T,
+    fn: F,
+    // @ts-expect-error -- i don't know how to fix this :(
+    ...args: Parameters<T[F]>
+  ): Promise<void> {
+    const policyFnTypeSafe = policy[fn] as unknown as (
+      ...args: unknown[]
+    ) => Promise<boolean>;
+
+    const boundMethod = policyFnTypeSafe.bind(policy);
+    const allowed = await boundMethod(...args);
+
+    if (!allowed) {
+      throw new PermissionError();
+    }
   }
 
   public ok(ctx: Context, additionalData?: SuccessResponseData): ResponseType {
