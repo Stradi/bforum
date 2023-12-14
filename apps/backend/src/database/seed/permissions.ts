@@ -27,6 +27,8 @@ const DefaultPermissionMatrix: Record<
     "Node.Create",
     "Node.*.Update",
     "Node.*.Delete",
+    "Node.&.Update",
+    "Node.&.Delete",
     "Node.UpdateOrder",
 
     "Thread.List",
@@ -34,12 +36,16 @@ const DefaultPermissionMatrix: Record<
     "Thread.Create",
     "Thread.*.Update",
     "Thread.*.Delete",
+    "Thread.&.Update",
+    "Thread.&.Delete",
 
     "Reply.List",
     "Reply.*.Read",
     "Reply.Create",
     "Reply.*.Update",
     "Reply.*.Delete",
+    "Reply.&.Update",
+    "Reply.&.Delete",
 
     "Group.List",
     "Group.*.Read",
@@ -57,8 +63,6 @@ const DefaultPermissionMatrix: Record<
   User: [
     "Node.List",
     "Node.*.Read",
-    "Node.&.Update",
-    "Node.&.Delete",
 
     "Thread.List",
     "Thread.*.Read",
