@@ -1,3 +1,4 @@
+import { ScalingDialogProvider } from "@components/scaling-dialog/scaling-dialog-provider";
 import { Theme, ThemePanel } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { cn } from "@utils/tw";
@@ -15,12 +16,14 @@ export default function Layout({ children, modal }: Props) {
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en">
       <body>
-        <Theme>
-          {children}
-          {modal}
-          <ThemePanel defaultOpen={false} />
-          <Toaster closeButton />
-        </Theme>
+        <ScalingDialogProvider bodyColor="bg-black">
+          <Theme>
+            {children}
+            {modal}
+            <ThemePanel defaultOpen={false} />
+            <Toaster closeButton />
+          </Theme>
+        </ScalingDialogProvider>
       </body>
     </html>
   );

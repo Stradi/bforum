@@ -1,6 +1,7 @@
 "use client";
 
 import FormInput from "@components/form-input";
+import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
@@ -80,7 +81,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
   }
 
   return (
-    <Dialog.Root onOpenChange={setOpen} open={open}>
+    <ScalingDialogRoot onOpenChange={setOpen} open={open}>
       <Dialog.Content className="!max-w-[450px]">
         <Dialog.Title size="4">Forum Details</Dialog.Title>
         <Dialog.Description mt="-2" size="2">
@@ -134,6 +135,6 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
           </div>
         </form>
       </Dialog.Content>
-    </Dialog.Root>
+    </ScalingDialogRoot>
   );
 }

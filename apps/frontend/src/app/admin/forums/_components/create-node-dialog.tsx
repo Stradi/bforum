@@ -1,6 +1,7 @@
 "use client";
 
 import FormInput from "@components/form-input";
+import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
@@ -47,7 +48,7 @@ export default function CreateNodeDialog() {
   }
 
   return (
-    <Dialog.Root onOpenChange={setOpen} open={open}>
+    <ScalingDialogRoot onOpenChange={setOpen} open={open}>
       <Dialog.Trigger>
         <Button>Create new Node</Button>
       </Dialog.Trigger>
@@ -90,6 +91,6 @@ export default function CreateNodeDialog() {
           <Button type="submit">Create</Button>
         </form>
       </Dialog.Content>
-    </Dialog.Root>
+    </ScalingDialogRoot>
   );
 }

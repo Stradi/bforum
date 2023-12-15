@@ -4,6 +4,7 @@ import { Button, Dialog } from "@radix-ui/themes";
 import { XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type PropsWithChildren } from "react";
+import ScalingDialogRoot from "./scaling-dialog";
 
 // This duration is the same as the CSS transition duration
 // See https://github.com/radix-ui/themes/blob/main/packages/radix-ui-themes/src/components/dialog.css
@@ -33,7 +34,7 @@ export default function InterceptorModal({ children, title, depth }: Props) {
   }, []);
 
   return (
-    <Dialog.Root
+    <ScalingDialogRoot
       onOpenChange={(value) => {
         setOpen(value);
         if (value) return;
@@ -60,6 +61,6 @@ export default function InterceptorModal({ children, title, depth }: Props) {
         </div>
         {children}
       </Dialog.Content>
-    </Dialog.Root>
+    </ScalingDialogRoot>
   );
 }
