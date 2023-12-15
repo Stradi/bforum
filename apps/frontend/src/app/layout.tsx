@@ -16,7 +16,7 @@ export default function Layout({ children, modal }: Props) {
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en">
       <body>
-        <ScalingDialogProvider bodyColor="bg-black">
+        <ScalingDialogProvider bodyColor="bg-black" padding={16}>
           <Theme>
             {children}
             {modal}

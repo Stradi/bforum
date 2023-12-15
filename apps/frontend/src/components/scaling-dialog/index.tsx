@@ -19,8 +19,8 @@ export default function ScalingDialogRoot({
 }: ScalingDialogRootProps) {
   const scalingDialog = useScalingDialog();
 
-  const openClasses = "rounded-lg scale-[.995] duration-500".split(" ");
-  const closedClasses = "scale-100 rounded-none duration-300".split(" ");
+  const openClasses = "rounded-lg duration-500".split(" ");
+  const closedClasses = "rounded-none duration-300".split(" ");
 
   useEffect(() => {
     if (open === undefined) return;
@@ -40,9 +40,21 @@ export default function ScalingDialogRoot({
 
     if (value) {
       bodyElement.classList.add(scalingDialog.bodyColor);
+
+      const desiredWidth = bodyElement.clientWidth - scalingDialog.padding;
+      const desiredHeight = bodyElement.clientHeight - scalingDialog.padding;
+      const scaleX = desiredWidth / bodyElement.clientWidth;
+      const scaleY = desiredHeight / bodyElement.clientHeight;
+
+      dialogWrapperElement.setAttribute(
+        "style",
+        `transform: scaleX(${scaleX}) scaleY(${scaleY});`
+      );
       dialogWrapperElement.classList.add(...openClasses);
       dialogWrapperElement.classList.remove(...closedClasses);
     } else {
+      dialogWrapperElement.setAttribute("style", "");
+
       dialogWrapperElement.classList.add(...closedClasses);
       dialogWrapperElement.classList.remove(...openClasses);
       setTimeout(() => {

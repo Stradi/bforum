@@ -5,6 +5,7 @@ import { createContext, useEffect } from "react";
 
 type TScalingDialogContext = {
   bodyColor: string;
+  padding: number;
 };
 
 const ScalingDialogContext = createContext<TScalingDialogContext>(
@@ -23,7 +24,7 @@ function ScalingDialogProvider({ children, ...props }: Props) {
   return (
     <ScalingDialogContext.Provider value={props}>
       <div
-        className="bg-white overflow-hidden origin-bottom transition-[transform,border-radius] ease-out h-full min-h-screen"
+        className="bg-white overflow-hidden transition-[transform,border-radius] ease-out h-full min-h-screen"
         data-dialog-wrapper
       >
         {children}
