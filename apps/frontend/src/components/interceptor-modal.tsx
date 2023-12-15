@@ -16,7 +16,7 @@ type Props = PropsWithChildren & {
 };
 
 export default function InterceptorModal({ children, title, depth }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean | undefined>(undefined);
   const router = useRouter();
 
   // This is a hack I'm proud of, lol. It basically allows us to go back
@@ -35,10 +35,7 @@ export default function InterceptorModal({ children, title, depth }: Props) {
 
   return (
     <ScalingDialogRoot
-      onOpenChange={(value) => {
-        setOpen(value);
-        if (value) return;
-
+      onClose={() => {
         setTimeout(() => {
           // eslint-disable-next-line @typescript-eslint/unbound-method -- this is way more elegant looking code, cmon.
           backSteps.forEach(router.back);

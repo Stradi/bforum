@@ -1,45 +1,55 @@
 "use client";
 
 import { Dialog } from "@radix-ui/themes";
-import { useEffect, useState, type ComponentPropsWithoutRef } from "react";
+import { useEffect, type ComponentPropsWithoutRef } from "react";
+import useScalingDialog from "./use-scaling-dialog";
 
-type ScalingDialogRootProps = ComponentPropsWithoutRef<typeof Dialog.Root>;
+type ScalingDialogRootProps = Omit<
+  ComponentPropsWithoutRef<typeof Dialog.Root>,
+  "onOpenChange"
+> & {
+  onOpen?: () => void;
+  onClose?: () => void;
+};
 export default function ScalingDialogRoot({
   open,
-  onOpenChange,
+  onOpen,
+  onClose,
   ...props
 }: ScalingDialogRootProps) {
-  const [isOpen, setIsOpen] = useState(open ?? false);
+  const scalingDialog = useScalingDialog();
 
-  const openClasses = "rounded-lg w-screen h-screen scale-[.995]".split(" ");
-  const closedClasses = "scale-100 rounded-none".split(" ");
+  const openClasses = "rounded-lg scale-[.995] duration-500".split(" ");
+  const closedClasses = "scale-100 rounded-none duration-300".split(" ");
 
   useEffect(() => {
-    setIsOpen(open ?? false);
+    if (open === undefined) return;
+    handleOpenChange(open, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- this is intentional
   }, [open]);
 
-  useEffect(() => {
+  function handleOpenChange(value: boolean, runCallbacks = true) {
+    runCallbacks && (value ? onOpen?.() : onClose?.());
+
     const dialogWrapperElement = document.querySelector(
       "[data-dialog-wrapper]"
     );
+    const bodyElement = document.querySelector("body");
 
-    if (!dialogWrapperElement) return;
+    if (!dialogWrapperElement || !bodyElement) return;
 
-    if (isOpen) {
+    if (value) {
+      bodyElement.classList.add(scalingDialog.bodyColor);
       dialogWrapperElement.classList.add(...openClasses);
       dialogWrapperElement.classList.remove(...closedClasses);
     } else {
       dialogWrapperElement.classList.add(...closedClasses);
       dialogWrapperElement.classList.remove(...openClasses);
+      setTimeout(() => {
+        bodyElement.classList.remove(scalingDialog.bodyColor);
+      }, 300);
     }
-  }, [isOpen, openClasses, closedClasses]);
-
-  function handleOpenChange(value: boolean) {
-    setIsOpen(value);
-    onOpenChange?.(value);
   }
 
-  return (
-    <Dialog.Root onOpenChange={handleOpenChange} open={isOpen} {...props} />
-  );
+  return <Dialog.Root onOpenChange={handleOpenChange} open={open} {...props} />;
 }

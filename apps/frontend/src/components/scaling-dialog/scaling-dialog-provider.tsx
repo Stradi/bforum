@@ -23,7 +23,7 @@ function ScalingDialogProvider({ children, ...props }: Props) {
   return (
     <ScalingDialogContext.Provider value={props}>
       <div
-        className="bg-white overflow-hidden origin-bottom fixed inset-0 transition-[transform,border-radius] duration-200"
+        className="bg-white overflow-hidden origin-bottom transition-[transform,border-radius] ease-out h-full min-h-screen"
         data-dialog-wrapper
       >
         {children}
