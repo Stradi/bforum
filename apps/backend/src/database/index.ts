@@ -9,6 +9,7 @@ import * as nodesSchema from "./schemas/node";
 import * as permissionsSchema from "./schemas/permission";
 import * as repliesSchema from "./schemas/reply";
 import * as threadsSchema from "./schemas/thread";
+// eslint-disable-next-line import/no-cycle -- there's nothing we can do
 import { seedGroups } from "./seed/groups";
 // eslint-disable-next-line import/no-cycle -- there's nothing we can do
 import { seedPermissions } from "./seed/permissions";
