@@ -126,9 +126,9 @@ export class PermissionsController extends BaseController {
       UpdatePermissionBodySchema
     );
 
-    const permission = await this.permissionsService.updatePermission(
+    const permission = await this.permissionsService.getSinglePermission(
       permissionId,
-      body
+      {}
     );
 
     if (!permission) {
@@ -146,9 +146,14 @@ export class PermissionsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const updatedPermission = await this.permissionsService.updatePermission(
+      permissionId,
+      body
+    );
+
     return this.ok(ctx, {
       message: `Permission with id '${permissionId}' successfully updated.`,
-      payload: permission,
+      payload: updatedPermission,
     });
   };
 
@@ -162,8 +167,9 @@ export class PermissionsController extends BaseController {
       });
     }
 
-    const permission = await this.permissionsService.deletePermission(
-      permissionId
+    const permission = await this.permissionsService.getSinglePermission(
+      permissionId,
+      {}
     );
 
     if (!permission) {
@@ -181,9 +187,13 @@ export class PermissionsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const deletedPermission = await this.permissionsService.deletePermission(
+      permissionId
+    );
+
     return this.ok(ctx, {
       message: `Permission with id '${permissionId}' successfully deleted.`,
-      payload: permission,
+      payload: deletedPermission,
     });
   };
 }

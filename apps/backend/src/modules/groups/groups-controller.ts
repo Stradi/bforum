@@ -123,7 +123,7 @@ export class GroupsController extends BaseController {
       UpdateGroupBodySchema
     );
 
-    const group = await this.groupsService.updateGroup(groupId, body);
+    const group = await this.groupsService.getSingleGroup(groupId, {});
 
     if (!group) {
       return this.notFound(ctx, {
@@ -140,9 +140,11 @@ export class GroupsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const updatedGroup = await this.groupsService.updateGroup(groupId, body);
+
     return this.ok(ctx, {
       message: `Group with id '${groupId}' successfully updated.`,
-      payload: group,
+      payload: updatedGroup,
     });
   };
 
@@ -156,7 +158,7 @@ export class GroupsController extends BaseController {
       });
     }
 
-    const group = await this.groupsService.deleteGroup(groupId);
+    const group = await this.groupsService.getSingleGroup(groupId, {});
 
     if (!group) {
       return this.notFound(ctx, {
@@ -173,9 +175,11 @@ export class GroupsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const deletedGroup = await this.groupsService.deleteGroup(groupId);
+
     return this.ok(ctx, {
       message: `Group with id '${groupId}' successfully deleted.`,
-      payload: group,
+      payload: deletedGroup,
     });
   };
 

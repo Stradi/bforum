@@ -104,8 +104,7 @@ export class AccountsController extends BaseController {
       UpdateAccountBodySchema
     );
 
-    const account = await this.accountsService.updateAccount(accountId, body);
-
+    const account = await this.accountsService.getSingleAccount(accountId, {});
     if (!account) {
       return this.notFound(ctx, {
         code: "ACCOUNT_NOT_FOUND",
@@ -121,9 +120,14 @@ export class AccountsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const updatedAccount = await this.accountsService.updateAccount(
+      accountId,
+      body
+    );
+
     return this.ok(ctx, {
       message: `Successfully updated account with id '${accountId}'.`,
-      payload: account,
+      payload: updatedAccount,
     });
   };
 
@@ -137,7 +141,7 @@ export class AccountsController extends BaseController {
       });
     }
 
-    const account = await this.accountsService.deleteAccount(accountId);
+    const account = await this.accountsService.getSingleAccount(accountId, {});
 
     if (!account) {
       return this.notFound(ctx, {
@@ -154,9 +158,11 @@ export class AccountsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    const deletedAccount = await this.accountsService.deleteAccount(accountId);
+
     return this.ok(ctx, {
       message: `Successfully deleted account with id '${accountId}'.`,
-      payload: account,
+      payload: deletedAccount,
     });
   };
 }
