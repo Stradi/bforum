@@ -5,65 +5,32 @@ import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
-import { startTransition } from "react";
+import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import useForumsApi from "../_helpers/use-forums-api";
-import {
-  UpdateNodeFormSchema,
-  type DndNode,
-  type UpdateNodeFormData,
-} from "../types";
-import DeleteNodeAlertDialog from "./delete-node-alert-dialog";
+import useNodesApi from "../_helpers/use-nodes-api";
+import type { CreateNodeFormData } from "../types";
+import { CreateNodeFormSchema } from "../types";
 
-type Props = {
-  node: DndNode;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
-
-export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
-  const api = useForumsApi();
+export default function CreateNodeDialog() {
+  const api = useNodesApi();
+  const [open, setOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
     reset,
-  } = useForm<UpdateNodeFormData>({
-    resolver: zodResolver(UpdateNodeFormSchema),
+  } = useForm<CreateNodeFormData>({
+    resolver: zodResolver(CreateNodeFormSchema),
     mode: "onSubmit",
-    defaultValues: {
-      name: node.name,
-      description: node.description,
-      slug: node.slug,
-    },
   });
 
-  function onSubmit(data: UpdateNodeFormData) {
+  function onSubmit(data: CreateNodeFormData) {
     // @ts-expect-error -- react@beta supports async functions in startTransition
     startTransition(async () => {
-      const obj = await api.updateNode(node.slug, data);
-      if (!obj.success) {
-        setError("root", {
-          type: "manual",
-          message: obj.error.message,
-        });
-
-        return;
-      }
-
-      toast.success(obj.data.message);
-      setOpen(false);
-      reset();
-    });
-  }
-
-  function onDelete() {
-    // @ts-expect-error -- react@beta supports async functions in startTransition
-    startTransition(async () => {
-      const obj = await api.deleteNode(node.slug);
+      const obj = await api.createNode(data);
       if (!obj.success) {
         setError("root", {
           type: "manual",
@@ -90,14 +57,18 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
       }}
       open={open}
     >
+      <Dialog.Trigger>
+        <Button>Create new Node</Button>
+      </Dialog.Trigger>
       <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title size="4">Forum Details</Dialog.Title>
+        <Dialog.Title size="4">Create a new node</Dialog.Title>
         <Dialog.Description mt="-2" size="2">
-          View, update or delete &apos;{node.name}&apos; forum.
+          Create a new node to organize your community.
         </Dialog.Description>
         <Inset my="5">
           <Separator my="3" size="4" />
         </Inset>
+
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- ... */}
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <FormInput
@@ -108,16 +79,6 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
             label="Name"
             placeholder="Off-topic"
             register={register("name")}
-            type="text"
-          />
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.slug?.message}
-            icon={PencilIcon}
-            id="slug"
-            label="Slug"
-            placeholder="off-topic"
-            register={register("slug")}
             type="text"
           />
           <FormInput
@@ -135,12 +96,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
               {errors.root.message}
             </Text>
           ) : null}
-          <div className="flex justify-end gap-1">
-            <DeleteNodeAlertDialog onDeleteNode={onDelete} />
-            <Button disabled={isSubmitting || !isValid} type="submit">
-              Update
-            </Button>
-          </div>
+          <Button type="submit">Create</Button>
         </form>
       </Dialog.Content>
     </ScalingDialogRoot>

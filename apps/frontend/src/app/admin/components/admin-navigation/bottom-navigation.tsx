@@ -17,8 +17,8 @@ const Items: {
     ref: createRef<HTMLAnchorElement>(),
   },
   {
-    label: "Forums",
-    href: "/admin/forums",
+    label: "Nodes",
+    href: "/admin/nodes",
     ref: createRef<HTMLAnchorElement>(),
   },
   {

@@ -8,33 +8,33 @@ import {
   updateNode,
   updateNodeOrder,
 } from "./_helpers/actions";
-import { ForumsApiProvider } from "./_helpers/forums-api-provider";
+import { NodesApiProvider } from "./_helpers/nodes-api-provider";
 
 type Props = PropsWithChildren;
 
 export default function Layout({ children }: Props) {
   return (
-    <ForumsApiProvider
-      createNode={createNode.bind(null, "/admin/forums")}
-      deleteNode={deleteNode.bind(null, "/admin/forums")}
-      updateNode={updateNode.bind(null, "/admin/forums")}
-      updateNodeOrder={updateNodeOrder.bind(null, "/admin/forums")}
+    <NodesApiProvider
+      createNode={createNode.bind(null, "/admin/nodes")}
+      deleteNode={deleteNode.bind(null, "/admin/nodes")}
+      updateNode={updateNode.bind(null, "/admin/nodes")}
+      updateNodeOrder={updateNodeOrder.bind(null, "/admin/nodes")}
     >
       <div className="space-y-2">
-        <Header description="Manage forums in your community" title="Forums" />
+        <Header description="Manage nodes in your community" title="Nodes" />
         <Container className="p-4 w-full flex gap-4">
           <SideNavigation
             className="w-60 -ml-2 shrink-0"
             items={[
               {
                 label: "Overview",
-                href: "/admin/forums",
+                href: "/admin/nodes",
               },
             ]}
           />
           <div className="grow">{children}</div>
         </Container>
       </div>
-    </ForumsApiProvider>
+    </NodesApiProvider>
   );
 }

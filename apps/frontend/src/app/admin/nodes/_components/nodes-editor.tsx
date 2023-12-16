@@ -11,7 +11,7 @@ import { Button, Text } from "@radix-ui/themes";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import useForumsApi from "../_helpers/use-forums-api";
+import useNodesApi from "../_helpers/use-nodes-api";
 import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
 
@@ -20,7 +20,7 @@ type Props = {
 };
 
 export default function NodesEditor({ nodes }: Props) {
-  const api = useForumsApi();
+  const api = useNodesApi();
 
   const [savedNodesState, setSavedNodesState] = useState<DndNode[]>(nodes);
   const [updatedNodes, setUpdatedNodes] = useState<DndNode[]>(nodes);

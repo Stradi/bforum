@@ -9,24 +9,22 @@ import type {
   UpdateNodeOrderApiFn,
 } from "../types";
 
-type TForumsApiContext = {
+type TNodesApiContext = {
   createNode: CreateNodeApiFn;
   updateNode: UpdateNodeApiFn;
   updateNodeOrder: UpdateNodeOrderApiFn;
   deleteNode: DeleteNodeApiFn;
 };
 
-const ForumsApiContext = createContext<TForumsApiContext>(
-  {} as TForumsApiContext
-);
+const NodesApiContext = createContext<TNodesApiContext>({} as TNodesApiContext);
 
-type Props = PropsWithChildren & TForumsApiContext;
-function ForumsApiProvider({ children, ...props }: Props) {
+type Props = PropsWithChildren & TNodesApiContext;
+function NodesApiProvider({ children, ...props }: Props) {
   return (
-    <ForumsApiContext.Provider value={props}>
+    <NodesApiContext.Provider value={props}>
       {children}
-    </ForumsApiContext.Provider>
+    </NodesApiContext.Provider>
   );
 }
 
-export { ForumsApiContext, ForumsApiProvider };
+export { NodesApiContext, NodesApiProvider };
