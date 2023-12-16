@@ -4,6 +4,7 @@ import beNiceMiddleware from "./middlewares/be-nice-middleware";
 import errorMiddleware from "./middlewares/error-middleware";
 import logMiddleware from "./middlewares/log-middleware";
 import notFoundMiddleware from "./middlewares/not-found-middleware";
+import { AccountsController } from "./modules/accounts/accounts-controller";
 import AuthController from "./modules/auth/auth-controller";
 import { GroupsController } from "./modules/groups/groups-controller";
 import { NodesController } from "./modules/nodes/nodes-controller";
@@ -34,7 +35,8 @@ export function getServer() {
     .route("/", new RepliesController().router())
     .route("/", new AuthController().router())
     .route("/", new GroupsController().router())
-    .route("/", new PermissionsController().router());
+    .route("/", new PermissionsController().router())
+    .route("/", new AccountsController().router());
 
   return app;
 }

@@ -6,7 +6,13 @@ import * as groupPermissionSchema from "../schemas/group-permission";
 import * as permissionsSchema from "../schemas/permission";
 import { DefaultGroupIds, DefaultGroups } from "./groups";
 
-type Resource = "Node" | "Thread" | "Reply" | "Group" | "Permission";
+type Resource =
+  | "Node"
+  | "Thread"
+  | "Reply"
+  | "Group"
+  | "Permission"
+  | "Account";
 type Scope = string;
 type BaseActions = "List" | "Read" | "Create" | "Update" | "Delete";
 type NodeActions = BaseActions | "UpdateOrder";
@@ -59,6 +65,13 @@ const DefaultPermissionMatrix: Record<
     "Permission.Create",
     "Permission.*.Update",
     "Permission.*.Delete",
+
+    "Account.List",
+    "Account.*.Read",
+    "Account.*.Update",
+    "Account.*.Delete",
+    "Account.&.Update",
+    "Account.&.Delete",
   ],
   User: [
     "Node.List",
@@ -81,6 +94,11 @@ const DefaultPermissionMatrix: Record<
 
     "Permission.List",
     "Permission.*.Read",
+
+    "Account.List",
+    "Account.*.Read",
+    "Account.&.Update",
+    "Account.&.Delete",
   ],
   Anonymous: [
     "Node.List",
@@ -97,6 +115,9 @@ const DefaultPermissionMatrix: Record<
 
     "Permission.List",
     "Permission.*.Read",
+
+    "Account.List",
+    "Account.*.Read",
   ],
 };
 
