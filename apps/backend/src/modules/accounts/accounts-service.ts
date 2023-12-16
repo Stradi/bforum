@@ -22,7 +22,7 @@ export default class AccountsService {
       offset: dto.offset || 0,
     });
 
-    return accounts;
+    return accounts.map(this.redactField("password_hash"));
   };
 
   getSingleAccount = async (id: number, dto: TGetSingleAccountQuerySchema) => {
@@ -42,7 +42,7 @@ export default class AccountsService {
       return null;
     }
 
-    return account[0];
+    return this.redactField("password_hash")(account[0]);
   };
 
   updateAccount = async (id: number, dto: TUpdateAccountBodySchema) => {
@@ -60,7 +60,7 @@ export default class AccountsService {
       return null;
     }
 
-    return account[0];
+    return this.redactField("password_hash")(account[0]);
   };
 
   deleteAccount = async (id: number) => {
@@ -74,6 +74,13 @@ export default class AccountsService {
       return null;
     }
 
-    return account[0];
+    return this.redactField("password_hash")(account[0]);
+  };
+
+  private redactField = (field: keyof typeof accountsTable.$inferSelect) => {
+    return (account: typeof accountsTable.$inferSelect) => {
+      const { [field]: _, ...redactedAccount } = account;
+      return redactedAccount;
+    };
   };
 }
