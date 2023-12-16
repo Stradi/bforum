@@ -2,7 +2,12 @@ import Container from "@components/container";
 import type { PropsWithChildren } from "react";
 import Header from "../components/header";
 import SideNavigation from "../components/side-navigation";
-import { createGroup, updateGroupPermissions } from "./_helpers/actions";
+import {
+  createGroup,
+  deleteGroup,
+  updateGroup,
+  updateGroupPermissions,
+} from "./_helpers/actions";
 import { GroupsApiProvider } from "./_helpers/groups-api-provider";
 
 type Props = PropsWithChildren;
@@ -11,6 +16,8 @@ export default function Layout({ children }: Props) {
   return (
     <GroupsApiProvider
       createGroup={createGroup.bind(null, "/admin/groups")}
+      deleteGroup={deleteGroup.bind(null, "/admin/groups")}
+      updateGroup={updateGroup.bind(null, "/admin/groups")}
       updateGroupPermissions={updateGroupPermissions.bind(
         null,
         "/admin/groups"

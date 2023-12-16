@@ -33,3 +33,25 @@ export type UpdateGroupPermissionsApiFn = (
     payload: ApiGroup;
   }>
 >;
+
+export type DeleteGroupApiFn = (id: number) => Promise<
+  ApiResponse<{
+    message: string;
+    payload: ApiGroup;
+  }>
+>;
+
+export const UpdateGroupFormSchema = z.object({
+  name: z.string().min(1).max(255),
+});
+
+export type UpdateGroupFormData = z.infer<typeof UpdateGroupFormSchema>;
+export type UpdateGroupApiFn = (
+  id: number,
+  data: UpdateGroupFormData
+) => Promise<
+  ApiResponse<{
+    message: string;
+    payload: ApiGroup;
+  }>
+>;
