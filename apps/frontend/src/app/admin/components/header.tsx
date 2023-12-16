@@ -24,7 +24,7 @@ export default function Header({
           <Heading as="h1" mb={description ? "2" : undefined} size="7">
             {title}
           </Heading>
-          {description ? <Text>{description}</Text> : null}
+          {description ? <Text size="2">{description}</Text> : null}
         </div>
         {children}
       </Container>
