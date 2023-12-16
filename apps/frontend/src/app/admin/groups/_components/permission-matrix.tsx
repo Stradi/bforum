@@ -13,8 +13,23 @@ type Props = {
   groups: ApiGroup[];
   permissions: ApiPermission[];
 };
+
+// TODO: This is a mess, clean it up
 export default function PermissionMatrix({ groups, permissions }: Props) {
   const api = useGroupsApi();
+
+  const [checkboxState, setCheckboxState] = useState(() => {
+    const state = new Map<string, boolean>();
+    permissions.forEach((permission) => {
+      groups.forEach((group) => {
+        state.set(
+          `${permission.id}-${group.id}`,
+          isPermissionAllowed(permission.id, group.id)
+        );
+      });
+    });
+    return state;
+  });
 
   const [updatedPermissions, setUpdatedPermissions] = useState<
     {
@@ -57,6 +72,12 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
     groupId: number,
     checked: boolean
   ) {
+    setCheckboxState((state) => {
+      const newState = new Map(state);
+      newState.set(`${permissionId}-${groupId}`, checked);
+      return newState;
+    });
+
     const existingPermission = updatedPermissions.find(
       (permission) =>
         permission.permissionId === permissionId &&
@@ -111,6 +132,18 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
             disabled={!hasChanges}
             onClick={() => {
               setUpdatedPermissions([]);
+              setCheckboxState(() => {
+                const state = new Map<string, boolean>();
+                permissions.forEach((permission) => {
+                  groups.forEach((group) => {
+                    state.set(
+                      `${permission.id}-${group.id}`,
+                      isPermissionAllowed(permission.id, group.id)
+                    );
+                  });
+                });
+                return state;
+              });
             }}
           >
             <TrashIcon className="w-3 h-3" />
@@ -163,10 +196,18 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
                   key={group.id}
                 >
                   <Checkbox
-                    defaultChecked={group.groupPermission.some(
-                      (groupPermission) =>
-                        groupPermission.permission_id === permission.id
-                    )}
+                    // defaultChecked={group.groupPermission.some(
+                    //   (groupPermission) =>
+                    //     groupPermission.permission_id === permission.id
+                    // )}
+                    // onCheckedChange={(checked) => {
+                    //   onCheckboxChange(
+                    //     permission.id,
+                    //     group.id,
+                    //     checked as boolean
+                    //   );
+                    // }}
+                    checked={checkboxState.get(`${permission.id}-${group.id}`)}
                     onCheckedChange={(checked) => {
                       onCheckboxChange(
                         permission.id,
