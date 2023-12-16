@@ -124,8 +124,8 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
   const sortedPermissions = permissions.sort(sortPermissions);
 
   return (
-    <div className="w-full">
-      <div className="pb-1 flex justify-end items-center">
+    <div>
+      <div className="pb-1 flex items-center">
         <div className="space-x-1">
           <Button
             color="red"
