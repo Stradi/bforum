@@ -1,7 +1,14 @@
 import type { ApiPermission } from "@lib/api/api.types";
 
 export function sortPermissions(a: ApiPermission, b: ApiPermission) {
-  const SortOrder = ["Node", "Thread", "Reply", "Group", "Permission"];
+  const SortOrder = [
+    "Node",
+    "Thread",
+    "Reply",
+    "Account",
+    "Group",
+    "Permission",
+  ];
   const compareValues = (valueA: string, valueB: string) =>
     SortOrder.indexOf(valueA) - SortOrder.indexOf(valueB);
 
