@@ -81,7 +81,15 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
   }
 
   return (
-    <ScalingDialogRoot onOpenChange={setOpen} open={open}>
+    <ScalingDialogRoot
+      onClose={() => {
+        setOpen(false);
+      }}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      open={open}
+    >
       <Dialog.Content className="!max-w-[450px]">
         <Dialog.Title size="4">Forum Details</Dialog.Title>
         <Dialog.Description mt="-2" size="2">

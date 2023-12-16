@@ -48,7 +48,15 @@ export default function CreateGroupDialog() {
   }
 
   return (
-    <ScalingDialogRoot onOpenChange={setOpen} open={open}>
+    <ScalingDialogRoot
+      onClose={() => {
+        setOpen(false);
+      }}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      open={open}
+    >
       <Dialog.Trigger>
         <Button>Create new Group</Button>
       </Dialog.Trigger>
