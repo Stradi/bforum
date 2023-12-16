@@ -21,7 +21,7 @@ export default function Header({
     >
       <Container className="px-4 flex justify-between items-center">
         <div>
-          <Heading as="h1" mb="2" size="7">
+          <Heading as="h1" mb={description ? "2" : undefined} size="7">
             {title}
           </Heading>
           {description ? <Text>{description}</Text> : null}
