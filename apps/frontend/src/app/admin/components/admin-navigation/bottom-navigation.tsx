@@ -26,6 +26,11 @@ const Items: {
     href: "/admin/groups",
     ref: createRef<HTMLAnchorElement>(),
   },
+  {
+    label: "Users",
+    href: "/admin/users",
+    ref: createRef<HTMLAnchorElement>(),
+  },
 ];
 
 export default function BottomNavigation() {
