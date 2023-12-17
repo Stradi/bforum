@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
+import { accountGroupTable } from "../../database/schemas/account-group";
 import { groupsTable } from "../../database/schemas/group";
 import { groupPermissionTable } from "../../database/schemas/group-permission";
 import type {
@@ -96,6 +97,13 @@ export default class GroupsService {
       .delete(groupsTable)
       .where(eq(groupsTable.id, id))
       .returning();
+
+    await db
+      .delete(accountGroupTable)
+      .where(eq(accountGroupTable.group_id, id));
+    await db
+      .delete(groupPermissionTable)
+      .where(eq(groupPermissionTable.group_id, id));
 
     if (group.length === 0) {
       return null;
