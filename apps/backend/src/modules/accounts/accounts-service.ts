@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { accountsTable } from "../../database/schemas/account";
+import { accountGroupTable } from "../../database/schemas/account-group";
 import type {
   TGetAllAccountsQuerySchema,
   TGetSingleAccountQuerySchema,
@@ -60,6 +61,22 @@ export default class AccountsService {
       return null;
     }
 
+    if (dto.groups) {
+      await db
+        .delete(accountGroupTable)
+        .where(eq(accountGroupTable.account_id, id));
+
+      for await (const groupId of dto.groups) {
+        await db
+          .insert(accountGroupTable)
+          .values({
+            account_id: id,
+            group_id: groupId,
+          })
+          .returning();
+      }
+    }
+
     return this.redactField("password_hash")(account[0]);
   };
 
@@ -69,6 +86,10 @@ export default class AccountsService {
       .delete(accountsTable)
       .where(eq(accountsTable.id, id))
       .returning();
+
+    await db
+      .delete(accountGroupTable)
+      .where(eq(accountGroupTable.account_id, id));
 
     if (account.length === 0) {
       return null;

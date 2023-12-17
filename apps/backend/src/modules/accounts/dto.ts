@@ -22,4 +22,5 @@ export type TUpdateAccountBodySchema = zod.infer<
 export const UpdateAccountBodySchema = zod.object({
   username: zod.string().optional(),
   display_name: zod.string().optional(),
+  groups: zod.array(zod.number()).optional(),
 });
