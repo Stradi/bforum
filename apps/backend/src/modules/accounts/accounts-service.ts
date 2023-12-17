@@ -101,7 +101,14 @@ export default class AccountsService {
   private redactField = (field: keyof typeof accountsTable.$inferSelect) => {
     return (account: typeof accountsTable.$inferSelect) => {
       const { [field]: _, ...redactedAccount } = account;
-      return redactedAccount;
+
+      // Return type is actually:
+      // Omit<
+      //   typeof accountsTable.$inferInsert,
+      //   typeof field
+      // >;
+      // but when we do that, errors happen, me sad :(
+      return redactedAccount as typeof accountsTable.$inferSelect;
     };
   };
 }
