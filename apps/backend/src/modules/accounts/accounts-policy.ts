@@ -23,7 +23,8 @@ export default class AccountsPolicy extends BasePolicy {
     accountData?: JwtPayload
   ) {
     const allowed =
-      (await this.can(`Account.${account.id}.Update`, accountData)) ||
+      (await this.can(`Account.${account.id}.Update`)) ||
+      (await this.can("Account.&.Update", accountData, account, "id")) ||
       (await this.can("Account.*.Update", accountData));
 
     return allowed;
@@ -35,6 +36,7 @@ export default class AccountsPolicy extends BasePolicy {
   ) {
     const allowed =
       (await this.can(`Account.${account.id}.Delete`, accountData)) ||
+      (await this.can("Account.&.Delete", accountData, account, "id")) ||
       (await this.can("Account.*.Delete", accountData));
 
     return allowed;
