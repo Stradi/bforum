@@ -29,6 +29,7 @@ export default function GroupsTable({ groups }: Props) {
     <DataTable
       columns={columns}
       data={groups}
+      key={JSON.stringify(groups)}
       renderRow={(row) => <SingleGroupRow key={row.id} {...row} />}
     />
   );
