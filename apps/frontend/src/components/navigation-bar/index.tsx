@@ -3,45 +3,27 @@
 import Container from "@components/container";
 import { usePathname } from "next/navigation";
 import type { MouseEvent, RefObject } from "react";
-import { createRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavigationItem from "./navigation-item";
 
-const Items: {
+type Item = {
   label: string;
   href: string;
   ref: RefObject<HTMLAnchorElement>;
-}[] = [
-  {
-    label: "Overview",
-    href: "/admin",
-    ref: createRef<HTMLAnchorElement>(),
-  },
-  {
-    label: "Nodes",
-    href: "/admin/nodes",
-    ref: createRef<HTMLAnchorElement>(),
-  },
-  {
-    label: "Groups",
-    href: "/admin/groups",
-    ref: createRef<HTMLAnchorElement>(),
-  },
-  {
-    label: "Users",
-    href: "/admin/users",
-    ref: createRef<HTMLAnchorElement>(),
-  },
-];
+};
 
-export default function BottomNavigation() {
+type Props = {
+  items: Item[];
+};
+export default function NavigationBar({ items }: Props) {
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const [indicatorOpacity, setIndicatorOpacity] = useState(0);
 
   const pathname = usePathname();
-  const activeItem = Items.toReversed().find((item) =>
-    pathname.includes(item.href)
-  );
+  const activeItem = items
+    .toReversed()
+    .find((item) => pathname.includes(item.href));
 
   function onMouseEnter(e: MouseEvent<HTMLAnchorElement>) {
     const target = e.target as HTMLAnchorElement;
@@ -88,7 +70,7 @@ export default function BottomNavigation() {
               setIndicatorOpacity(0);
             }}
           >
-            {Items.map((item) => (
+            {items.map((item) => (
               <NavigationItem
                 href={item.href}
                 isActive={item.href === activeItem?.href}
