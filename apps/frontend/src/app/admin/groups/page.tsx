@@ -1,6 +1,6 @@
 import type { ApiGroup } from "@lib/api/api.types";
 import createServerComponentClient from "@lib/api/client/create-server-component-client";
-import SubHeader from "../components/sub-header";
+import SubHeader from "../_components/sub-header";
 import CreateGroupDialog from "./_components/create-group-dialog";
 import GroupsTable from "./_components/groups-table";
 

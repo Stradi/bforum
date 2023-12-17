@@ -1,6 +1,6 @@
 import type { ApiGroup, ApiPermission } from "@lib/api/api.types";
 import createServerComponentClient from "@lib/api/client/create-server-component-client";
-import SubHeader from "../../components/sub-header";
+import SubHeader from "../../_components/sub-header";
 import PermissionMatrix from "../_components/permission-matrix";
 
 export default async function Page() {

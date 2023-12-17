@@ -1,7 +1,7 @@
 import Container from "@components/container";
 import type { PropsWithChildren } from "react";
-import Header from "../components/header";
-import SideNavigation from "../components/side-navigation";
+import Header from "../_components/header";
+import SideNavigation from "../_components/side-navigation";
 import {
   createNode,
   deleteNode,

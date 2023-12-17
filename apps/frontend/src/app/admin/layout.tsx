@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import AdminNavigation from "./components/admin-navigation";
+import AdminNavigation from "./_components/admin-navigation";
 
 type Props = PropsWithChildren;
 

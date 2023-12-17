@@ -1,6 +1,6 @@
 import type { ApiAccount, ApiGroup } from "@lib/api/api.types";
 import createServerComponentClient from "@lib/api/client/create-server-component-client";
-import SubHeader from "../components/sub-header";
+import SubHeader from "../_components/sub-header";
 import AccountsTable from "./_components/accounts-table";
 
 export default async function Page() {
