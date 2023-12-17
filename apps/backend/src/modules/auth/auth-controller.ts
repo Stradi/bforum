@@ -1,5 +1,6 @@
 import type { Context, Hono } from "hono";
 import { setCookie as _setCookie } from "hono/cookie";
+import authMiddleware from "../../middlewares/auth-middleware";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import AuthService from "./auth-service";
@@ -19,11 +20,29 @@ export default class AuthController extends BaseController {
 
   public router(): Hono {
     return this._app
+      .get("/auth/me", authMiddleware(), this.getAuthenticatedAccount)
       .post("/auth/login", this.login)
       .post("/auth/register", this.register)
       .post("/auth/refresh-token", this.refreshToken)
       .post("/auth/logout", this.logout);
   }
+
+  getAuthenticatedAccount: Handler<"/auth/me"> = async (ctx) => {
+    const jwtPayload = ctx.get("jwtPayload");
+    const account = await this.authService.getAccountById(jwtPayload.id);
+    if (!account) {
+      return this.badRequest(ctx, {
+        code: "NO_ACCOUNT",
+        message: "Account does not exist",
+        action: "Please login again",
+      });
+    }
+
+    return this.ok(ctx, {
+      message: "Successfully retrieved account",
+      payload: account,
+    });
+  };
 
   login: Handler<"/auth/login"> = async (ctx) => {
     const body = await this.validateBody<TLoginBodySchema>(

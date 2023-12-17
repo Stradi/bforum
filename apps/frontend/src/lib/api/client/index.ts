@@ -1,5 +1,6 @@
 import { cookieParse, cookieSerialize } from "@utils/cookie";
 import { parseJwt } from "@utils/jwt";
+import type { ApiAccount } from "../api.types";
 
 type SuccessResponse<Data = unknown> = {
   success: true;
@@ -89,6 +90,23 @@ export default class Client {
     } else {
       this.clearToken();
     }
+  }
+
+  async getAuthenticatedAccount() {
+    if (!this.isAuthenticated()) {
+      return null;
+    }
+
+    const account = await this.sendRequest<{
+      message: string;
+      payload: ApiAccount;
+    }>("/api/v1/auth/me");
+
+    if (!account.success) {
+      return null;
+    }
+
+    return account.data.payload;
   }
 
   async sendRequest<Data = unknown, AdditionalData = unknown>(
