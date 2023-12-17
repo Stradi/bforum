@@ -1,3 +1,4 @@
+import type { accountsTable } from "../database/schemas/account";
 import type { nodesTable } from "../database/schemas/node";
 import type { permissionsTable } from "../database/schemas/permission";
 import type { repliesTable } from "../database/schemas/reply";
@@ -10,7 +11,9 @@ import PermissionsService from "./permissions/permissions-service";
 type AvailableResources =
   | typeof nodesTable.$inferSelect
   | typeof threadsTable.$inferSelect
-  | typeof repliesTable.$inferSelect;
+  | typeof repliesTable.$inferSelect
+  | typeof permissionsTable.$inferSelect
+  | typeof accountsTable.$inferSelect;
 
 type PermissionWithGroups = typeof permissionsTable.$inferSelect & {
   groupPermission: {
@@ -28,11 +31,11 @@ const DefaultAccountGroups: (typeof DefaultGroups)[number][] = ["Anonymous"];
 export default class BasePolicy {
   private permissionsService = new PermissionsService();
 
-  public async can(
+  public async can<T extends AvailableResources>(
     permissionName: string,
     accountData?: JwtPayload,
-    resourceObj?: AvailableResources,
-    resourceField?: keyof AvailableResources
+    resourceObj?: T,
+    resourceField?: keyof T
   ) {
     const { scope } = this.parsePermissionName(permissionName);
 
