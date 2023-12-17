@@ -23,12 +23,8 @@ import type { UpdateGroupFormData } from "../types";
 import { UpdateGroupFormSchema } from "../types";
 import DeleteGroupAlertDialog from "./delete-group-alert-dialog";
 
-type Props = Pick<Row<ApiGroup>, "id" | "original" | "getVisibleCells">;
-export default function SingleGroupRow({
-  id,
-  original,
-  getVisibleCells,
-}: Props) {
+type Props = Pick<Row<ApiGroup>, "original" | "getVisibleCells">;
+export default function SingleGroupRow({ original, getVisibleCells }: Props) {
   const api = useGroupsApi();
   const [open, setOpen] = useState(false);
 
@@ -87,7 +83,6 @@ export default function SingleGroupRow({
 
   return (
     <ScalingDialogRoot
-      key={id}
       onClose={() => {
         setOpen(false);
       }}
@@ -97,10 +92,7 @@ export default function SingleGroupRow({
       open={open}
     >
       <Dialog.Trigger className="appearance-none">
-        <Table.Row
-          className="hover:bg-neutral-100 transition duration-100"
-          key={id}
-        >
+        <Table.Row className="hover:bg-neutral-100 transition duration-100">
           {getVisibleCells().map((cell) => (
             <Table.Cell key={cell.id}>
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
