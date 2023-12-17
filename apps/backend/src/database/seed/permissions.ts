@@ -17,7 +17,8 @@ type Scope = string;
 type BaseActions = "List" | "Read" | "Create" | "Update" | "Delete";
 type NodeActions = BaseActions | "UpdateOrder";
 type GroupActions = BaseActions | "UpdatePermission";
-type Action = BaseActions | NodeActions | GroupActions;
+type AccountActions = BaseActions | "UpdateGroups";
+type Action = BaseActions | NodeActions | GroupActions | AccountActions;
 
 type PermissionString =
   | `${Resource}.${Scope}.${Action}`
@@ -72,6 +73,7 @@ const DefaultPermissionMatrix: Record<
     "Account.*.Delete",
     "Account.&.Update",
     "Account.&.Delete",
+    "Account.*.UpdateGroups",
   ],
   User: [
     "Node.List",

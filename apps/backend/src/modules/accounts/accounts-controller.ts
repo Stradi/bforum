@@ -120,6 +120,14 @@ export class AccountsController extends BaseController {
       ctx.get("jwtPayload")
     );
 
+    body.groups &&
+      (await this.checkPolicy(
+        this.accountsPolicy,
+        "canUpdateGroups",
+        account,
+        ctx.get("jwtPayload")
+      ));
+
     const updatedAccount = await this.accountsService.updateAccount(
       accountId,
       body

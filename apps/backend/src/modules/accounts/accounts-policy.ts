@@ -30,6 +30,17 @@ export default class AccountsPolicy extends BasePolicy {
     return allowed;
   }
 
+  async canUpdateGroups(
+    account: typeof accountsTable.$inferSelect,
+    accountData?: JwtPayload
+  ) {
+    const allowed =
+      (await this.can(`Account.${account.id}.UpdateGroups`, accountData)) ||
+      (await this.can("Account.*.UpdateGroups", accountData));
+
+    return allowed;
+  }
+
   async canDelete(
     account: typeof accountsTable.$inferSelect,
     accountData?: JwtPayload
