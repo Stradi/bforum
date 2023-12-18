@@ -1,11 +1,11 @@
-import { ScalingDialogProvider } from "@components/scaling-dialog/scaling-dialog-provider";
 import { Theme, ThemePanel } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-import { cn } from "@utils/tw";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { PropsWithChildren, ReactNode } from "react";
 import { Toaster } from "sonner";
+import { ScalingDialogProvider } from "@components/scaling-dialog/scaling-dialog-provider";
+import { cn } from "@utils/tw";
 import "./globals.css";
 
 type Props = PropsWithChildren & {

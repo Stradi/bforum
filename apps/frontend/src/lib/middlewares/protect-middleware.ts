@@ -1,6 +1,6 @@
+import { NextResponse } from "next/server";
 import createMiddlewareClient from "@lib/api/client/create-middleware-client";
 import type { ChainableMiddleware } from "@utils/middleware";
-import { NextResponse } from "next/server";
 
 const protectMiddleware: ChainableMiddleware<{
   whenVisited: string[];

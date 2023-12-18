@@ -1,13 +1,13 @@
 "use client";
 
-import FormInput from "@components/form-input";
-import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
 import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import ScalingDialogRoot from "@components/scaling-dialog";
+import FormInput from "@components/form-input";
 import useNodesApi from "../_helpers/use-nodes-api";
 import type { CreateNodeFormData } from "../types";
 import { CreateNodeFormSchema } from "../types";

@@ -1,11 +1,11 @@
 "use client";
 
-import type { ApiGroup, ApiPermission } from "@lib/api/api.types";
 import { Button, Checkbox, Table } from "@radix-ui/themes";
-import { cn } from "@utils/tw";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { cn } from "@utils/tw";
+import type { ApiGroup, ApiPermission } from "@lib/api/api.types";
 import useGroupsApi from "../_helpers/use-groups-api";
 import { sortPermissions } from "../_helpers/utils";
 

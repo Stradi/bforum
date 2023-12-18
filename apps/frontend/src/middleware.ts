@@ -1,9 +1,8 @@
+import type { NextFetchEvent, NextRequest } from "next/server";
 import apiClientMiddleware from "@lib/middlewares/api-client-middleware";
 import protectMiddleware from "@lib/middlewares/protect-middleware";
 import { chain } from "@utils/middleware";
-import type { NextFetchEvent, NextRequest } from "next/server";
 
-// eslint-disable-next-line @typescript-eslint/require-await -- we need that
 export default async function middleware(
   req: NextRequest,
   event: NextFetchEvent

@@ -1,6 +1,6 @@
+import { z } from "zod";
 import type { ApiNode } from "@lib/api/api.types";
 import type { ApiResponse } from "@lib/api/client";
-import { z } from "zod";
 
 export type DndNode = ApiNode & {
   dndId: number;

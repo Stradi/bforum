@@ -1,7 +1,7 @@
-import InterceptorModal from "@components/interceptor-modal";
-import RegisterForm from "@components/register-form";
 import { Link, Separator, Text } from "@radix-ui/themes";
 import { default as NextLink } from "next/link";
+import InterceptorModal from "@components/interceptor-modal";
+import RegisterForm from "@components/register-form";
 
 type Props = {
   searchParams: {

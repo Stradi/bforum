@@ -1,5 +1,5 @@
-import LoginForm from "@components/login-form/page";
 import { Heading } from "@radix-ui/themes";
+import LoginForm from "@components/login-form/page";
 
 export default function Page() {
   return (

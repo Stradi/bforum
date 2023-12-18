@@ -1,8 +1,8 @@
 "use client";
 
+import type { ColumnDef } from "@tanstack/react-table";
 import DataTable from "@components/data-table";
 import type { ApiGroup } from "@lib/api/api.types";
-import type { ColumnDef } from "@tanstack/react-table";
 import SingleGroupRow from "./single-group-row";
 
 const columns: ColumnDef<ApiGroup>[] = [

@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import useClient from "@hooks/use-client";
-import { login } from "@lib/api/auth";
 import { Button, Text } from "@radix-ui/themes";
-import { cn } from "@utils/tw";
 import { KeyRoundIcon, UserIcon } from "lucide-react";
 import type { ComponentPropsWithoutRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { cn } from "@utils/tw";
+import { login } from "@lib/api/auth";
+import useClient from "@hooks/use-client";
 import FormInput from "../form-input";
 
 const LoginFormSchema = z.object({

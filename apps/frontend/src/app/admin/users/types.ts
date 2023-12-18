@@ -1,6 +1,6 @@
+import { z } from "zod";
 import type { ApiAccount } from "@lib/api/api.types";
 import type { ApiResponse } from "@lib/api/client";
-import { z } from "zod";
 
 export const UpdateAccountFormSchema = z.object({
   username: z.string().min(1).max(255),

@@ -1,8 +1,8 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import type { ApiGroup } from "@lib/api/api.types";
 import createServerActionClient from "@lib/api/client/create-server-action-client";
-import { revalidatePath } from "next/cache";
 import type {
   CreateGroupFormData,
   UpdateGroupFormData,

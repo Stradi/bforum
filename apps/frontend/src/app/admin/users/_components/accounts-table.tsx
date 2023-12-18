@@ -1,9 +1,9 @@
 "use client";
 
-import DataTable from "@components/data-table";
-import type { ApiAccount, ApiAccountGroup, ApiGroup } from "@lib/api/api.types";
 import { Badge } from "@radix-ui/themes";
 import { type ColumnDef } from "@tanstack/react-table";
+import DataTable from "@components/data-table";
+import type { ApiAccount, ApiAccountGroup, ApiGroup } from "@lib/api/api.types";
 import SingleAccountRow from "./single-account-row";
 
 const columns: ColumnDef<ApiAccount>[] = [

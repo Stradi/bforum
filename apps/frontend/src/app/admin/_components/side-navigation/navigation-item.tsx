@@ -1,10 +1,10 @@
 "use client";
 
-import { cn } from "@utils/tw";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentPropsWithoutRef, ElementRef } from "react";
 import { forwardRef } from "react";
+import { cn } from "@utils/tw";
 
 type Props = ComponentPropsWithoutRef<typeof Link>;
 const NavigationItem = forwardRef<ElementRef<typeof Link>, Props>(

@@ -1,9 +1,9 @@
 "use client";
 
-import Container from "@components/container";
 import { usePathname } from "next/navigation";
 import type { MouseEvent, RefObject } from "react";
 import { useEffect, useState } from "react";
+import Container from "@components/container";
 import NavigationItem from "./navigation-item";
 
 type Item = {

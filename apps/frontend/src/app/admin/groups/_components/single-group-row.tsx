@@ -1,9 +1,6 @@
 "use client";
 
-import FormInput from "@components/form-input";
-import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ApiGroup } from "@lib/api/api.types";
 import {
   Button,
   Dialog,
@@ -18,6 +15,9 @@ import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { ApiGroup } from "@lib/api/api.types";
+import ScalingDialogRoot from "@components/scaling-dialog";
+import FormInput from "@components/form-input";
 import useGroupsApi from "../_helpers/use-groups-api";
 import type { UpdateGroupFormData } from "../types";
 import { UpdateGroupFormSchema } from "../types";

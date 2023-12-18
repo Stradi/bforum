@@ -1,6 +1,6 @@
-import Container from "@components/container";
 import { Text } from "@radix-ui/themes";
 import type { ReactNode } from "react";
+import Container from "@components/container";
 
 type Props = {
   subText?: string;

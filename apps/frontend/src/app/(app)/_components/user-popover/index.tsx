@@ -1,7 +1,7 @@
 "use client";
 
-import type { ApiAccount } from "@lib/api/api.types";
 import { Avatar, Button, Inset, Popover, Text } from "@radix-ui/themes";
+import type { ApiAccount } from "@lib/api/api.types";
 import UserPopoverLink from "./user-popover-link";
 
 type Props = {

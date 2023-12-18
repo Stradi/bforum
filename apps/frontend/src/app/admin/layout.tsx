@@ -1,6 +1,6 @@
+import { createRef, type PropsWithChildren } from "react";
 import NavigationBar from "@components/navigation-bar";
 import TopNavigation from "@components/navigation-bar/top-navigation";
-import { createRef, type PropsWithChildren } from "react";
 
 type Props = PropsWithChildren;
 

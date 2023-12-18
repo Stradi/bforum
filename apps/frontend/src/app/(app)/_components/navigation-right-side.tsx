@@ -1,7 +1,7 @@
-import createServerComponentClient from "@lib/api/client/create-server-component-client";
 import { Button } from "@radix-ui/themes";
 import { LogInIcon, UserRoundPlusIcon } from "lucide-react";
 import Link from "next/link";
+import createServerComponentClient from "@lib/api/client/create-server-component-client";
 import UserPopover from "./user-popover";
 
 export default async function NavigationRightSide() {

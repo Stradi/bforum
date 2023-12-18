@@ -1,6 +1,6 @@
 import { Heading, Text } from "@radix-ui/themes";
-import { cn } from "@utils/tw";
 import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@utils/tw";
 
 type Props = ComponentPropsWithoutRef<"section"> & {
   title: string;

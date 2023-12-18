@@ -1,9 +1,6 @@
 "use client";
 
-import FormInput from "@components/form-input";
-import ScalingDialogRoot from "@components/scaling-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ApiAccount, ApiGroup } from "@lib/api/api.types";
 import {
   Button,
   Checkbox,
@@ -19,6 +16,9 @@ import { User2Icon } from "lucide-react";
 import { startTransition, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { ApiAccount, ApiGroup } from "@lib/api/api.types";
+import ScalingDialogRoot from "@components/scaling-dialog";
+import FormInput from "@components/form-input";
 import useAccountsApi from "../_helpers/use-accounts-api";
 import type { UpdateAccountFormData } from "../types";
 import { UpdateAccountFormSchema } from "../types";
