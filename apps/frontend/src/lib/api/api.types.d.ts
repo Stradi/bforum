@@ -49,6 +49,7 @@ export type ApiNode = BaseApiObject & {
   parent?: ApiNode;
 
   threads?: ApiThread[];
+  children?: ApiNode[];
 };
 
 export type ApiThread = BaseApiObject & {
