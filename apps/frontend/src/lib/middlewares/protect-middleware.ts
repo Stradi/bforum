@@ -6,34 +6,61 @@ const protectMiddleware: ChainableMiddleware<{
   whenVisited: string[];
   redirectTo: string;
   redirectIfAuthenticated: boolean;
+  requiredPermissions?: string[];
 }> = (options) => {
   return async (request, response) => {
-    const shouldRedirect = options.whenVisited.some((path) =>
+    const {
+      whenVisited,
+      redirectTo,
+      redirectIfAuthenticated,
+      requiredPermissions,
+    } = options;
+    const shouldRedirect = whenVisited.some((path) =>
       request.nextUrl.pathname.startsWith(path)
     );
 
-    // User is not visiting any of the routes we care about.
     if (!shouldRedirect) return;
 
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = options.redirectTo;
+    redirectUrl.pathname = redirectTo;
 
-    // User is already on the redirect page.
     if (redirectUrl.href === request.nextUrl.toString()) return;
 
     const client = await createMiddlewareClient(request, response);
     const isAuthenticated = client.isAuthenticated();
 
-    if (options.redirectIfAuthenticated) {
-      if (isAuthenticated) {
-        return NextResponse.redirect(redirectUrl, {
-          ...response,
-        });
-      }
-    } else if (!isAuthenticated) {
-      return NextResponse.redirect(redirectUrl, {
-        ...response,
+    if (redirectIfAuthenticated && isAuthenticated) {
+      return NextResponse.redirect(redirectUrl, { ...response });
+    } else if (!redirectIfAuthenticated && !isAuthenticated) {
+      return NextResponse.redirect(redirectUrl, { ...response });
+    }
+
+    if (!requiredPermissions?.length) return;
+
+    let hasPermission = false;
+    for await (const permission of requiredPermissions) {
+      const permissionResponse = await client.sendRequest<{
+        message: string;
+        payload: boolean;
+      }>("/api/v1/permissions/canPerform", {
+        method: "POST",
+        body: JSON.stringify({
+          permission_name: permission,
+        }),
       });
+
+      if (!permissionResponse.success) {
+        return NextResponse.redirect(redirectUrl, { ...response });
+      }
+
+      if (permissionResponse.data.payload) {
+        hasPermission = true;
+        break;
+      }
+    }
+
+    if (!hasPermission) {
+      return NextResponse.redirect(redirectUrl, { ...response });
     }
   };
 };

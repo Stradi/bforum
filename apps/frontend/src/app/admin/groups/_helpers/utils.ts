@@ -2,6 +2,7 @@ import type { ApiPermission } from "@lib/api/api.types";
 
 export function sortPermissions(a: ApiPermission, b: ApiPermission) {
   const SortOrder = [
+    "General",
     "Node",
     "Thread",
     "Reply",

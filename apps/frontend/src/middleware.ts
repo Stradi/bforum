@@ -18,6 +18,7 @@ export default async function middleware(
       whenVisited: ["/admin"],
       redirectTo: "/login",
       redirectIfAuthenticated: false,
+      requiredPermissions: ["General.CanViewAdminPanel"],
     }),
   ]);
 }
