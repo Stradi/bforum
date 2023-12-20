@@ -39,21 +39,9 @@ const protectMiddleware: ChainableMiddleware<{
 
     let hasPermission = false;
     for await (const permission of requiredPermissions) {
-      const permissionResponse = await client.sendRequest<{
-        message: string;
-        payload: boolean;
-      }>("/api/v1/permissions/canPerform", {
-        method: "POST",
-        body: JSON.stringify({
-          permission_name: permission,
-        }),
-      });
+      const permissionResponse = await client.checkPermission(permission);
 
-      if (!permissionResponse.success) {
-        return NextResponse.redirect(redirectUrl, { ...response });
-      }
-
-      if (permissionResponse.data.payload) {
+      if (permissionResponse) {
         hasPermission = true;
         break;
       }

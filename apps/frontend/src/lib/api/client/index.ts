@@ -109,6 +109,24 @@ export default class Client {
     return account.data.payload;
   }
 
+  async checkPermission(permissionName: string) {
+    const permissionResponse = await this.sendRequest<{
+      message: string;
+      payload: boolean;
+    }>("/api/v1/permissions/canPerform", {
+      method: "POST",
+      body: JSON.stringify({
+        permission_name: permissionName,
+      }),
+    });
+
+    if (!permissionResponse.success) {
+      return false;
+    }
+
+    return permissionResponse.data.payload;
+  }
+
   async sendRequest<Data = unknown, AdditionalData = unknown>(
     path: string,
     options?: RequestInit
