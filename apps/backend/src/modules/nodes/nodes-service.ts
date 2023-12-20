@@ -18,6 +18,7 @@ export default class NodesService {
     const nodes = await db.query.nodes.findMany({
       with: {
         parent: dto.with_parent || undefined,
+        children: dto.with_children || undefined,
       },
       limit: dto.limit || 25,
       offset: dto.offset || 0,
@@ -32,6 +33,7 @@ export default class NodesService {
       where: eq(nodesTable.slug, slug),
       with: {
         parent: dto.with_parent || undefined,
+        children: dto.with_children || undefined,
       },
     });
 

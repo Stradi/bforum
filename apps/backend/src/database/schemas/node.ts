@@ -53,4 +53,13 @@ export const nodesRelations = relations(nodesTable, ({ one, many }) => ({
     fields: [nodesTable.created_by],
     references: [accountsTable.id],
   }),
+
+  _childrenOne: one(nodesTable, {
+    fields: [nodesTable.parent_id],
+    references: [nodesTable.id],
+    relationName: "children",
+  }),
+  children: many(nodesTable, {
+    relationName: "children",
+  }),
 }));

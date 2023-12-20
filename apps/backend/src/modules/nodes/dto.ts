@@ -5,11 +5,13 @@ export type TGetSingleNodeQuerySchema = zod.infer<
 >;
 export const GetSingleNodeQuerySchema = zod.object({
   with_parent: zod.coerce.boolean().optional(),
+  with_children: zod.coerce.boolean().optional(),
 });
 
 export type TGetAllNodesQuerySchema = zod.infer<typeof GetAllNodesQuerySchema>;
 export const GetAllNodesQuerySchema = zod.object({
   with_parent: zod.coerce.boolean().optional(),
+  with_children: zod.coerce.boolean().optional(),
   limit: zod.coerce.number().optional(),
   offset: zod.coerce.number().optional(),
 });
