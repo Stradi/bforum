@@ -1,3 +1,5 @@
+"use client";
+
 import type { DragLayerMonitorProps } from "@minoru/react-dnd-treeview";
 import { ChevronsDownUpIcon, GripVerticalIcon } from "lucide-react";
 import { Button } from "@components/ui/button";

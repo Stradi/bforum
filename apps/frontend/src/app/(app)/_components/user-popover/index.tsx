@@ -1,5 +1,3 @@
-"use client";
-
 import type { ApiAccount } from "@lib/api/api.types";
 import {
   Popover,

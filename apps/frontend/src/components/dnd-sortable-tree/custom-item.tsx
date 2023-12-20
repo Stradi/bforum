@@ -1,3 +1,5 @@
+"use client";
+
 import type { NodeModel, RenderParams } from "@minoru/react-dnd-treeview";
 import {
   ChevronsDownUpIcon,
