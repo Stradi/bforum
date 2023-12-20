@@ -12,15 +12,24 @@ type Resource =
   | "Reply"
   | "Group"
   | "Permission"
-  | "Account";
+  | "Account"
+  | "General";
 type Scope = string;
 type BaseActions = "List" | "Read" | "Create" | "Update" | "Delete";
 type NodeActions = BaseActions | "UpdateOrder";
 type GroupActions = BaseActions | "UpdatePermission";
 type AccountActions = BaseActions | "UpdateGroups";
-type Action = BaseActions | NodeActions | GroupActions | AccountActions;
+type GeneralActions = "CanViewAdminPanel";
+type Action =
+  | BaseActions
+  | NodeActions
+  | GroupActions
+  | AccountActions
+  | GeneralActions;
 
+// TODO: Fix this type. Current version allows "General.Create" etc. It should only allow "General.CanViewAdminPanel"
 type PermissionString =
+  | `General.${GeneralActions}`
   | `${Resource}.${Scope}.${Action}`
   | `${Resource}.${Action}`;
 
@@ -29,6 +38,8 @@ const DefaultPermissionMatrix: Record<
   PermissionString[]
 > = {
   Admin: [
+    "General.CanViewAdminPanel",
+
     "Node.List",
     "Node.*.Read",
     "Node.Create",

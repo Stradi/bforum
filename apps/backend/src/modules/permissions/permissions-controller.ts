@@ -4,12 +4,14 @@ import { tryParseInt } from "../../utils/text";
 import type { Handler } from "../base-controller";
 import BaseController from "../base-controller";
 import type {
+  TCanPerformBodySchema,
   TCreatePermissionBodySchema,
   TGetAllPermissionsQuerySchema,
   TGetSinglePermissionQuerySchema,
   TUpdatePermissionBodySchema,
 } from "./dto";
 import {
+  CanPerformBodySchema,
   CreatePermissionBodySchema,
   GetAllPermissionsQuerySchema,
   UpdatePermissionBodySchema,
@@ -27,7 +29,8 @@ export class PermissionsController extends BaseController {
       .get("/permissions/:id", authMiddleware(), this.getSinglePermission)
       .post("/permissions", authMiddleware(), this.createPermission)
       .patch("/permissions/:id", authMiddleware(), this.updatePermission)
-      .delete("/permissions/:id", authMiddleware(), this.deletePermission);
+      .delete("/permissions/:id", authMiddleware(), this.deletePermission)
+      .post("/permissions/canPerform", authMiddleware(), this.canPerform);
   }
 
   getAllPermissions: Handler<"/permissions"> = async (ctx) => {
@@ -194,6 +197,31 @@ export class PermissionsController extends BaseController {
     return this.ok(ctx, {
       message: `Permission with id '${permissionId}' successfully deleted.`,
       payload: deletedPermission,
+    });
+  };
+
+  canPerform: Handler<"/permissions/canPerform"> = async (ctx) => {
+    const body = await this.validateBody<TCanPerformBodySchema>(
+      ctx,
+      CanPerformBodySchema
+    );
+
+    let canPerform = false;
+    try {
+      await this.checkPolicy(
+        this.permissionsPolicy,
+        "can",
+        body.permission_name,
+        ctx.get("jwtPayload")
+      );
+      canPerform = true;
+    } catch (error) {
+      canPerform = false;
+    }
+
+    return this.ok(ctx, {
+      message: `Permission check successful.`,
+      payload: canPerform,
     });
   };
 }

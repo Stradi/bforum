@@ -29,3 +29,8 @@ export type TUpdatePermissionBodySchema = zod.infer<
 export const UpdatePermissionBodySchema = zod.object({
   name: zod.string().min(1).max(255).optional(),
 });
+
+export type TCanPerformBodySchema = zod.infer<typeof CanPerformBodySchema>;
+export const CanPerformBodySchema = zod.object({
+  permission_name: zod.string().min(1).max(255),
+});
