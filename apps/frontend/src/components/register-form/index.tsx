@@ -101,7 +101,7 @@ export default function RegisterForm({ className, ...props }: Props) {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="**********" {...field} />
+                <Input placeholder="**********" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +114,7 @@ export default function RegisterForm({ className, ...props }: Props) {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input placeholder="**********" {...field} />
+                <Input placeholder="**********" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
