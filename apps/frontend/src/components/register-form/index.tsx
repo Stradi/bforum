@@ -37,6 +37,12 @@ export default function RegisterForm({ className, ...props }: Props) {
   const form = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterFormSchema),
     mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      username: "",
+      password: "",
+      passwordConfirmation: "",
+    },
   });
 
   const client = useClient();

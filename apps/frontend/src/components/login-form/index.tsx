@@ -30,6 +30,10 @@ export default function LoginForm({ className, ...props }: Props) {
   const form = useForm<LoginFormType>({
     resolver: zodResolver(LoginFormSchema),
     mode: "onSubmit",
+    defaultValues: {
+      username: "",
+      password: "",
+    },
   });
 
   const client = useClient();

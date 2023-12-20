@@ -33,6 +33,10 @@ export default function CreateNodeDialog() {
   const form = useForm<CreateNodeFormData>({
     resolver: zodResolver(CreateNodeFormSchema),
     mode: "onSubmit",
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   });
 
   function onSubmit(data: CreateNodeFormData) {

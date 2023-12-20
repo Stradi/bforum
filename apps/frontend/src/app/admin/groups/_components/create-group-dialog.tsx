@@ -32,6 +32,9 @@ export default function CreateGroupDialog() {
   const form = useForm<CreateGroupFormData>({
     resolver: zodResolver(CreateGroupFormSchema),
     mode: "onSubmit",
+    defaultValues: {
+      name: "",
+    },
   });
 
   function onSubmit(data: CreateGroupFormData) {
