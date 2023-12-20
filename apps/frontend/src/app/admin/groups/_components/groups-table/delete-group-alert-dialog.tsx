@@ -3,7 +3,6 @@
 import { startTransition, type PropsWithChildren, useState } from "react";
 import { toast } from "sonner";
 import {
-  AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -12,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
 import type { ApiGroup } from "@lib/api/api.types";
+import ScalingAlertDialogRoot from "@components/scaling-dialog/scaling-alert-dialog";
 import useGroupsApi from "../../_helpers/use-groups-api";
 
 type Props = PropsWithChildren & {
@@ -37,7 +37,15 @@ export default function DeleteGroupAlertDialog({ children, group }: Props) {
   }
 
   return (
-    <AlertDialog onOpenChange={setOpen} open={open}>
+    <ScalingAlertDialogRoot
+      onClose={() => {
+        setOpen(false);
+      }}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      open={open}
+    >
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent className="!max-w-[500px]">
         <AlertDialogTitle>Delete Group</AlertDialogTitle>
@@ -51,6 +59,6 @@ export default function DeleteGroupAlertDialog({ children, group }: Props) {
           </AlertDialogAction>
         </div>
       </AlertDialogContent>
-    </AlertDialog>
+    </ScalingAlertDialogRoot>
   );
 }
