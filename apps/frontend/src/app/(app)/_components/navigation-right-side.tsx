@@ -20,7 +20,7 @@ export default async function NavigationRightSide() {
           Login
         </Button>
       </Link>
-      <Link href="register" scroll={false}>
+      <Link href="/register" scroll={false}>
         <Button className="gap-x-1" variant="ghost">
           <UserRoundPlusIcon className="w-4 h-4" />
           Register
