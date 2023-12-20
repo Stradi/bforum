@@ -154,7 +154,7 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
                 return state;
               });
             }}
-            variant="destructive"
+            variant="ghost"
           >
             <TrashIcon className="w-4 h-4" />
             Discard Changes
