@@ -5,7 +5,7 @@ type Props = {
   label: string;
   href: string;
 };
-export default function UserPopoverLink({ label, href }: Props) {
+export default function AccountPopoverLink({ label, href }: Props) {
   return (
     <Button
       asChild

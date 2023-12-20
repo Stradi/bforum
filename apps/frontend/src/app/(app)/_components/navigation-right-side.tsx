@@ -2,14 +2,14 @@ import { LogInIcon, UserRoundPlusIcon } from "lucide-react";
 import Link from "next/link";
 import createServerComponentClient from "@lib/api/client/create-server-component-client";
 import { Button } from "@components/ui/button";
-import UserPopover from "./user-popover";
+import AccountPopover from "@components/account-popover";
 
 export default async function NavigationRightSide() {
   const client = await createServerComponentClient();
-  const account = await client.getAuthenticatedAccount();
 
-  if (account) {
-    return <UserPopover account={account} />;
+  const isAuthenticated = client.isAuthenticated();
+  if (isAuthenticated) {
+    return <AccountPopover />;
   }
 
   return (

@@ -1,6 +1,7 @@
 import { createRef, type PropsWithChildren } from "react";
 import NavigationBar from "@components/navigation-bar";
 import TopNavigation from "@components/navigation-bar/top-navigation";
+import AccountPopover from "@components/account-popover";
 
 type Props = PropsWithChildren;
 
@@ -8,10 +9,7 @@ export default function Layout({ children }: Props) {
   return (
     <div>
       <header>
-        <TopNavigation
-          rightSide={<div className="text-xs">User</div>}
-          subText="Admin"
-        />
+        <TopNavigation rightSide={<AccountPopover />} subText="Admin" />
         <NavigationBar
           items={[
             {
