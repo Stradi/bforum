@@ -17,7 +17,7 @@ export default async function Page() {
     <div>
       <SubHeader
         description="You can see all the groups in your forum here. You can create, edit and delete groups. Click on a group to see more information and actions about it."
-        title="Groups"
+        title="Overview"
       >
         <CreateGroupDialog />
       </SubHeader>

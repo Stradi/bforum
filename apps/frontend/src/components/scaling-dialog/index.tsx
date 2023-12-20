@@ -1,11 +1,11 @@
 "use client";
 
-import { Dialog } from "@radix-ui/themes";
 import { useEffect, type ComponentPropsWithoutRef } from "react";
+import { Dialog } from "@components/ui/dialog";
 import useScalingDialog from "./use-scaling-dialog";
 
 type ScalingDialogRootProps = Omit<
-  ComponentPropsWithoutRef<typeof Dialog.Root>,
+  ComponentPropsWithoutRef<typeof Dialog>,
   "onOpenChange"
 > & {
   onOpen?: () => void;
@@ -19,8 +19,8 @@ export default function ScalingDialogRoot({
 }: ScalingDialogRootProps) {
   const scalingDialog = useScalingDialog();
 
-  const openClasses = "rounded-lg duration-500".split(" ");
-  const closedClasses = "rounded-none duration-300".split(" ");
+  const openClasses = "rounded-lg duration-300".split(" ");
+  const closedClasses = "rounded-none duration-200".split(" ");
 
   useEffect(() => {
     if (open === undefined) return;
@@ -63,5 +63,5 @@ export default function ScalingDialogRoot({
     }
   }
 
-  return <Dialog.Root onOpenChange={handleOpenChange} open={open} {...props} />;
+  return <Dialog onOpenChange={handleOpenChange} open={open} {...props} />;
 }

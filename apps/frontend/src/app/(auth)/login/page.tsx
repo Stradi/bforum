@@ -1,12 +1,9 @@
-import { Heading } from "@radix-ui/themes";
-import LoginForm from "@components/login-form/page";
+import LoginForm from "@components/login-form";
 
 export default function Page() {
   return (
     <>
-      <Heading as="h1" className="text-center">
-        Login to Your Account
-      </Heading>
+      <h1 className="text-center text-xl font-medium">Login to Your Account</h1>
       <LoginForm className="max-w-[400px] w-full p-4" />
     </>
   );

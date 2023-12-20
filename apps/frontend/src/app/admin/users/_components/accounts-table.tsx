@@ -1,10 +1,9 @@
 "use client";
 
-import { Badge } from "@radix-ui/themes";
 import { type ColumnDef } from "@tanstack/react-table";
-import DataTable from "@components/data-table";
 import type { ApiAccount, ApiAccountGroup, ApiGroup } from "@lib/api/api.types";
-import SingleAccountRow from "./single-account-row";
+import { DataTable } from "@components/ui/data-table";
+import { Badge } from "@components/ui/badge";
 
 const columns: ColumnDef<ApiAccount>[] = [
   {
@@ -32,32 +31,25 @@ const columns: ColumnDef<ApiAccount>[] = [
       return (
         <div className="flex flex-wrap gap-0.5">
           {accountGroups.map((accountGroup) => (
-            <Badge
-              className="bg-gray-200 text-gray-800"
-              key={accountGroup.group_id}
-            >
-              {accountGroup.group.name}
-            </Badge>
+            <Badge key={accountGroup.group_id}>{accountGroup.group.name}</Badge>
           ))}
         </div>
       );
     },
   },
+  // TODO: Add actions dropdown
 ];
 
 type Props = {
   accounts: ApiAccount[];
   groups: ApiGroup[];
 };
-export default function AccountsTable({ accounts, groups }: Props) {
+export default function AccountsTable({ accounts }: Props) {
   return (
     <DataTable
       columns={columns}
       data={accounts}
       key={JSON.stringify(accounts)}
-      renderRow={(row) => (
-        <SingleAccountRow groups={groups} key={row.id} {...row} />
-      )}
     />
   );
 }

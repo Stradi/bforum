@@ -1,9 +1,8 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import DataTable from "@components/data-table";
 import type { ApiGroup } from "@lib/api/api.types";
-import SingleGroupRow from "./single-group-row";
+import { DataTable } from "@components/ui/data-table";
 
 const columns: ColumnDef<ApiGroup>[] = [
   {
@@ -19,6 +18,7 @@ const columns: ColumnDef<ApiGroup>[] = [
     header: "Account Count",
     accessorFn: (row) => row.accountGroup.length,
   },
+  // TODO: Add row actions dropdown
 ];
 
 type Props = {
@@ -26,11 +26,6 @@ type Props = {
 };
 export default function GroupsTable({ groups }: Props) {
   return (
-    <DataTable
-      columns={columns}
-      data={groups}
-      key={JSON.stringify(groups)}
-      renderRow={(row) => <SingleGroupRow key={row.id} {...row} />}
-    />
+    <DataTable columns={columns} data={groups} key={JSON.stringify(groups)} />
   );
 }

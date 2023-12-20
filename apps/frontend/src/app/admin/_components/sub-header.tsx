@@ -1,4 +1,3 @@
-import { Heading, Text } from "@radix-ui/themes";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@utils/tw";
 
@@ -15,14 +14,12 @@ export default function SubHeader({
 }: Props) {
   return (
     <section
-      className={cn("flex justify-between items-center", className)}
+      className={cn("flex justify-between items-center gap-4", className)}
       {...props}
     >
-      <div>
-        <Heading as="h2" mb={description ? "2" : undefined} size="6">
-          {title}
-        </Heading>
-        {description ? <Text size="2">{description}</Text> : null}
+      <div className="space-y-1">
+        <h2 className="text-lg font-medium">{title}</h2>
+        {description ? <p className="text-sm">{description}</p> : null}
       </div>
       {children}
     </section>

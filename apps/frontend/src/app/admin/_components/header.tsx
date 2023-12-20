@@ -1,4 +1,3 @@
-import { Heading, Text } from "@radix-ui/themes";
 import type { ComponentPropsWithoutRef } from "react";
 import Container from "@components/container";
 import { cn } from "@utils/tw";
@@ -20,11 +19,9 @@ export default function Header({
       {...props}
     >
       <Container className="px-4 flex justify-between items-center">
-        <div>
-          <Heading as="h1" mb={description ? "2" : undefined} size="7">
-            {title}
-          </Heading>
-          {description ? <Text size="2">{description}</Text> : null}
+        <div className="space-y-1">
+          <h1 className={cn("text-xl font-medium")}>{title}</h1>
+          {description ? <p className="text-sm">{description}</p> : null}
         </div>
         {children}
       </Container>

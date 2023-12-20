@@ -5,7 +5,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@utils/tw";
-import { register as doRegister } from "@lib/api/auth";
+import { login } from "@lib/api/auth";
 import useClient from "@hooks/use-client";
 import {
   Form,
@@ -18,36 +18,24 @@ import {
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 
-const RegisterFormSchema = z
-  .object({
-    email: z.string().email(),
-    username: z.string().min(3).max(63),
-    password: z.string().min(8).max(63),
-    passwordConfirmation: z.string().min(8).max(63),
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: "Passwords do not match",
-    path: ["passwordConfirmation"],
-  });
+const LoginFormSchema = z.object({
+  username: z.string().min(3).max(63),
+  password: z.string().min(8).max(63),
+});
 
-type RegisterFormType = z.infer<typeof RegisterFormSchema>;
+type LoginFormType = z.infer<typeof LoginFormSchema>;
 type Props = ComponentPropsWithoutRef<"form">;
 
-export default function RegisterForm({ className, ...props }: Props) {
-  const form = useForm<RegisterFormType>({
-    resolver: zodResolver(RegisterFormSchema),
+export default function LoginForm({ className, ...props }: Props) {
+  const form = useForm<LoginFormType>({
+    resolver: zodResolver(LoginFormSchema),
     mode: "onSubmit",
   });
 
   const client = useClient();
 
-  async function onSubmit(data: RegisterFormType) {
-    const obj = await doRegister(client, {
-      username: data.username,
-      email: data.email,
-      password: data.password,
-    });
-
+  async function onSubmit(data: LoginFormType) {
+    const obj = await login(client, data);
     if (!obj.success) {
       form.setError("root", {
         message: obj.error.message,
@@ -56,7 +44,6 @@ export default function RegisterForm({ className, ...props }: Props) {
       return;
     }
 
-    // This is the way to perform a full page reload (with SSR).
     window.location.href = "/";
   }
 
@@ -83,49 +70,23 @@ export default function RegisterForm({ className, ...props }: Props) {
         />
         <FormField
           control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="jon@snow.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="**********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="passwordConfirmation"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input placeholder="**********" {...field} />
+                <Input placeholder="jonsnow" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         {form.formState.errors.root ? (
-          <p className="text-red-500 text-xs">
+          <p className="text-red-500 text-sm">
             {form.formState.errors.root.message}
           </p>
         ) : null}
-        <Button type="submit">Register</Button>
+        <Button type="submit">Login</Button>
       </form>
     </Form>
   );

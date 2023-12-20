@@ -1,7 +1,8 @@
-import { Link, Separator, Text } from "@radix-ui/themes";
-import { default as NextLink } from "next/link";
+import Link from "next/link";
 import InterceptorModal from "@components/interceptor-modal";
 import RegisterForm from "@components/register-form";
+import { Separator } from "@components/ui/separator";
+import { Button } from "@components/ui/button";
 
 type Props = {
   searchParams: {
@@ -14,16 +15,16 @@ export default function Page({ searchParams }: Props) {
   return (
     <InterceptorModal depth={currentDepth + 1} title="Create New Account">
       <RegisterForm />
-      <Separator my="3" size="4" />
-      <div className="flex flex-col items-center">
-        <Text size="2">
+      <Separator />
+      <div className="flex flex-col items-center text-sm">
+        <p>
           Already have an account?{" "}
-          <Link asChild size="2">
-            <NextLink href={`/login?depth=${currentDepth + 1}`} shallow={false}>
+          <Button asChild className="p-0 h-auto" variant="link">
+            <Link href={`/login?depth=${currentDepth + 1}`} shallow={false}>
               Login to that
-            </NextLink>
-          </Link>
-        </Text>
+            </Link>
+          </Button>
+        </p>
       </div>
     </InterceptorModal>
   );

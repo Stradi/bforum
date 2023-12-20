@@ -1,32 +1,37 @@
 "use client";
 
-import { AlertDialog, Button } from "@radix-ui/themes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@components/ui/alert-dialog";
+import { Button } from "@components/ui/button";
 
 type Props = {
   onDeleteNode: () => void;
 };
 export default function DeleteNodeAlertDialog({ onDeleteNode }: Props) {
   return (
-    <AlertDialog.Root>
-      <AlertDialog.Trigger>
-        <Button color="red">Delete</Button>
-      </AlertDialog.Trigger>
-      <AlertDialog.Content className="!max-w-[500px]">
-        <AlertDialog.Title size="4">Delete Node</AlertDialog.Title>
-        <AlertDialog.Description mt="-2" size="2">
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="!max-w-[500px]">
+        <AlertDialogTitle>Delete Node</AlertDialogTitle>
+        <AlertDialogDescription>
           Are you sure you want to delete this node?
-        </AlertDialog.Description>
+        </AlertDialogDescription>
         <div className="flex justify-end mt-4 gap-1">
-          <AlertDialog.Cancel>
-            <Button color="gray" variant="soft">
-              Cancel
-            </Button>
-          </AlertDialog.Cancel>
-          <AlertDialog.Action onClick={onDeleteNode}>
-            <Button color="red">Delete this Node</Button>
-          </AlertDialog.Action>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onDeleteNode}>
+            Delete this Node
+          </AlertDialogAction>
         </div>
-      </AlertDialog.Content>
-    </AlertDialog.Root>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

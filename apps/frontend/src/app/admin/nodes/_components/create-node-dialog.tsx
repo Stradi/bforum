@@ -1,28 +1,36 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
-import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ScalingDialogRoot from "@components/scaling-dialog";
-import FormInput from "@components/form-input";
-import useNodesApi from "../_helpers/use-nodes-api";
-import type { CreateNodeFormData } from "../types";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@components/ui/dialog";
+import { Button } from "@components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
 import { CreateNodeFormSchema } from "../types";
+import type { CreateNodeFormData } from "../types";
+import useNodesApi from "../_helpers/use-nodes-api";
 
 export default function CreateNodeDialog() {
   const api = useNodesApi();
   const [open, setOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<CreateNodeFormData>({
+  const form = useForm<CreateNodeFormData>({
     resolver: zodResolver(CreateNodeFormSchema),
     mode: "onSubmit",
   });
@@ -32,7 +40,7 @@ export default function CreateNodeDialog() {
     startTransition(async () => {
       const obj = await api.createNode(data);
       if (!obj.success) {
-        setError("root", {
+        form.setError("root", {
           type: "manual",
           message: obj.error.message,
         });
@@ -43,7 +51,7 @@ export default function CreateNodeDialog() {
 
       toast.success(obj.data.message);
       setOpen(false);
-      reset();
+      form.reset();
     });
   }
 
@@ -57,48 +65,59 @@ export default function CreateNodeDialog() {
       }}
       open={open}
     >
-      <Dialog.Trigger>
+      <DialogTrigger asChild>
         <Button>Create new Node</Button>
-      </Dialog.Trigger>
-      <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title size="4">Create a new node</Dialog.Title>
-        <Dialog.Description mt="-2" size="2">
+      </DialogTrigger>
+      <DialogContent className="!max-w-[450px]">
+        <DialogTitle>Create a new node</DialogTitle>
+        <DialogDescription>
           Create a new node to organize your community.
-        </Dialog.Description>
-        <Inset my="5">
-          <Separator my="3" size="4" />
-        </Inset>
+        </DialogDescription>
 
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- ... */}
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.name?.message}
-            icon={PencilIcon}
-            id="name"
-            label="Name"
-            placeholder="Off-topic"
-            register={register("name")}
-            type="text"
-          />
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.description?.message}
-            icon={PencilIcon}
-            id="description"
-            label="Description"
-            placeholder="Talk about anything here."
-            register={register("description")}
-            type="text"
-          />
-          {errors.root ? (
-            <Text as="p" className="text-red-500" size="1">
-              {errors.root.message}
-            </Text>
-          ) : null}
-          <Button type="submit">Create</Button>
-        </form>
-      </Dialog.Content>
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-4"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- ...
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Off-topic" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="A place to talk about anything"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {form.formState.errors.root ? (
+              <p className="text-red-500 text-sm">
+                {form.formState.errors.root.message}
+              </p>
+            ) : null}
+            <Button type="submit">Create</Button>
+          </form>
+        </Form>
+      </DialogContent>
     </ScalingDialogRoot>
   );
 }

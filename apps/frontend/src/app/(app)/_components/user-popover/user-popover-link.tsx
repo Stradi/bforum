@@ -1,23 +1,20 @@
 "use client";
 
-import { Link } from "@radix-ui/themes";
-import { default as NextLink } from "next/link";
-import type { ComponentProps } from "react";
+import Link from "next/link";
+import { Button } from "@components/ui/button";
 
 type Props = {
   label: string;
   href: string;
-  color?: ComponentProps<typeof Link>["color"];
 };
-export default function UserPopoverLink({ label, href, color }: Props) {
+export default function UserPopoverLink({ label, href }: Props) {
   return (
-    <Link
+    <Button
       asChild
-      className="hover:bg-[var(--accent-a3)] p-1.5"
-      color={color}
-      size="2"
+      className="justify-start hover:bg-neutral-100 hover:no-underline font-normal"
+      variant="link"
     >
-      <NextLink href={href}>{label}</NextLink>
-    </Link>
+      <Link href={href}>{label}</Link>
+    </Button>
   );
 }

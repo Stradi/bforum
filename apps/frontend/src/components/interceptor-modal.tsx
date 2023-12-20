@@ -1,13 +1,10 @@
 "use client";
 
-import { Button, Dialog } from "@radix-ui/themes";
-import { XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type PropsWithChildren } from "react";
 import ScalingDialogRoot from "./scaling-dialog";
+import { DialogContent, DialogTitle } from "./ui/dialog";
 
-// This duration is the same as the CSS transition duration
-// See https://github.com/radix-ui/themes/blob/main/packages/radix-ui-themes/src/components/dialog.css
 const ExitAnimationDuration = 150;
 
 type Props = PropsWithChildren & {
@@ -43,21 +40,10 @@ export default function InterceptorModal({ children, title, depth }: Props) {
       }}
       open={open}
     >
-      <Dialog.Content className="!max-w-[450px]">
-        <div className="flex justify-between items-center w-full mb-4">
-          {title ? (
-            <Dialog.Title mb="0" size="4">
-              {title}
-            </Dialog.Title>
-          ) : null}
-          <Dialog.Close>
-            <Button className="!py-1.5 !px-1.5" variant="ghost">
-              <XIcon height={22} strokeWidth={1.5} width={22} />
-            </Button>
-          </Dialog.Close>
-        </div>
+      <DialogContent className="w-[450px]">
+        {title ? <DialogTitle>{title}</DialogTitle> : null}
         {children}
-      </Dialog.Content>
+      </DialogContent>
     </ScalingDialogRoot>
   );
 }

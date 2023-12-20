@@ -25,7 +25,7 @@ export default async function Page() {
     <div>
       <SubHeader
         description="You can see all the nodes in your forum here. You can create, edit and delete nodes. Click on a node to see more information and actions about it."
-        title="Nodes"
+        title="Overview"
       >
         <CreateNodeDialog />
       </SubHeader>

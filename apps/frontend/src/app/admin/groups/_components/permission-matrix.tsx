@@ -1,11 +1,20 @@
 "use client";
 
-import { Button, Checkbox, Table } from "@radix-ui/themes";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@utils/tw";
 import type { ApiGroup, ApiPermission } from "@lib/api/api.types";
+import { Button } from "@components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@components/ui/table";
+import { Checkbox } from "@components/ui/checkbox";
 import useGroupsApi from "../_helpers/use-groups-api";
 import { sortPermissions } from "../_helpers/utils";
 
@@ -128,7 +137,7 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
       <div className="pb-1 flex items-center">
         <div className="space-x-1">
           <Button
-            color="red"
+            className="gap-1"
             disabled={!hasChanges}
             onClick={() => {
               setUpdatedPermissions([]);
@@ -145,11 +154,13 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
                 return state;
               });
             }}
+            variant="destructive"
           >
-            <TrashIcon className="w-3 h-3" />
+            <TrashIcon className="w-4 h-4" />
             Discard Changes
           </Button>
           <Button
+            className="gap-1"
             disabled={!hasChanges}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
@@ -163,66 +174,56 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
               }
             }}
           >
-            <SaveIcon className="w-3 h-3" /> Save
+            <SaveIcon className="w-4 h-4" /> Save
           </Button>
         </div>
       </div>
-      <Table.Root className="border rounded-lg w-fit" size="2">
-        <Table.Header>
-          <Table.Row className="divide-x font-semibold">
-            <Table.RowHeaderCell className="text-right !font-semibold">
-              <sup>Permission</sup>&frasl;<sub>Group</sub>
-            </Table.RowHeaderCell>
-            {groups.map((group) => (
-              <Table.Cell align="center" key={group.id}>
-                {group.name}
-              </Table.Cell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {sortedPermissions.map((permission) => (
-            <Table.Row className="divide-x !text-right" key={permission.id}>
-              <Table.RowHeaderCell className="font-mono !font-semibold !align-middle">
-                {permission.name}
-              </Table.RowHeaderCell>
+      <div className="border rounded-lg w-fit">
+        <Table>
+          <TableHeader>
+            <TableRow className="divide-x">
+              <TableHead>
+                <sup>Permission</sup>&frasl;<sub>Group</sub>
+              </TableHead>
               {groups.map((group) => (
-                <Table.Cell
-                  align="center"
-                  className={cn(
-                    isPermissionUpdated(permission.id, group.id) &&
-                      "!bg-blue-100"
-                  )}
-                  key={group.id}
-                >
-                  <Checkbox
-                    // defaultChecked={group.groupPermission.some(
-                    //   (groupPermission) =>
-                    //     groupPermission.permission_id === permission.id
-                    // )}
-                    // onCheckedChange={(checked) => {
-                    //   onCheckboxChange(
-                    //     permission.id,
-                    //     group.id,
-                    //     checked as boolean
-                    //   );
-                    // }}
-                    checked={checkboxState.get(`${permission.id}-${group.id}`)}
-                    onCheckedChange={(checked) => {
-                      onCheckboxChange(
-                        permission.id,
-                        group.id,
-                        checked as boolean
-                      );
-                    }}
-                    size="3"
-                  />
-                </Table.Cell>
+                <TableHead align="center" key={group.id}>
+                  {group.name}
+                </TableHead>
               ))}
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sortedPermissions.map((permission) => (
+              <TableRow className="divide-x" key={permission.id}>
+                <TableCell>{permission.name}</TableCell>
+                {groups.map((group) => (
+                  <TableCell
+                    align="center"
+                    className={cn(
+                      isPermissionUpdated(permission.id, group.id) &&
+                        "bg-neutral-200"
+                    )}
+                    key={group.id}
+                  >
+                    <Checkbox
+                      checked={checkboxState.get(
+                        `${permission.id}-${group.id}`
+                      )}
+                      onCheckedChange={(checked) => {
+                        onCheckboxChange(
+                          permission.id,
+                          group.id,
+                          checked as boolean
+                        );
+                      }}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

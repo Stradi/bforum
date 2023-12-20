@@ -1,7 +1,7 @@
-import { Button } from "@radix-ui/themes";
 import { LogInIcon, UserRoundPlusIcon } from "lucide-react";
 import Link from "next/link";
 import createServerComponentClient from "@lib/api/client/create-server-component-client";
+import { Button } from "@components/ui/button";
 import UserPopover from "./user-popover";
 
 export default async function NavigationRightSide() {
@@ -13,19 +13,19 @@ export default async function NavigationRightSide() {
   }
 
   return (
-    <div className="flex gap-0 divide-x divide-[var(--accent-a4)] hover:divide-[var(--accent-a5)]">
-      <Button asChild className="!rounded-r-none" variant="soft">
-        <Link href="/login" scroll={false}>
+    <div className="flex gap-1">
+      <Link href="/login" scroll={false}>
+        <Button className="gap-x-1" variant="ghost">
           <LogInIcon className="w-4 h-4" />
           Login
-        </Link>
-      </Button>
-      <Button asChild className="!rounded-l-none" variant="soft">
-        <Link href="register" scroll={false}>
+        </Button>
+      </Link>
+      <Link href="register" scroll={false}>
+        <Button className="gap-x-1" variant="ghost">
           <UserRoundPlusIcon className="w-4 h-4" />
           Register
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 }

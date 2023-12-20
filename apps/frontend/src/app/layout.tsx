@@ -1,5 +1,3 @@
-import { Theme, ThemePanel } from "@radix-ui/themes";
-import "@radix-ui/themes/styles.css";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { PropsWithChildren, ReactNode } from "react";
@@ -17,12 +15,9 @@ export default function Layout({ children, modal }: Props) {
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en">
       <body>
         <ScalingDialogProvider bodyColor="bg-black" padding={16}>
-          <Theme>
-            {children}
-            {modal}
-            <ThemePanel defaultOpen={false} />
-            <Toaster closeButton />
-          </Theme>
+          {children}
+          {modal}
+          <Toaster closeButton />
         </ScalingDialogProvider>
       </body>
     </html>

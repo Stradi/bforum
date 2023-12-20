@@ -1,13 +1,26 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
-import { PencilIcon } from "lucide-react";
 import { startTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ScalingDialogRoot from "@components/scaling-dialog";
-import FormInput from "@components/form-input";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
+import { Input } from "@components/ui/input";
+import { Textarea } from "@components/ui/textarea";
+import { Button } from "@components/ui/button";
 import useNodesApi from "../_helpers/use-nodes-api";
 import {
   UpdateNodeFormSchema,
@@ -25,13 +38,7 @@ type Props = {
 export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
   const api = useNodesApi();
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting, isValid },
-    reset,
-  } = useForm<UpdateNodeFormData>({
+  const form = useForm<UpdateNodeFormData>({
     resolver: zodResolver(UpdateNodeFormSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -46,7 +53,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
     startTransition(async () => {
       const obj = await api.updateNode(node.slug, data);
       if (!obj.success) {
-        setError("root", {
+        form.setError("root", {
           type: "manual",
           message: obj.error.message,
         });
@@ -56,7 +63,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
 
       toast.success(obj.data.message);
       setOpen(false);
-      reset();
+      form.reset();
     });
   }
 
@@ -65,7 +72,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
     startTransition(async () => {
       const obj = await api.deleteNode(node.slug);
       if (!obj.success) {
-        setError("root", {
+        form.setError("root", {
           type: "manual",
           message: obj.error.message,
         });
@@ -76,7 +83,7 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
 
       toast.success(obj.data.message);
       setOpen(false);
-      reset();
+      form.reset();
     });
   }
 
@@ -90,59 +97,78 @@ export default function NodeDetailsDialog({ node, open, setOpen }: Props) {
       }}
       open={open}
     >
-      <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title size="4">Node Details</Dialog.Title>
-        <Dialog.Description mt="-2" size="2">
+      <DialogContent className="!max-w-[450px]">
+        <DialogTitle>Node Details</DialogTitle>
+        <DialogDescription>
           View, update or delete &apos;{node.name}&apos; node.
-        </Dialog.Description>
-        <Inset my="5">
-          <Separator my="3" size="4" />
-        </Inset>
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- ... */}
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.name?.message}
-            icon={PencilIcon}
-            id="name"
-            label="Name"
-            placeholder="Off-topic"
-            register={register("name")}
-            type="text"
-          />
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.slug?.message}
-            icon={PencilIcon}
-            id="slug"
-            label="Slug"
-            placeholder="off-topic"
-            register={register("slug")}
-            type="text"
-          />
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.description?.message}
-            icon={PencilIcon}
-            id="description"
-            label="Description"
-            placeholder="Talk about anything here."
-            register={register("description")}
-            type="text"
-          />
-          {errors.root ? (
-            <Text as="p" className="text-red-500" size="1">
-              {errors.root.message}
-            </Text>
-          ) : null}
-          <div className="flex justify-end gap-1">
-            <DeleteNodeAlertDialog onDeleteNode={onDelete} />
-            <Button disabled={isSubmitting || !isValid} type="submit">
-              Update
-            </Button>
-          </div>
-        </form>
-      </Dialog.Content>
+        </DialogDescription>
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-4"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- ...
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Off-topic" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input placeholder="off-topic" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="A place to talk about anything"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {form.formState.errors.root ? (
+              <p className="text-red-500 text-sm">
+                {form.formState.errors.root.message}
+              </p>
+            ) : null}
+            <div className="flex justify-end gap-1">
+              <DeleteNodeAlertDialog onDeleteNode={onDelete} />
+              <Button
+                disabled={
+                  form.formState.isSubmitting || !form.formState.isValid
+                }
+                type="submit"
+              >
+                Update
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
     </ScalingDialogRoot>
   );
 }

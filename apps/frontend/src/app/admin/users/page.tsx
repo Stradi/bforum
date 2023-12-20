@@ -22,7 +22,7 @@ export default async function Page() {
     <div>
       <SubHeader
         description="You can see all the users in your forum here. You can create, edit and delete users. Click on a user to see more information and actions about it."
-        title="Users"
+        title="Overview"
       />
       <br />
       <AccountsTable

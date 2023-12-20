@@ -1,7 +1,6 @@
 "use client";
 
 import type { DropOptions, NodeModel } from "@minoru/react-dnd-treeview";
-import { Button, Text } from "@radix-ui/themes";
 import { SaveIcon, TrashIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -11,6 +10,7 @@ import {
   nodeModelToItem,
 } from "@components/dnd-sortable-tree/helpers";
 import DndSortableTree from "@components/dnd-sortable-tree";
+import { Button } from "@components/ui/button";
 import useNodesApi from "../_helpers/use-nodes-api";
 import type { DndNode, UpdateNodeOrderFormData } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
@@ -54,7 +54,7 @@ export default function NodesEditor({ nodes }: Props) {
       <div className="pb-1 flex justify-end items-center">
         <div className="space-x-1">
           <Button
-            color="red"
+            className="gap-1"
             disabled={!hasChanges}
             onClick={() => {
               setUpdatedNodes(savedNodesState);
@@ -62,11 +62,13 @@ export default function NodesEditor({ nodes }: Props) {
                 itemToNodeModelWithLexoRank
               );
             }}
+            variant="ghost"
           >
-            <TrashIcon className="w-3 h-3" />
+            <TrashIcon className="w-4 h-4" />
             Discard Changes
           </Button>
           <Button
+            className="gap-1"
             disabled={!hasChanges}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises -- I don't know why this happens
             onClick={async () => {
@@ -79,7 +81,7 @@ export default function NodesEditor({ nodes }: Props) {
               }
             }}
           >
-            <SaveIcon className="w-3 h-3" /> Save
+            <SaveIcon className="w-4 h-4" /> Save
           </Button>
         </div>
       </div>
@@ -105,7 +107,7 @@ export default function NodesEditor({ nodes }: Props) {
           />
         </>
       ) : (
-        <Text my="6">You don&apos;t have any nodes yet. Create one!</Text>
+        <p className="my-6">You don&apos;t have any nodes yet. Create one!</p>
       )}
     </div>
   );

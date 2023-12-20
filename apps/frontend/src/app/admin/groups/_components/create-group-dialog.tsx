@@ -1,28 +1,35 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Dialog, Inset, Separator, Text } from "@radix-ui/themes";
-import { PencilIcon } from "lucide-react";
 import { startTransition, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ScalingDialogRoot from "@components/scaling-dialog";
-import FormInput from "@components/form-input";
-import useGroupsApi from "../_helpers/use-groups-api";
-import type { CreateGroupFormData } from "../types";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@components/ui/dialog";
+import { Button } from "@components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@components/ui/form";
+import { Input } from "@components/ui/input";
 import { CreateGroupFormSchema } from "../types";
+import type { CreateGroupFormData } from "../types";
+import useGroupsApi from "../_helpers/use-groups-api";
 
 export default function CreateGroupDialog() {
   const api = useGroupsApi();
   const [open, setOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<CreateGroupFormData>({
+  const form = useForm<CreateGroupFormData>({
     resolver: zodResolver(CreateGroupFormSchema),
     mode: "onSubmit",
   });
@@ -32,7 +39,7 @@ export default function CreateGroupDialog() {
     startTransition(async () => {
       const obj = await api.createGroup(data);
       if (!obj.success) {
-        setError("root", {
+        form.setError("root", {
           type: "manual",
           message: obj.error.message,
         });
@@ -43,7 +50,7 @@ export default function CreateGroupDialog() {
 
       toast.success(obj.data.message);
       setOpen(false);
-      reset();
+      form.reset();
     });
   }
 
@@ -57,38 +64,43 @@ export default function CreateGroupDialog() {
       }}
       open={open}
     >
-      <Dialog.Trigger>
+      <DialogTrigger asChild>
         <Button>Create new Group</Button>
-      </Dialog.Trigger>
-      <Dialog.Content className="!max-w-[450px]">
-        <Dialog.Title size="4">Create a new group</Dialog.Title>
-        <Dialog.Description mt="-2" size="2">
+      </DialogTrigger>
+      <DialogContent className="!max-w-[450px]">
+        <DialogTitle>Create a new group</DialogTitle>
+        <DialogDescription>
           Create a group and manage your users.
-        </Dialog.Description>
-        <Inset my="5">
-          <Separator my="3" size="4" />
-        </Inset>
+        </DialogDescription>
 
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- ... */}
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            disabled={isSubmitting}
-            error={errors.name?.message}
-            icon={PencilIcon}
-            id="name"
-            label="Name"
-            placeholder="Moderator"
-            register={register("name")}
-            type="text"
-          />
-          {errors.root ? (
-            <Text as="p" className="text-red-500" size="1">
-              {errors.root.message}
-            </Text>
-          ) : null}
-          <Button type="submit">Create</Button>
-        </form>
-      </Dialog.Content>
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-4"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- ...
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Moderator" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {form.formState.errors.root ? (
+              <p className="text-red-500 text-sm">
+                {form.formState.errors.root.message}
+              </p>
+            ) : null}
+            <Button type="submit">Create</Button>
+          </form>
+        </Form>
+      </DialogContent>
     </ScalingDialogRoot>
   );
 }

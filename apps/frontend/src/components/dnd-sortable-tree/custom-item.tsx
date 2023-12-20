@@ -1,5 +1,4 @@
 import type { NodeModel, RenderParams } from "@minoru/react-dnd-treeview";
-import { Button } from "@radix-ui/themes";
 import {
   ChevronsDownUpIcon,
   ChevronsUpDownIcon,
@@ -7,6 +6,7 @@ import {
 } from "lucide-react";
 import type { MouseEvent } from "react";
 import { cn } from "@utils/tw";
+import { Button } from "@components/ui/button";
 import type { DndItem } from ".";
 
 type Props<T extends DndItem> = RenderParams & {
@@ -16,6 +16,7 @@ type Props<T extends DndItem> = RenderParams & {
   onClick?: () => void;
 };
 
+// TODO: Update colors of these
 export default function CustomItem<T extends DndItem>({
   node,
   indent,
@@ -38,12 +39,12 @@ export default function CustomItem<T extends DndItem>({
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- no need for keyboard events
     <div
       className={cn(
-        "flex gap-4 items-center border rounded-md px-3 py-1 bg-neutral-100",
+        "flex gap-1 items-center border rounded-md bg-neutral-50",
         "transition duration-100",
         isDropTarget && "border-neutral-300 bg-neutral-200",
         isDragging && "opacity-50",
         onClick &&
-          "cursor-pointer hover:bg-neutral-200 hover:border-neutral-300"
+          "cursor-pointer hover:bg-neutral-100 hover:border-neutral-300"
       )}
       data-has-child={hasChild}
       onClick={() => {
@@ -56,8 +57,9 @@ export default function CustomItem<T extends DndItem>({
       tabIndex={0}
     >
       <Button
-        className={cn("!py-1 !px-1", isDragging && "opacity-0")}
+        className={cn(isDragging && "opacity-0")}
         ref={handleRef}
+        size="icon"
         type="button"
         variant="ghost"
       >
@@ -65,8 +67,9 @@ export default function CustomItem<T extends DndItem>({
       </Button>
       {hasChild ? (
         <Button
-          className={cn("!py-1 !px-1", isDragging && "opacity-0")}
+          className={cn(isDragging && "opacity-0")}
           onClick={onCollapse}
+          size="icon"
           type="button"
           variant="ghost"
         >
