@@ -42,6 +42,8 @@ export type ApiNode = BaseApiObject & {
   description: string;
   order: string;
 
+  thread_count?: number;
+
   created_by: number;
   creator: ApiAccount;
 

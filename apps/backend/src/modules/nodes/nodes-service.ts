@@ -1,9 +1,10 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { LexoRank } from "lexorank";
 import { getDatabase } from "../../database";
 import { nodesTable } from "../../database/schemas/node";
 import type { JwtPayload } from "../../types/jwt";
 import { slugify } from "../../utils/text";
+import { threadsTable } from "../../database/schemas/thread";
 import type {
   TCreateNodeBodySchema,
   TGetAllNodesQuerySchema,
@@ -15,7 +16,7 @@ import type {
 export default class NodesService {
   getAllNodes = async (dto: TGetAllNodesQuerySchema) => {
     const db = getDatabase();
-    const nodes = await db.query.nodes.findMany({
+    let nodes = await db.query.nodes.findMany({
       with: {
         parent: dto.with_parent || undefined,
         children: dto.with_children || undefined,
@@ -23,6 +24,24 @@ export default class NodesService {
       limit: dto.limit || 25,
       offset: dto.offset || 0,
     });
+
+    if (dto.with_thread_count) {
+      nodes = await Promise.all(
+        nodes.map(async (node) => {
+          const threadCount = await db
+            .select({
+              count: sql<number>`COUNT(*)`.mapWith(Number),
+            })
+            .from(threadsTable)
+            .where(eq(threadsTable.node_id, node.id));
+
+          return {
+            ...node,
+            thread_count: threadCount[0].count,
+          };
+        })
+      );
+    }
 
     return nodes;
   };
@@ -39,6 +58,20 @@ export default class NodesService {
 
     if (node.length === 0) {
       return null;
+    }
+
+    if (dto.with_thread_count) {
+      const threadCount = await db
+        .select({
+          count: sql<number>`COUNT(*)`.mapWith(Number),
+        })
+        .from(threadsTable)
+        .where(eq(threadsTable.node_id, node[0].id));
+
+      return {
+        ...node[0],
+        thread_count: threadCount[0].count,
+      };
     }
 
     return node[0];
