@@ -3,6 +3,7 @@
 import type { PropsWithChildren } from "react";
 import { createContext } from "react";
 import type { DeleteAccountApiFn, UpdateAccountApiFn } from "./account-types";
+import { deleteAccount, updateAccount } from "./accounts-actions";
 
 type TAccountsApiContext = {
   updateAccount: UpdateAccountApiFn;
@@ -13,10 +14,15 @@ const AccountsApiContext = createContext<TAccountsApiContext>(
   {} as TAccountsApiContext
 );
 
-type Props = PropsWithChildren & TAccountsApiContext;
-function AccountsApiProvider({ children, ...props }: Props) {
+type Props = PropsWithChildren;
+function AccountsApiProvider({ children }: Props) {
   return (
-    <AccountsApiContext.Provider value={props}>
+    <AccountsApiContext.Provider
+      value={{
+        deleteAccount: deleteAccount.bind(null, "/admin/users"),
+        updateAccount: updateAccount.bind(null, "/admin/users"),
+      }}
+    >
       {children}
     </AccountsApiContext.Provider>
   );

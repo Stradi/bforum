@@ -5,6 +5,12 @@ import { Toaster } from "sonner";
 import { ScalingDialogProvider } from "@components/scaling-dialog/scaling-dialog-provider";
 import { cn } from "@utils/tw";
 import "./globals.css";
+import ComposeProviders from "@components/compose-providers";
+import { NodesApiProvider } from "@lib/api/nodes/nodes-api-provider";
+import { GroupsApiProvider } from "@lib/api/groups/groups-api-provider";
+import { AccountsApiProvider } from "@lib/api/accounts/accounts-api-provider";
+import { ThreadsApiProvider } from "@lib/api/threads/threads-api-provider";
+import { RepliesApiProvider } from "@lib/api/replies/replies-api-provider";
 
 type Props = PropsWithChildren & {
   modal: ReactNode;
@@ -14,11 +20,20 @@ export default function Layout({ children, modal }: Props) {
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en">
       <body>
-        <ScalingDialogProvider bodyColor="bg-black" padding={16}>
+        <ComposeProviders
+          providers={[
+            [ScalingDialogProvider, { bodyColor: "bg-black", padding: 16 }],
+            [NodesApiProvider, {}],
+            [GroupsApiProvider, {}],
+            [AccountsApiProvider, {}],
+            [ThreadsApiProvider, {}],
+            [RepliesApiProvider, {}],
+          ]}
+        >
           {children}
           {modal}
           <Toaster closeButton />
-        </ScalingDialogProvider>
+        </ComposeProviders>
       </body>
     </html>
   );

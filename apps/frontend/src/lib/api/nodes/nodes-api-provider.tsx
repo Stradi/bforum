@@ -8,6 +8,12 @@ import type {
   UpdateNodeApiFn,
   UpdateNodeOrderApiFn,
 } from "./nodes-types";
+import {
+  createNode,
+  deleteNode,
+  updateNode,
+  updateNodeOrder,
+} from "./nodes-actions";
 
 type TNodesApiContext = {
   createNode: CreateNodeApiFn;
@@ -18,10 +24,17 @@ type TNodesApiContext = {
 
 const NodesApiContext = createContext<TNodesApiContext>({} as TNodesApiContext);
 
-type Props = PropsWithChildren & TNodesApiContext;
-function NodesApiProvider({ children, ...props }: Props) {
+type Props = PropsWithChildren;
+function NodesApiProvider({ children }: Props) {
   return (
-    <NodesApiContext.Provider value={props}>
+    <NodesApiContext.Provider
+      value={{
+        createNode: createNode.bind(null, "/admin/nodes"),
+        deleteNode: deleteNode.bind(null, "/admin/nodes"),
+        updateNode: updateNode.bind(null, "/admin/nodes"),
+        updateNodeOrder: updateNodeOrder.bind(null, "/admin/nodes"),
+      }}
+    >
       {children}
     </NodesApiContext.Provider>
   );

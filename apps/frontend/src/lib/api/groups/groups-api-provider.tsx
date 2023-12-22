@@ -8,6 +8,12 @@ import type {
   UpdateGroupApiFn,
   UpdateGroupPermissionsApiFn,
 } from "./groups-types";
+import {
+  createGroup,
+  deleteGroup,
+  updateGroup,
+  updateGroupPermissions,
+} from "./groups-actions";
 
 type TGroupsApiContext = {
   createGroup: CreateGroupApiFn;
@@ -20,10 +26,20 @@ const GroupsApiContext = createContext<TGroupsApiContext>(
   {} as TGroupsApiContext
 );
 
-type Props = PropsWithChildren & TGroupsApiContext;
-function GroupsApiProvider({ children, ...props }: Props) {
+type Props = PropsWithChildren;
+function GroupsApiProvider({ children }: Props) {
   return (
-    <GroupsApiContext.Provider value={props}>
+    <GroupsApiContext.Provider
+      value={{
+        createGroup: createGroup.bind(null, "/admin/groups"),
+        deleteGroup: deleteGroup.bind(null, "/admin/groups"),
+        updateGroup: updateGroup.bind(null, "/admin/groups"),
+        updateGroupPermissions: updateGroupPermissions.bind(
+          null,
+          "/admin/groups"
+        ),
+      }}
+    >
       {children}
     </GroupsApiContext.Provider>
   );
