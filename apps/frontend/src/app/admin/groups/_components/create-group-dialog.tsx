@@ -21,9 +21,9 @@ import {
   FormMessage,
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
-import { CreateGroupFormSchema } from "../types";
-import type { CreateGroupFormData } from "../types";
-import useGroupsApi from "../_helpers/use-groups-api";
+import useGroupsApi from "@lib/api/groups/use-groups-api";
+import type { CreateGroupFormData } from "@lib/api/groups/groups-types";
+import { CreateGroupFormSchema } from "@lib/api/groups/groups-types";
 
 export default function CreateGroupDialog() {
   const api = useGroupsApi();

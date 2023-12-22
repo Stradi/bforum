@@ -7,7 +7,7 @@ import type {
   DeleteGroupApiFn,
   UpdateGroupApiFn,
   UpdateGroupPermissionsApiFn,
-} from "../types";
+} from "./groups-types";
 
 type TGroupsApiContext = {
   createGroup: CreateGroupApiFn;

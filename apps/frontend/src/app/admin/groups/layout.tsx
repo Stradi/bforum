@@ -1,14 +1,14 @@
 import type { PropsWithChildren } from "react";
 import Container from "@components/container";
 import Header from "@components/header";
-import SideNavigation from "../_components/side-navigation";
+import { GroupsApiProvider } from "@lib/api/groups/groups-api-provider";
 import {
   createGroup,
   deleteGroup,
   updateGroup,
   updateGroupPermissions,
-} from "./_helpers/actions";
-import { GroupsApiProvider } from "./_helpers/groups-api-provider";
+} from "@lib/api/groups/groups-actions";
+import SideNavigation from "../_components/side-navigation";
 
 type Props = PropsWithChildren;
 

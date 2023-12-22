@@ -23,9 +23,9 @@ import {
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import type { ApiGroup } from "@lib/api/api.types";
-import { UpdateGroupFormSchema } from "../../types";
-import type { UpdateGroupFormData } from "../../types";
-import useGroupsApi from "../../_helpers/use-groups-api";
+import useGroupsApi from "@lib/api/groups/use-groups-api";
+import type { UpdateGroupFormData } from "@lib/api/groups/groups-types";
+import { UpdateGroupFormSchema } from "@lib/api/groups/groups-types";
 
 type Props = PropsWithChildren & {
   group: ApiGroup;

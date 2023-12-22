@@ -12,7 +12,7 @@ import {
 } from "@components/ui/alert-dialog";
 import type { ApiGroup } from "@lib/api/api.types";
 import ScalingAlertDialogRoot from "@components/scaling-dialog/scaling-alert-dialog";
-import useGroupsApi from "../../_helpers/use-groups-api";
+import useGroupsApi from "@lib/api/groups/use-groups-api";
 
 type Props = PropsWithChildren & {
   group: ApiGroup;

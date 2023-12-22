@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@components/ui/table";
 import { Checkbox } from "@components/ui/checkbox";
-import useGroupsApi from "../_helpers/use-groups-api";
+import useGroupsApi from "@lib/api/groups/use-groups-api";
 import { sortPermissions } from "../_helpers/utils";
 
 type Props = {

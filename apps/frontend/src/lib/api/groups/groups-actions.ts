@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { ApiGroup } from "@lib/api/api.types";
-import createServerActionClient from "@lib/api/client/create-server-action-client";
+import type { ApiGroup } from "../api.types";
+import createServerActionClient from "../client/create-server-action-client";
 import type {
   CreateGroupFormData,
   UpdateGroupFormData,
   UpdateGroupPermissionsFormData,
-} from "../types";
+} from "./groups-types";
 
 export async function createGroup(
   pathToRevalidate: string,
