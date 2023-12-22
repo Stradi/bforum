@@ -1,5 +1,5 @@
 {
-  "extends": ["bforum/next"],
+  "extends": ["bforum/next", "plugin:tailwindcss/recommended"],
   "rules": {
     // disabling this rule because import rule is not working properly on monorepos
     "import/no-extraneous-dependencies": "off",
@@ -10,5 +10,10 @@
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-unsafe-return": "off"
+  },
+  "settings": {
+    "tailwindcss": {
+      "callees": ["cn"]
+    }
   }
 }

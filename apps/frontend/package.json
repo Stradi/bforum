@@ -25,6 +25,7 @@
     "autoprefixer": "^10.4.16",
     "eslint": "8.56.0",
     "eslint-config-bforum": "workspace:^",
+    "eslint-plugin-tailwindcss": "^3.13.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3"
