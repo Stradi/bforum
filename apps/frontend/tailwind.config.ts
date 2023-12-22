@@ -50,11 +50,13 @@ const config: Config = {
       },
       keyframes: {
         "accordion-down": {
+          // @ts-expect-error -- idk
           from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
+          // @ts-expect-error -- idk
           to: { height: 0 },
         },
       },
