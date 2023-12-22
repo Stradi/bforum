@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@components/ui/alert-dialog";
 import type { ApiAccount } from "@lib/api/api.types";
-import useAccountsApi from "../../_helpers/use-accounts-api";
+import useAccountsApi from "@lib/api/accounts/use-accounts-api";
 
 type Props = PropsWithChildren & {
   account: ApiAccount;

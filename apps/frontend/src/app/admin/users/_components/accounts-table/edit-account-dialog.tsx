@@ -25,9 +25,9 @@ import { Button } from "@components/ui/button";
 import type { ApiAccount, ApiGroup } from "@lib/api/api.types";
 import { Label } from "@components/ui/label";
 import { Checkbox } from "@components/ui/checkbox";
-import useAccountsApi from "../../_helpers/use-accounts-api";
-import type { UpdateAccountFormData } from "../../types";
-import { UpdateAccountFormSchema } from "../../types";
+import useAccountsApi from "@lib/api/accounts/use-accounts-api";
+import type { UpdateAccountFormData } from "@lib/api/accounts/account-types";
+import { UpdateAccountFormSchema } from "@lib/api/accounts/account-types";
 
 type Props = PropsWithChildren & {
   account: ApiAccount;

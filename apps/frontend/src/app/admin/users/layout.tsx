@@ -1,9 +1,12 @@
 import type { PropsWithChildren } from "react";
 import Container from "@components/container";
 import Header from "@components/header";
+import { AccountsApiProvider } from "@lib/api/accounts/accounts-api-provider";
+import {
+  deleteAccount,
+  updateAccount,
+} from "@lib/api/accounts/accounts-actions";
 import SideNavigation from "../_components/side-navigation";
-import { AccountsApiProvider } from "./_helpers/accounts-api-provider";
-import { deleteAccount, updateAccount } from "./_helpers/actions";
 
 type Props = PropsWithChildren;
 export default function Layout({ children }: Props) {

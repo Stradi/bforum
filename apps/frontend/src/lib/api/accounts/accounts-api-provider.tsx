@@ -2,7 +2,7 @@
 
 import type { PropsWithChildren } from "react";
 import { createContext } from "react";
-import type { DeleteAccountApiFn, UpdateAccountApiFn } from "../types";
+import type { DeleteAccountApiFn, UpdateAccountApiFn } from "./account-types";
 
 type TAccountsApiContext = {
   updateAccount: UpdateAccountApiFn;

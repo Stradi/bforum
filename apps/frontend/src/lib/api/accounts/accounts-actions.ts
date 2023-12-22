@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { ApiAccount } from "@lib/api/api.types";
 import createServerActionClient from "@lib/api/client/create-server-action-client";
-import type { UpdateAccountFormData } from "../types";
+import type { UpdateAccountFormData } from "./account-types";
 
 export async function updateAccount(
   pathToRevalidate: string,
