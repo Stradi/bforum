@@ -1,14 +1,14 @@
 import type { PropsWithChildren } from "react";
 import Container from "@components/container";
 import Header from "@components/header";
-import SideNavigation from "../_components/side-navigation";
+import { NodesApiProvider } from "@lib/api/nodes/nodes-api-provider";
 import {
   createNode,
   deleteNode,
   updateNode,
   updateNodeOrder,
-} from "./_helpers/actions";
-import { NodesApiProvider } from "./_helpers/nodes-api-provider";
+} from "@lib/api/nodes/nodes-actions";
+import SideNavigation from "../_components/side-navigation";
 
 type Props = PropsWithChildren;
 

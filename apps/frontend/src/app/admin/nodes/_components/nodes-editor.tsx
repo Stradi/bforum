@@ -11,8 +11,9 @@ import {
 } from "@components/dnd-sortable-tree/helpers";
 import DndSortableTree from "@components/dnd-sortable-tree";
 import { Button } from "@components/ui/button";
-import useNodesApi from "../_helpers/use-nodes-api";
-import type { DndNode, UpdateNodeOrderFormData } from "../types";
+import useNodesApi from "@lib/api/nodes/use-nodes-api";
+import type { UpdateNodeOrderFormData } from "@lib/api/nodes/nodes-types";
+import type { DndNode } from "../types";
 import NodeDetailsDialog from "./node-details-dialog";
 
 type Props = {

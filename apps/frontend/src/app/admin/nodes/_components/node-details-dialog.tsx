@@ -21,12 +21,10 @@ import {
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
 import { Button } from "@components/ui/button";
-import useNodesApi from "../_helpers/use-nodes-api";
-import {
-  UpdateNodeFormSchema,
-  type DndNode,
-  type UpdateNodeFormData,
-} from "../types";
+import useNodesApi from "@lib/api/nodes/use-nodes-api";
+import type { UpdateNodeFormData } from "@lib/api/nodes/nodes-types";
+import { UpdateNodeFormSchema } from "@lib/api/nodes/nodes-types";
+import type { DndNode } from "../types";
 import DeleteNodeAlertDialog from "./delete-node-alert-dialog";
 
 type Props = {

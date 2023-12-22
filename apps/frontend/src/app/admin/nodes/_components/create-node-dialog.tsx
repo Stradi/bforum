@@ -22,9 +22,9 @@ import {
 } from "@components/ui/form";
 import { Input } from "@components/ui/input";
 import { Textarea } from "@components/ui/textarea";
-import { CreateNodeFormSchema } from "../types";
-import type { CreateNodeFormData } from "../types";
-import useNodesApi from "../_helpers/use-nodes-api";
+import useNodesApi from "@lib/api/nodes/use-nodes-api";
+import type { CreateNodeFormData } from "@lib/api/nodes/nodes-types";
+import { CreateNodeFormSchema } from "@lib/api/nodes/nodes-types";
 
 export default function CreateNodeDialog() {
   const api = useNodesApi();

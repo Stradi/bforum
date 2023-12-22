@@ -7,7 +7,7 @@ import type {
   DeleteNodeApiFn,
   UpdateNodeApiFn,
   UpdateNodeOrderApiFn,
-} from "../types";
+} from "./nodes-types";
 
 type TNodesApiContext = {
   createNode: CreateNodeApiFn;

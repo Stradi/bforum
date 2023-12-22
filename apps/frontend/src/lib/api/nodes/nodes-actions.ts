@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { ApiNode } from "@lib/api/api.types";
-import createServerActionClient from "@lib/api/client/create-server-action-client";
+import type { ApiNode } from "../api.types";
+import createServerActionClient from "../client/create-server-action-client";
 import type {
   CreateNodeFormData,
   UpdateNodeFormData,
   UpdateNodeOrderFormData,
-} from "../types";
+} from "./nodes-types";
 
 export async function createNode(
   pathToRevalidate: string,
