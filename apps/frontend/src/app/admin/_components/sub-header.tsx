@@ -14,7 +14,7 @@ export default function SubHeader({
 }: Props) {
   return (
     <section
-      className={cn("flex justify-between items-center gap-4", className)}
+      className={cn("flex items-center justify-between gap-4", className)}
       {...props}
     >
       <div className="space-y-1">

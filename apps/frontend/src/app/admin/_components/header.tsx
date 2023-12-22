@@ -15,10 +15,10 @@ export default function Header({
 }: Props) {
   return (
     <section
-      className={cn("border-b py-8 px-8 bg-neutral-100", className)}
+      className={cn("border-b bg-neutral-100 p-8", className)}
       {...props}
     >
-      <Container className="px-4 flex justify-between items-center">
+      <Container className="flex items-center justify-between px-4">
         <div className="space-y-1">
           <h1 className={cn("text-xl font-medium")}>{title}</h1>
           {description ? <p className="text-sm">{description}</p> : null}

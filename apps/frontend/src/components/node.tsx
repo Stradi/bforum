@@ -43,14 +43,14 @@ export default async function Node({ node: _node, slug }: Props) {
   return (
     <div className="grid grid-cols-2 items-center p-2">
       <div className="flex items-center gap-2">
-        <MessageCircleIcon className="w-8 h-8 text-neutral-200" />
+        <MessageCircleIcon className="size-8 text-neutral-200" />
         <div className="flex flex-col">
           <TooltipProvider>
             <Tooltip delayDuration={100}>
               <TooltipTrigger>
                 <Button
                   asChild
-                  className="p-0 h-auto text-base font-normal"
+                  className="h-auto p-0 text-base font-normal"
                   variant="link"
                 >
                   <Link href={`/n/${node.slug}`}>{node.name}</Link>
@@ -61,22 +61,22 @@ export default async function Node({ node: _node, slug }: Props) {
           </TooltipProvider>
           {node.children?.length ? (
             <Popover>
-              <PopoverTrigger className="group flex items-center gap-0.5 text-xs text-neutral-500 hover:text-neutral-700 text-left w-fit data-[state=open]:text-neutral-700">
+              <PopoverTrigger className="group flex w-fit items-center gap-0.5 text-left text-xs text-neutral-500 hover:text-neutral-700 data-[state=open]:text-neutral-700">
                 Sub-forums{" "}
-                <TriangleDownIcon className="w-4 h-4 group-data-[state=open]:rotate-0 rotate-180 transition duration-100" />
+                <TriangleDownIcon className="size-4 rotate-180 transition duration-100 group-data-[state=open]:rotate-0" />
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="w-[200px] p-0 overflow-hidden"
+                className="w-[200px] overflow-hidden p-0"
               >
-                <div className="text-sm divide-y">
+                <div className="divide-y text-sm">
                   {node.children.map((child) => (
                     <Link
-                      className="flex items-center gap-1 transition duration-100 px-2 py-1.5 w-full hover:bg-neutral-100"
+                      className="flex w-full items-center gap-1 px-2 py-1.5 transition duration-100 hover:bg-neutral-100"
                       href={`/n/${child.slug}`}
                       key={child.id}
                     >
-                      <MessageCircleIcon className="w-5 h-5 text-neutral-300" />
+                      <MessageCircleIcon className="size-5 text-neutral-300" />
                       {child.name}
                     </Link>
                   ))}
@@ -86,7 +86,7 @@ export default async function Node({ node: _node, slug }: Props) {
           ) : null}
         </div>
       </div>
-      <div className="flex justify-evenly items-center">
+      <div className="flex items-center justify-evenly">
         {node.thread_count !== undefined ? (
           <div className="flex flex-col items-center">
             <p className="text-xs text-neutral-500">Threads</p>

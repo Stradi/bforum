@@ -17,7 +17,7 @@ export default async function Page() {
   return (
     <Container className="px-4">
       <br />
-      <div className="border rounded-lg divide-y">
+      <div className="divide-y rounded-lg border">
         {topLevelNodes.map((node) => (
           <Node key={node.id} node={node} />
         ))}

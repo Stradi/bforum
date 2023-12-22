@@ -8,15 +8,15 @@ type Props = {
 export default function TopNavigation({ subText, rightSide }: Props) {
   return (
     <Container>
-      <nav className="flex justify-between py-2 px-4 items-center">
-        <div className="flex gap-2 items-center">
-          <p className="font-medium text-sm">bForum</p>
+      <nav className="flex items-center justify-between px-4 py-2">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium">bForum</p>
           {subText ? (
             <>
-              <span className="text-lg text-neutral-300 rotate-12 font-medium select-none">
+              <span className="rotate-12 select-none text-lg font-medium text-neutral-300">
                 /
               </span>
-              <p className="font-medium text-sm">{subText}</p>
+              <p className="text-sm font-medium">{subText}</p>
             </>
           ) : null}
         </div>

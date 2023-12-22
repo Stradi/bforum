@@ -19,7 +19,7 @@ export default function Page({ searchParams }: Props) {
       <div className="flex flex-col items-center text-sm">
         <p>
           Already have an account?{" "}
-          <Button asChild className="p-0 h-auto" variant="link">
+          <Button asChild className="h-auto p-0" variant="link">
             <Link href={`/login?depth=${currentDepth + 1}`} shallow={false}>
               Login to that
             </Link>

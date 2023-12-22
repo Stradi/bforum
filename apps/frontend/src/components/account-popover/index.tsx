@@ -29,7 +29,7 @@ export default async function AccountPopover() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[325px] space-y-2">
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 rounded-full bg-neutral-200" />
+          <div className="size-12 rounded-full bg-neutral-200" />
           <div className="flex flex-col">
             <p className="">{account.username}</p>
             <p className="text-sm">{account.email}</p>

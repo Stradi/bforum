@@ -19,14 +19,14 @@ export default function Page({ error, reset }: Props) {
   if (isApiError) {
     const errorObj = JSON.parse(error.message);
     return (
-      <div className="text-center my-16 space-y-2">
+      <div className="my-16 space-y-2 text-center">
         <h1 className="text-lg">{errorObj.message}</h1>
         <p className="text-sm">{errorObj.action}</p>
       </div>
     );
   }
   return (
-    <div className="text-center my-16 space-y-2">
+    <div className="my-16 space-y-2 text-center">
       <h1 className="text-lg">Something went really wrong. I am sorry 😔</h1>
       <p className="text-sm">
         Maybe you can try to

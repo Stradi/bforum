@@ -86,7 +86,7 @@ export default function LoginForm({ className, ...props }: Props) {
           )}
         />
         {form.formState.errors.root ? (
-          <p className="text-red-500 text-sm">
+          <p className="text-sm text-red-500">
             {form.formState.errors.root.message}
           </p>
         ) : null}

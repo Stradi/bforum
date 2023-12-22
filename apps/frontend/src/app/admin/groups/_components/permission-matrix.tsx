@@ -134,7 +134,7 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
 
   return (
     <div>
-      <div className="pb-1 flex items-center">
+      <div className="flex items-center pb-1">
         <div className="space-x-1">
           <Button
             className="gap-1"
@@ -156,7 +156,7 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
             }}
             variant="ghost"
           >
-            <TrashIcon className="w-4 h-4" />
+            <TrashIcon className="size-4" />
             Discard Changes
           </Button>
           <Button
@@ -174,11 +174,11 @@ export default function PermissionMatrix({ groups, permissions }: Props) {
               }
             }}
           >
-            <SaveIcon className="w-4 h-4" /> Save
+            <SaveIcon className="size-4" /> Save
           </Button>
         </div>
       </div>
-      <div className="border rounded-lg w-fit">
+      <div className="w-fit rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow className="divide-x">

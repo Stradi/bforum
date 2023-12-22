@@ -16,13 +16,13 @@ export default async function NavigationRightSide() {
     <div className="flex gap-1">
       <Link href="/login" scroll={false}>
         <Button className="gap-x-1" variant="ghost">
-          <LogInIcon className="w-4 h-4" />
+          <LogInIcon className="size-4" />
           Login
         </Button>
       </Link>
       <Link href="/register" scroll={false}>
         <Button className="gap-x-1" variant="ghost">
-          <UserRoundPlusIcon className="w-4 h-4" />
+          <UserRoundPlusIcon className="size-4" />
           Register
         </Button>
       </Link>

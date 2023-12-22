@@ -41,12 +41,12 @@ export default function CustomItem<T extends DndItem>({
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- no need for keyboard events
     <div
       className={cn(
-        "flex gap-1 items-center border rounded-md bg-neutral-50",
+        "flex items-center gap-1 rounded-md border bg-neutral-50",
         "transition duration-100",
         isDropTarget && "border-neutral-300 bg-neutral-200",
         isDragging && "opacity-50",
         onClick &&
-          "cursor-pointer hover:bg-neutral-100 hover:border-neutral-300"
+          "cursor-pointer hover:border-neutral-300 hover:bg-neutral-100"
       )}
       data-has-child={hasChild}
       onClick={() => {
@@ -65,7 +65,7 @@ export default function CustomItem<T extends DndItem>({
         type="button"
         variant="ghost"
       >
-        <GripVerticalIcon className="w-4 h-4" />
+        <GripVerticalIcon className="size-4" />
       </Button>
       {hasChild ? (
         <Button
@@ -76,9 +76,9 @@ export default function CustomItem<T extends DndItem>({
           variant="ghost"
         >
           {isOpen ? (
-            <ChevronsDownUpIcon className="w-4 h-4" />
+            <ChevronsDownUpIcon className="size-4" />
           ) : (
-            <ChevronsUpDownIcon className="w-4 h-4" />
+            <ChevronsUpDownIcon className="size-4" />
           )}
         </Button>
       ) : null}

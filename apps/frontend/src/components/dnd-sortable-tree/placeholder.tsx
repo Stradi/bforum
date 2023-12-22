@@ -17,7 +17,7 @@ export default function Placeholder<T extends DndItem>({
 }: Props<T>) {
   return (
     <div
-      className="bg-blue-400 rounded-full h-1 absolute right-0 top-0 -translate-y-2/3"
+      className="absolute right-0 top-0 h-1 -translate-y-2/3 rounded-full bg-blue-400"
       style={{
         left: depth * indent,
       }}

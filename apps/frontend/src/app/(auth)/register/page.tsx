@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <>
       <h1 className="text-center text-xl font-medium">Create New Account</h1>
-      <RegisterForm className="max-w-[400px] w-full p-4" />
+      <RegisterForm className="w-full max-w-[400px] p-4" />
     </>
   );
 }

@@ -22,9 +22,9 @@ export default function Layout({ children }: Props) {
     >
       <div className="space-y-2">
         <Header description="Manage nodes in your community" title="Nodes" />
-        <Container className="p-4 w-full flex gap-4">
+        <Container className="flex w-full gap-4 p-4">
           <SideNavigation
-            className="w-60 -ml-2 shrink-0"
+            className="-ml-2 w-60 shrink-0"
             items={[
               {
                 label: "Overview",

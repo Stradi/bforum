@@ -25,7 +25,7 @@ export default function DeleteNodeAlertDialog({ onDeleteNode }: Props) {
         <AlertDialogDescription>
           Are you sure you want to delete this node?
         </AlertDialogDescription>
-        <div className="flex justify-end mt-4 gap-1">
+        <div className="mt-4 flex justify-end gap-1">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={onDeleteNode}>
             Delete this Node

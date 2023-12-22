@@ -29,7 +29,7 @@ export default async function Page({ params: { slug } }: Props) {
       </header>
       <br />
       {node.data.payload.children?.length ? (
-        <div className="border rounded-lg divide-y">
+        <div className="divide-y rounded-lg border">
           {node.data.payload.children.map((n) => (
             <Node key={n.id} slug={n.slug} />
           ))}

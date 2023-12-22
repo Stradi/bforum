@@ -16,10 +16,10 @@ export default function Page({ searchParams }: Props) {
     <InterceptorModal depth={currentDepth + 1} title="Login to Your Account">
       <LoginForm />
       <Separator />
-      <div className="text-sm flex flex-col items-center gap-1">
+      <div className="flex flex-col items-center gap-1 text-sm">
         <p>
           Don&apos;t have an account?{" "}
-          <Button asChild className="p-0 h-auto" variant="link">
+          <Button asChild className="h-auto p-0" variant="link">
             <Link href={`/register?depth=${currentDepth + 1}`} shallow={false}>
               Create an account
             </Link>
@@ -27,7 +27,7 @@ export default function Page({ searchParams }: Props) {
         </p>
         <p>
           Forgot your password?{" "}
-          <Button asChild className="p-0 h-auto" variant="link">
+          <Button asChild className="h-auto p-0" variant="link">
             <Link
               href={`/forgot-password?depth=${currentDepth + 1}`}
               shallow={false}

@@ -127,7 +127,7 @@ export default function RegisterForm({ className, ...props }: Props) {
           )}
         />
         {form.formState.errors.root ? (
-          <p className="text-red-500 text-xs">
+          <p className="text-xs text-red-500">
             {form.formState.errors.root.message}
           </p>
         ) : null}

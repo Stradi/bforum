@@ -61,7 +61,7 @@ export default function getColumns(
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" variant="ghost">
-                <DotsHorizontalIcon className="w-4 h-4" />
+                <DotsHorizontalIcon className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>

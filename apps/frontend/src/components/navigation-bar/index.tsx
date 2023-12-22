@@ -55,7 +55,7 @@ export default function NavigationBar({ items }: Props) {
     <nav className="relative border-b border-neutral-300">
       <Container>
         <div
-          className="pointer-events-none absolute h-full w-full -z-10 bg-neutral-200/50 rounded-md transition-[left,width,opacity] duration-150"
+          className="pointer-events-none absolute -z-10 h-full w-full rounded-md bg-neutral-200/50 transition-[left,width,opacity] duration-150"
           style={{
             left: indicatorLeft - indicatorWidth / 2,
             width: indicatorWidth,
@@ -63,9 +63,9 @@ export default function NavigationBar({ items }: Props) {
           }}
         />
 
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <ul
-            className="flex [&>*]:px-4 [&>*]:py-1.5"
+            className="flex *:px-4 *:py-1.5"
             onMouseLeave={() => {
               setIndicatorOpacity(0);
             }}

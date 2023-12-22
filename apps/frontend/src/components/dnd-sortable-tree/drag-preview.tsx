@@ -15,13 +15,13 @@ export default function DragPreview<T extends DndItem>({
   const hasChild =
     item.ref.current?.querySelector("*>div[data-has-child='true']") !== null;
   return (
-    <div className="flex gap-4 items-center bg-neutral-100 border border-neutral-300 rounded-md px-3 py-1 w-full">
+    <div className="flex w-full items-center gap-4 rounded-md border border-neutral-300 bg-neutral-100 px-3 py-1">
       <Button className="p-0" size="icon" type="button" variant="ghost">
-        <GripVerticalIcon className="w-4 h-4" />
+        <GripVerticalIcon className="size-4" />
       </Button>
       {hasChild ? (
         <Button size="icon" type="button" variant="ghost">
-          <ChevronsDownUpIcon className="w-4 h-4" />
+          <ChevronsDownUpIcon className="size-4" />
         </Button>
       ) : null}
       <p
