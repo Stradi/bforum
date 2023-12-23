@@ -1,9 +1,10 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDatabase } from "../../database";
 import { threadsTable } from "../../database/schemas/thread";
 import type { JwtPayload } from "../../types/jwt";
 import { slugify } from "../../utils/text";
 import NodesService from "../nodes/nodes-service";
+import { repliesTable } from "../../database/schemas/reply";
 import type {
   TCreateThreadBodySchema,
   TGetAllThreadsQuerySchema,
@@ -24,14 +25,33 @@ export default class ThreadsService {
     if (!node) throw new Error("This should never happen. :fingers_crossed:");
 
     const db = getDatabase();
-    const threads = await db.query.threads.findMany({
+    let threads = await db.query.threads.findMany({
       with: {
         node: dto.with_node || undefined,
+        creator: dto.with_creator || undefined,
       },
       limit: dto.limit || 25,
       offset: dto.offset || 0,
       where: eq(threadsTable.node_id, node.id),
     });
+
+    if (dto.with_reply_count) {
+      threads = await Promise.all(
+        threads.map(async (thread) => {
+          const replyCount = await db
+            .select({
+              count: sql<number>`COUNT(*)`.mapWith(Number),
+            })
+            .from(repliesTable)
+            .where(eq(repliesTable.thread_id, thread.id));
+
+          return {
+            ...thread,
+            reply_count: replyCount[0].count,
+          };
+        })
+      );
+    }
 
     return threads;
   };
@@ -52,11 +72,26 @@ export default class ThreadsService {
       where: eq(threadsTable.slug, threadSlug),
       with: {
         node: dto.with_node || undefined,
+        creator: dto.with_creator || undefined,
       },
     });
 
     if (thread.length === 0) {
       return null;
+    }
+
+    if (dto.with_reply_count) {
+      const replyCount = await db
+        .select({
+          count: sql<number>`COUNT(*)`.mapWith(Number),
+        })
+        .from(repliesTable)
+        .where(eq(repliesTable.thread_id, thread[0].id));
+
+      return {
+        ...thread[0],
+        reply_count: replyCount[0].count,
+      };
     }
 
     return thread[0];

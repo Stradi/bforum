@@ -59,6 +59,8 @@ export type ApiThread = BaseApiObject & {
   slug: string;
   replies: ApiReply[];
 
+  reply_count?: number;
+
   created_by: number;
   creator: ApiAccount;
 

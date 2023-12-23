@@ -5,6 +5,8 @@ export type TGetSingleThreadQuerySchema = zod.infer<
 >;
 export const GetSingleThreadQuerySchema = zod.object({
   with_node: zod.coerce.boolean().optional(),
+  with_creator: zod.coerce.boolean().optional(),
+  with_reply_count: zod.coerce.boolean().optional(),
 });
 
 export type TGetAllThreadsQuerySchema = zod.infer<
@@ -12,6 +14,8 @@ export type TGetAllThreadsQuerySchema = zod.infer<
 >;
 export const GetAllThreadsQuerySchema = zod.object({
   with_node: zod.coerce.boolean().optional(),
+  with_creator: zod.coerce.boolean().optional(),
+  with_reply_count: zod.coerce.boolean().optional(),
   limit: zod.coerce.number().optional(),
   offset: zod.coerce.number().optional(),
 });
