@@ -6,6 +6,7 @@ import Node from "@components/node";
 import Container from "@components/container";
 import Header from "@components/header";
 import { Button } from "@components/ui/button";
+import ThreadsTable from "./_components/threads-table";
 
 type Props = {
   params: {
@@ -26,7 +27,7 @@ export default async function Page({ params: { nodeSlug } }: Props) {
   const threads = await client.sendRequest<{
     message: string;
     payload: ApiThread[];
-  }>(`/api/v1/nodes/${nodeSlug}/threads`);
+  }>(`/api/v1/nodes/${nodeSlug}/threads?with_creator=1&with_reply_count=1`);
 
   if (!threads.success) throw new Error(JSON.stringify(threads.error));
 
@@ -42,25 +43,21 @@ export default async function Page({ params: { nodeSlug } }: Props) {
           </Link>
         </Button>
       </Header>
+      {node.data.payload.children?.length ? (
+        <>
+          <br />
+          <Container className="px-4">
+            <div className="divide-y rounded-lg border">
+              {node.data.payload.children.map((n) => (
+                <Node key={n.id} slug={n.slug} />
+              ))}
+            </div>
+          </Container>
+        </>
+      ) : null}
       <br />
       <Container className="px-4">
-        {node.data.payload.children?.length ? (
-          <div className="divide-y rounded-lg border">
-            {node.data.payload.children.map((n) => (
-              <Node key={n.id} slug={n.slug} />
-            ))}
-          </div>
-        ) : null}
-      </Container>
-      <br />
-      <Container className="px-4">
-        {threads.data.payload.map((t) => (
-          <div key={t.id}>
-            <Link href={`/n/${node.data.payload.slug}/${t.slug}`}>
-              {t.name}
-            </Link>
-          </div>
-        ))}
+        <ThreadsTable nodeSlug={nodeSlug} threads={threads.data.payload} />
       </Container>
     </div>
   );
